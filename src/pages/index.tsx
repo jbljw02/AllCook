@@ -2,6 +2,7 @@ import bannerImg from '../images/banner-img.jpg'
 import aboutImg from '../images/about-img.jpg'
 import Image from 'next/image'
 import { Roboto } from 'next/font/google';
+import { useState } from 'react';
 
 const roboto = Roboto({
     subsets: ['latin'],
@@ -9,6 +10,10 @@ const roboto = Roboto({
 })
 
 export default function Home() {
+
+    const temp = useState();
+    console.log(temp);
+
     return (
         <>
             {/* 홈 화면의 전체 영역을 차지하는 컨테이너  */}
@@ -50,6 +55,8 @@ export default function Home() {
                     <table className='about-table'>
                         <thead>
                             <tr>
+                                {/* td 태그는 중앙정렬 돼있기 때문에 border 길이가 너무 길고 
+                                조절이 불가능하기 때문에, span 태그를 추가하여 컨트롤 */}
                                 <td>
                                     <span>01</span>
                                 </td>
@@ -87,34 +94,6 @@ export default function Home() {
                             </tr>
                         </tbody>
                     </table>
-                    {/* <div className='about-index'>
-                        <span>01</span>
-                        <span>02</span>
-                        <span>03</span>
-                    </div>
-                    <div className='about-detail'>
-                        <span>다양한 레시피</span>
-                        <span>편리한 검색</span>
-                        <span>영양성분 제공</span>
-                    </div>
-                    <div className='about-introduce'>
-                        <span>
-                            All Cook은 한식은 물론, 일식, 양식, 중식에 이르기 <br />
-                            까지 1,000개 이상의 다양한 레시피를 제공합니다. <br />
-                            다양한 문화의 음식을 요리해보세요.
-                        </span>
-                        <span>
-                            재료를 검색하면 해당 재료가 들어가는 레시피를 <br />
-                            찾아드리고, 원하는 메뉴의 이름을 검색하면 그 메뉴 <br />
-                            의 레시피를 제공해드립니다.
-                        </span>
-                        <span>
-                            음식의 레시피 뿐만 아니라 영양성분도 함께 <br />
-                            제공합니다.
-                            All Cook과 함께 건강한 식생활을 <br />
-                            시작해보세요.
-                        </span>
-                    </div> */}
                 </div>
             </div>
 
@@ -221,12 +200,14 @@ export default function Home() {
                     font-size: 45px;
                     font-weight: 700;
                 }
+                .about-img {
+                    position: absolute;
+                    left: 300px;
+                }
                 .about-table {
                     text-align: center;
                     margin-bottom: 60px;
                 }
-                {/* td 태그는 중앙정렬 돼있기 때문에 border 길이가 너무 길고 조절이 불가능하기 때문에, 
-                span 태그를 추가하여 컨트롤 */}
                 .about-table thead tr:nth-child(1) td span {
                     padding: 0 28px;
                     font-size: 22px;
@@ -247,11 +228,22 @@ export default function Home() {
                     padding: 0px 25px;
                     font-size: 14px;
                 }
-                .about-img {
-                    position: absolute;
-                    left: 300px;
-                }
             `}</style>
         </>
     )
+}
+
+export async function getStaticProps() {
+    const response = await fetch('http://localhost:3000/home/api/recipe', {
+        method: 'GET',
+    });
+
+    const results = await response.json()
+    console.log("결과 : ", results);
+
+    return {
+        props: {
+            results
+        }
+    }
 }
