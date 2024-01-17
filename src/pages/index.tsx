@@ -1,8 +1,12 @@
-import bannerImg from '../images/banner-img.jpg'
-import aboutImg from '../images/about-img.jpg'
+import bannerImg from '/public/images/banner-img.jpg'
+import aboutImg from '/public/images/about-img.jpg'
 import Image from 'next/image'
 import { Roboto } from 'next/font/google';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { configureStore } from '@reduxjs/toolkit';
+import temp from '../store/store'
+import store, { setTemp, RootState } from '../store/store';
+import { useDispatch, useSelector } from 'react-redux';
 
 const roboto = Roboto({
     subsets: ['latin'],
@@ -11,8 +15,14 @@ const roboto = Roboto({
 
 export default function Home() {
 
-    const temp = useState();
-    console.log(temp);
+    // const dispatch = useDispatch();
+
+    // useEffect(() => {
+    //     dispatch(setTemp(initialReduxStore))
+    // }, [])
+
+    const temp = useSelector((state: RootState) => state.temp);
+    console.log("결과 : ", temp);
 
     return (
         <>
@@ -33,7 +43,8 @@ export default function Home() {
                     {/* 배너 문구와 검색창을 차지하는 컨테이너 */}
                     <div className='banner-container'>
                         <div className='welcome-section'>
-                            환영합니다! 우리는 All Cook, <br /> 당신의 요리 파트너입니다. <br />
+                            환영합니다! 우리는 All Cook, <br />
+                            당신의 요리 파트너입니다. <br />
                         </div>
                         <div className='search-section'>
                             <div>당신을 위한 1,124개의 레시피</div>
@@ -95,6 +106,18 @@ export default function Home() {
                         </tbody>
                     </table>
                 </div>
+
+                {/* 추천 메뉴 영역을 차지하는 컨테이너 */}
+                <div className='recommend-container'>
+                    <div className='recommend-title'>
+                        오늘의 추천 메뉴
+                    </div>
+                </div>
+
+                {/* Contact 영역을 차지하는 컨테이너 */}
+                <div className='contact-container'>
+                </div>
+
             </div>
 
             <style jsx> {`
@@ -197,7 +220,7 @@ export default function Home() {
                     text-align: center;
                     margin-top: 80px;
                     margin-bottom: 50px;
-                    font-size: 45px;
+                    font-size: 40px;
                     font-weight: 700;
                 }
                 .about-img {
@@ -233,17 +256,22 @@ export default function Home() {
     )
 }
 
-export async function getStaticProps() {
-    const response = await fetch('http://localhost:3000/home/api/recipe', {
-        method: 'GET',
-    });
+const API_KEY = process.env.API_KEY;
 
-    const results = await response.json()
-    console.log("결과 : ", results);
+export async function getServerSideProps() {
+    const response = await fetch('http://localhost:3000/home/api/recipe', {
+    });
+    const results = await response.json();
+
+    console.log("results 결과 : ", results);
+
+    const reduxStore = store();
+
+    reduxStore.dispatch(setTemp(results));
 
     return {
         props: {
-            results
+            initialReduxStore: reduxStore.getState()
         }
     }
 }

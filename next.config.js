@@ -11,15 +11,19 @@ const nextConfig = {
 
     //         }
     //     ]
-    // },
-
+    // },   
+    
     async rewrites() {
         return [
             {
                 source: "/home/api/recipe",
-                destination: `http://openapi.foodsafetykorea.go.kr/api/${API_KEY}/COOKRCP01/json/1/5`
+                destination: `http://openapi.foodsafetykorea.go.kr/api/${API_KEY}/COOKRCP01/json/1/20`
             },
         ]
+    },
+    
+    images: {
+        domains: ['www.foodsafetykorea.go.kr']
     }
 }
 
