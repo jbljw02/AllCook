@@ -1,9 +1,8 @@
 import { AppProps } from 'next/app'
 import '../styles/global.css'
 import { Noto_Sans_KR } from 'next/font/google'
-import { Provider } from 'react-redux';
-import store from '../store/store'
 import { createWrapper } from 'next-redux-wrapper';
+import { wrapper } from '@/redux/store';
 
 const noto = Noto_Sans_KR({
     subsets: ['latin'],
@@ -23,5 +22,5 @@ function App({ Component, pageProps }: AppProps) {
     )
 }
 
-const wrapper = createWrapper(store);
 export default wrapper.withRedux(App);
+// export default App;

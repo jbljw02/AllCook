@@ -3,10 +3,10 @@ import aboutImg from '/public/images/about-img.jpg'
 import Image from 'next/image'
 import { Roboto } from 'next/font/google';
 import { useEffect, useState } from 'react';
-import { configureStore } from '@reduxjs/toolkit';
-import temp from '../store/store'
-import store, { setTemp, RootState } from '../store/store';
+import { makeStore, RootState } from '../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
+import { setRecomMenu } from '@/redux/features/recomMenuSlice';
+import { wrapper } from '../redux/store';
 
 const roboto = Roboto({
     subsets: ['latin'],
@@ -21,8 +21,8 @@ export default function Home() {
     //     dispatch(setTemp(initialReduxStore))
     // }, [])
 
-    const temp = useSelector((state: RootState) => state.temp);
-    console.log("결과 : ", temp);
+    const temp = useSelector((state: RootState) => state.recomMenu);
+    // console.log("결과 : ", temp);
 
     return (
         <>
@@ -256,22 +256,14 @@ export default function Home() {
     )
 }
 
-const API_KEY = process.env.API_KEY;
-
 export async function getServerSideProps() {
     const response = await fetch('http://localhost:3000/home/api/recipe', {
+        method: "GET",
     });
     const results = await response.json();
 
-    console.log("results 결과 : ", results);
-
-    const reduxStore = store();
-
-    reduxStore.dispatch(setTemp(results));
 
     return {
-        props: {
-            initialReduxStore: reduxStore.getState()
-        }
+        props: {}
     }
 }
