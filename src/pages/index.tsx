@@ -7,6 +7,7 @@ import { makeStore, RootState } from '../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRecomMenu } from '@/redux/features/recomMenuSlice';
 import { wrapper } from '../redux/store';
+import { GetServerSidePropsContext } from 'next';
 
 const roboto = Roboto({
     subsets: ['latin'],
@@ -256,14 +257,15 @@ export default function Home() {
     )
 }
 
-export async function getServerSideProps() {
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
     const response = await fetch('http://localhost:3000/home/api/recipe', {
         method: "GET",
     });
     const results = await response.json();
 
+    store.dispatch(setRecomMenu(results));
 
     return {
-        props: {}
+        props: { }
     }
-}
+});
