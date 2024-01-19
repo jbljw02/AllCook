@@ -16,14 +16,9 @@ const roboto = Roboto({
 
 export default function Home() {
 
-    // const dispatch = useDispatch();
-
-    // useEffect(() => {
-    //     dispatch(setTemp(initialReduxStore))
-    // }, [])
-
-    const temp = useSelector((state: RootState) => state.recomMenu);
-    // console.log("결과 : ", temp);
+    const recmomMenu = useSelector((state: RootState) => state.recomMenu);
+    
+    console.log(recmomMenu);
 
     return (
         <>
@@ -263,7 +258,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
     });
     const results = await response.json();
 
-    store.dispatch(setRecomMenu(results));
+    store.dispatch(setRecomMenu(results.COOKRCP01.row));
 
     return {
         props: { }
