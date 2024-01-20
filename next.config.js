@@ -17,7 +17,7 @@ const nextConfig = {
         return [
             {
                 source: "/home/api/recipe",
-                destination: `http://openapi.foodsafetykorea.go.kr/api/${API_KEY}/COOKRCP01/json/1/10/RCP_NM=샐러드`
+                destination: `http://openapi.foodsafetykorea.go.kr/api/${API_KEY}/COOKRCP01/json/1/4/RCP_NM=샐러드`
             },
         ]
     },

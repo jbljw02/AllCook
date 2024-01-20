@@ -3,7 +3,7 @@ import { HYDRATE, createWrapper } from "next-redux-wrapper";
 import recomMenuSlice from './features/recomMenuSlice';
 
 export type RootState = {
-    recomMenu: menu,
+    recomMenu: menu[],
 }
 
 export type menu = {
@@ -20,7 +20,7 @@ export type menu = {
     RCP_NA_TIP: string,
     RCP_PARTS_DTLS: string,
     RCP_PAT2: string,
-}[]
+}
 
 // 각각의 기능을 가진 리듀서들을 병합
 const combinedReducer = combineReducers({

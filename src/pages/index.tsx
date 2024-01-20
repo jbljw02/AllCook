@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setRecomMenu } from '@/redux/features/recomMenuSlice';
 import { wrapper } from '../redux/store';
 import { GetServerSidePropsContext } from 'next';
+import { menu } from '../redux/store';
 
 const roboto = Roboto({
     subsets: ['latin'],
@@ -16,9 +17,7 @@ const roboto = Roboto({
 
 export default function Home() {
 
-    const recmomMenu = useSelector((state: RootState) => state.recomMenu);
-    
-    console.log(recmomMenu);
+    const recomMenu = useSelector((state: RootState) => state.recomMenu);
 
     return (
         <>
@@ -55,68 +54,108 @@ export default function Home() {
                     <Image src={bannerImg} alt={''} layout="responsive" />
                 </div>
 
-                {/* About 영역을 차지하는 컨테이너 */}
-                <div className='about-container'>
-                    <div className={`${roboto.className} about-title`}>About All Cook</div>
-                    {/* <Image src={aboutImg} className='about-img' width={700} alt={''} /> */}
-                    <table className='about-table'>
-                        <thead>
-                            <tr>
-                                {/* td 태그는 중앙정렬 돼있기 때문에 border 길이가 너무 길고 
-                                조절이 불가능하기 때문에, span 태그를 추가하여 컨트롤 */}
-                                <td>
-                                    <span>01</span>
-                                </td>
-                                <td>
-                                    <span>02</span>
-                                </td>
-                                <td>
-                                    <span>03</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>다양한 레시피</td>
-                                <td>편리한 검색</td>
-                                <td>영양성분 제공</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    All Cook은 한식은 물론, 일식, 양식, 중식에 <br />
-                                    이르기까지 1,000개 이상의 다양한 레시피를 <br />
-                                    제공합니다. 다양한 문화의 음식을 요리해보세요.
-                                </td>
-                                <td>
-                                    재료를 검색하면 해당 재료가 들어가는 <br />
-                                    레시피를 찾아드리고, 원하는 메뉴의 이름을 <br />
-                                    검색하면 해당 메뉴의 레시피를 제공해드립니다.
-                                </td>
-                                <td>
-                                    음식의 레시피 뿐만 아니라 영양성분도 함께 <br />
-                                    제공합니다.
-                                    All Cook과 함께 건강한 식생활을 <br />
-                                    시작해보세요.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <div className='contents-container'>
 
-                {/* 추천 메뉴 영역을 차지하는 컨테이너 */}
-                <div className='recommend-container'>
-                    <div className='recommend-title'>
-                        오늘의 추천 메뉴
+                    {/* About 영역을 차지하는 컨테이너 */}
+                    <div className='about-container'>
+                        <div className={`${roboto.className} about-title`}>About All Cook</div>
+                        {/* <Image src={aboutImg} className='about-img' width={700} alt={''} /> */}
+                        <table className='about-table'>
+                            <thead>
+                                <tr>
+                                    {/* td 태그는 중앙정렬 되어있어 border 길이가 너무 길고 
+                                    조절이 불가능하기 때문에, span 태그를 추가하여 컨트롤 */}
+                                    <td>
+                                        <span>01</span>
+                                    </td>
+                                    <td>
+                                        <span>02</span>
+                                    </td>
+                                    <td>
+                                        <span>03</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>다양한 레시피</td>
+                                    <td>편리한 검색</td>
+                                    <td>영양성분 제공</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        All Cook은 한식은 물론, 일식, 양식, 중식에 <br />
+                                        이르기까지 1,000개 이상의 다양한 레시피를 <br />
+                                        제공합니다. 다양한 문화의 음식을 요리해보세요.
+                                    </td>
+                                    <td>
+                                        재료를 검색하면 해당 재료가 들어가는 <br />
+                                        레시피를 찾아드리고, 원하는 메뉴의 이름을 <br />
+                                        검색하면 해당 메뉴의 레시피를 제공해드립니다.
+                                    </td>
+                                    <td>
+                                        음식의 레시피 뿐만 아니라 영양성분도 함께 <br />
+                                        제공합니다.
+                                        All Cook과 함께 건강한 식생활을 <br />
+                                        시작해보세요.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
 
-                {/* Contact 영역을 차지하는 컨테이너 */}
-                <div className='contact-container'>
-                </div>
+                    {/* 추천 메뉴 영역을 차지하는 컨테이너 */}
+                    <div className='recommend-container'>
+                        <div className='recommend-title'>
+                            오늘의 추천 메뉴
+                        </div>
+                        <div className='recommend-subtitle'>
+                            All Cook이 추천드리는 메뉴입니다. 오늘은 이 레시피 어떠신가요?
+                        </div>
+                        <table className='recommend-table'>
+                            <tbody>
+                                <tr>
+                                    {
+                                        recomMenu && recomMenu.map((item) => {
+                                            return (
+                                                <td>
+                                                    <Image
+                                                        src={`${item.ATT_FILE_NO_MK}`}
+                                                        width={200}
+                                                        height={200}
+                                                        alt={''}
+                                                    />
+                                                </td>
+                                            )
 
+                                        })
+                                    }
+                                </tr>
+                                <tr>
+                                    {
+                                        recomMenu && recomMenu.map((item) => {
+                                            return (
+                                                <td>
+                                                    <div className='RCP_NM'>{item.RCP_NM}</div>
+                                                    <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
+                                                </td>
+                                            )
+                                        })
+                                    }
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Contact 영역을 차지하는 컨테이너 */}
+                    <div className='contact-container'>
+                    </div>
+
+                </div>
             </div>
 
             <style jsx> {`
+                {/* 전체 영역 컨테이너 */}
                 .container {
                     display: flex;
                     flex-direction: column;
@@ -203,20 +242,26 @@ export default function Home() {
                     cursor: pointer;
                 }
 
+                {/* 헤더 및 배너 컨테이너를 제외한 컨텐츠의 영역 */}
+                .contents-container {
+                    margin-left: 15%;
+                    margin-right: 15%;
+                }
+
                 {/* About 컨테이너 */}
                 .about-container {
                     display: flex;
                     justify-content: center;
                     align-items: center;
                     flex-direction: column;
-                    background-color: rgb(255, 255, 255);
                     position: relative;
+                    margin-bottom: 90px;
                 }
                 .about-title {
                     text-align: center;
                     margin-top: 80px;
-                    margin-bottom: 50px;
-                    font-size: 40px;
+                    margin-bottom: 35px;
+                    font-size: 35px;
                     font-weight: 700;
                 }
                 .about-img {
@@ -225,7 +270,8 @@ export default function Home() {
                 }
                 .about-table {
                     text-align: center;
-                    margin-bottom: 60px;
+                    border-bottom: 1px solid #000000;
+                    padding-bottom: 100px;
                 }
                 .about-table thead tr:nth-child(1) td span {
                     padding: 0 28px;
@@ -247,20 +293,90 @@ export default function Home() {
                     padding: 0px 25px;
                     font-size: 14px;
                 }
+
+                {/* 추천 메뉴에 대한 컨테이너 */}
+                .recommend-container {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-direction: column;
+                    position: relative;
+                    margin-bottom: 100px;
+                }
+                .recommend-title {
+                    margin-bottom: 10px;
+                    text-align: center;
+                    font-size: 28px;
+                    font-weight: 700;
+                }
+                .recommend-subtitle {
+                    margin-bottom: 20px;
+                    font-size: 13.5px;
+                    color: #5c5c5c;
+                }
+                .recommend-table {
+                    display: flex;
+                    flex-direction: column;
+                }
+                .recommend-table tr td {
+                    max-width: 200px;
+                    vertical-align: top;
+                    align-self: start;
+                }
+                .recommend-table tr:nth-child(1) td {
+                    padding: 0 15px;
+                }
+                .RCP_NM {
+                    text-align: left;
+                    padding: 0 15px;
+                    font-size: 14.5px;
+                    font-weight: 400;
+                    word-wrap: break-word;
+                    word-break: break-all;
+                }
+                .RCP_PAT2 {
+                    padding: 0 15px;
+                    font-size: 12px;
+                    color: #5c5c5c;
+                }
             `}</style>
         </>
     )
 }
 
+
 export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
-    const response = await fetch('http://localhost:3000/home/api/recipe', {
+
+    const API_KEY = process.env.API_KEY;
+
+    // api 요청을 보낼 첫번째 파라미터와 두번째 파라미터를 1~30 사이의 랜덤 정수로 생성
+    const startParam = Math.floor(Math.random() * 27) + 1;
+    const endParam = startParam + 3;
+
+    const response = await fetch(`http://openapi.foodsafetykorea.go.kr/api/
+    ${API_KEY}/COOKRCP01/json/${startParam}/${endParam}`, {
         method: "GET",
     });
-    const results = await response.json();
+    const jsonResult = await response.json();
+    const result = jsonResult.COOKRCP01.row;
 
-    store.dispatch(setRecomMenu(results.COOKRCP01.row));
+    const menuData = result.map((item: menu) => {
+        // 구조 분해 할당 - 각 item에서 필요한 필드들을 추출 선언
+        const { RCP_NM, ATT_FILE_NO_MK, INFO_CAR,
+            INFO_ENG, INFO_FAT, INFO_NA, INFO_PRO,
+            MANUAL01, MANUAL02, MANUAL03, RCP_NA_TIP,
+            RCP_PARTS_DTLS, RCP_PAT2 } = item;
+        return {
+            RCP_NM, ATT_FILE_NO_MK, INFO_CAR,
+            INFO_ENG, INFO_FAT, INFO_NA, INFO_PRO,
+            MANUAL01, MANUAL02, MANUAL03, RCP_NA_TIP,
+            RCP_PARTS_DTLS, RCP_PAT2
+        };
+    })
+
+    store.dispatch(setRecomMenu(menuData));
 
     return {
-        props: { }
+        props: {}
     }
 });
