@@ -149,6 +149,18 @@ export default function Home() {
 
                     {/* Contact 영역을 차지하는 컨테이너 */}
                     <div className='contact-container'>
+                        <span className='contact-left'>
+                            <div className='contact-title'>All Cook</div>
+                            <div className='span-copyright'>
+                                <div className='recipe-source'>
+                                    All Cook에서 제공하는 모든 레시피는 식품의약품안전처에서 제공하는 '조리식품의 레시피 DB'를 따릅니다. <br />
+                                    본 서비스는 상업적인 이익을 추구하지 않습니다.
+                                </div>
+                                <div className='copyright-content'>
+                                    ©2023 All Cook. All Rights Reserved.
+                                </div>
+                            </div>
+                        </span>
                     </div>
 
                 </div>
@@ -160,7 +172,8 @@ export default function Home() {
                     display: flex;
                     flex-direction: column;
                     width: 100%;
-                    height: 100vh;
+                    height: 100%;
+                    {/* background-color: #FBF9F1; */}
                 }
 
                 {/* 헤더 컨테이너 */}
@@ -244,8 +257,8 @@ export default function Home() {
 
                 {/* 헤더 및 배너 컨테이너를 제외한 컨텐츠의 영역 */}
                 .contents-container {
-                    margin-left: 15%;
-                    margin-right: 15%;
+                    {/* margin-left: 15%; */}
+                    {/* margin-right: 15%; */}
                 }
 
                 {/* About 컨테이너 */}
@@ -338,6 +351,36 @@ export default function Home() {
                     padding: 0 15px;
                     font-size: 12px;
                     color: #5c5c5c;
+                }
+
+                {/* Contact 영역의 컨테이너 */}
+                .contact-container { 
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    font-size: 14px;
+                    background-color: #36755a;
+                }
+                .contact-left {
+                    margin-left: 50px;
+                    margin-top: 30px;
+                    margin-bottom: 30px;
+                    color: #ffffff;
+                }
+                .contact-title {
+                    font-size: 22px;
+                    font-weight: 500;
+                }
+                .span-copyright {
+                    font-size: 14px;
+                }
+                .recipe-source {
+                    font-weight: 300;
+                    margin-top: 30px;
+                    margin-bottom: 30px;
+                }
+                .copyright-content {
+                    font-weight: 200;
                 }
             `}</style>
         </>
