@@ -148,9 +148,10 @@ export default function Home() {
                     </div>
 
                     {/* Contact 영역을 차지하는 컨테이너 */}
-                    <div className='contact-container'>
-                        <span className='contact-left'>
-                            <div className='contact-title'>All Cook</div>
+                    <div className='footer-container'>
+                        {/* 왼쪽 영역 */}
+                        <span className='footer-left'>
+                            <div className='footer-title'>All Cook</div>
                             <div className='span-copyright'>
                                 <div className='recipe-source'>
                                     All Cook에서 제공하는 모든 레시피는 식품의약품안전처에서 제공하는 '조리식품의 레시피 DB'를 따릅니다. <br />
@@ -161,8 +162,14 @@ export default function Home() {
                                 </div>
                             </div>
                         </span>
+                        {/* 오른쪽 영역 */}
+                        <span className='footer-right'>
+                            <div className='contact-title'>Contact</div>
+                            <div className='contact-detail'>대표번호: 010-8511-3589</div>
+                            <div className='contact-detail'>이메일: jbljw02@naver.com</div>
+                            <div className='contact-button'>Contact Us</div>
+                        </span>
                     </div>
-
                 </div>
             </div>
 
@@ -193,7 +200,7 @@ export default function Home() {
                     padding-left: 50px;
                     padding-bottom: 20px;
                     display: inline-block;
-                    font-weight: bold;
+                    font-weight: 400;
                     cursor: pointer;
                 }
                 .nav {
@@ -314,7 +321,7 @@ export default function Home() {
                     align-items: center;
                     flex-direction: column;
                     position: relative;
-                    margin-bottom: 100px;
+                    margin-bottom: 160px;
                 }
                 .recommend-title {
                     margin-bottom: 10px;
@@ -354,20 +361,21 @@ export default function Home() {
                 }
 
                 {/* Contact 영역의 컨테이너 */}
-                .contact-container { 
+                .footer-container { 
                     display: flex;
                     flex-direction: row;
-                    align-items: center;
                     font-size: 14px;
                     background-color: #36755a;
                 }
-                .contact-left {
+                {/* footer 왼쪽 영역 */}
+                .footer-left {
+                    flex: 0.5;
                     margin-left: 50px;
                     margin-top: 30px;
                     margin-bottom: 30px;
                     color: #ffffff;
                 }
-                .contact-title {
+                .footer-title {
                     font-size: 22px;
                     font-weight: 500;
                 }
@@ -376,11 +384,42 @@ export default function Home() {
                 }
                 .recipe-source {
                     font-weight: 300;
-                    margin-top: 30px;
-                    margin-bottom: 30px;
+                    margin-top: 20px;
+                    margin-bottom: 20px;
                 }
                 .copyright-content {
                     font-weight: 200;
+                }
+                {/* footer 오른쪽 영역 */}
+                .footer-right {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                    flex: 0.5;
+                    margin-top: 30px;
+                    margin-right: 50px;
+                    text-align: right;
+                    color: #ffffff;
+                }
+                .contact-title {
+                    font-size: 20px;
+                    font-weight: 400;
+                    margin-bottom: 16px;
+                }
+                .contact-detail {
+                    font-size: 13.5px;
+                    font-weight: 300;
+                }
+                .contact-button {
+                    margin-top: 23px;
+                    margin-bottom: 18px;
+                    font-size: 13.5px;
+                    font-weight: 300;
+                    border: 1px solid #ffffff;
+                    padding: 5px 15px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    float: none;
                 }
             `}</style>
         </>
