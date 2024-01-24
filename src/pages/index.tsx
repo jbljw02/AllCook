@@ -2,7 +2,7 @@ import bannerImg from '/public/images/banner-img.jpg'
 import aboutImg from '/public/images/about-img.jpg'
 import Image from 'next/image'
 import { Roboto } from 'next/font/google';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { makeStore, RootState } from '../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRecomMenu } from '@/redux/features/recomMenuSlice';
@@ -17,7 +17,33 @@ const roboto = Roboto({
 
 export default function Home() {
 
-    const recomMenu = useSelector((state: RootState) => state.recomMenu);
+    const [isScrolled, setIsScrolled] = useState(false);  // 스크롤의 여부를 저장하는 state
+    const headerRef = useRef(null);
+
+    console.log("스크롤상태 : ", isScrolled);
+
+    const recomMenu = useSelector((state: RootState) => state.recomMenu);  // 서버로부터 받아온 추천 메뉴를 state
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([e]) => {
+                setIsScrolled(!e.isIntersecting);
+            },
+            {
+                rootMargin: '0px 0px'
+            },
+        );
+
+        if (headerRef.current) {
+            observer.observe(headerRef.current);
+        }
+
+        return () => {
+            if (headerRef.current) {
+                observer.unobserve(headerRef.current);
+            }
+        };
+    }, [])
 
     return (
         <>
@@ -26,7 +52,12 @@ export default function Home() {
                 {/* 헤더부터 이미지 배너까지의 영역을 차지하는 컨테이너 */}
                 <div className='header-container'>
                     {/* 헤더 영역 */}
-                    <header className='header'>
+                    <header
+                        className='header'
+                        style={{
+                            backgroundColor: isScrolled ? 'transparent' : '#36755a',
+                            zIndex: 1000
+                        }}>
                         <span className={`${roboto.className} title`}>All Cook</span>
                         <span className='nav'>
                             <span className={`${roboto.className} home`}>Home</span>
@@ -54,7 +85,7 @@ export default function Home() {
                     <Image src={bannerImg} alt={''} layout="responsive" />
                 </div>
 
-                <div className='contents-container'>
+                <div ref={headerRef} className='contents-container'>
 
                     {/* About 영역을 차지하는 컨테이너 */}
                     <div className='about-container'>
@@ -397,7 +428,7 @@ export default function Home() {
                     align-items: flex-end;
                     flex: 0.5;
                     margin-top: 30px;
-                    margin-right: 50px;
+                    margin-right: 55px;
                     text-align: right;
                     color: #ffffff;
                 }
