@@ -17,33 +17,60 @@ const roboto = Roboto({
 
 export default function Home() {
 
-    const [isScrolled, setIsScrolled] = useState(false);  // 스크롤의 여부를 저장하는 state
-    const headerRef = useRef(null);
+    const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
+    const contentsRef = useRef<HTMLDivElement>(null);
 
-    console.log("스크롤상태 : ", isScrolled);
+    const recomMenu = useSelector((state: RootState) => state.recomMenu);  // 서버로부터 받아온 추천 메뉴를 저장
 
-    const recomMenu = useSelector((state: RootState) => state.recomMenu);  // 서버로부터 받아온 추천 메뉴를 state
+    // useEffect(() => {
+    //     // 타겟 요소가 뷰포트와 교차하는지를 감시
+    //     const observer = new IntersectionObserver(
+    //         ([e]) => {
+    //             console.log("DD");
+    //             // true = 교차, false = 비교차
+    //             setIsScrolled(!e.isIntersecting);
+    //         },
+    //         {
+    //             root: null,
+    //             rootMargin: '600px 0px 0px 0px',
+    //         }
+    //     );
+
+    //     if (contentsRef.current) {
+    //         observer.observe(contentsRef.current);
+    //     }
+
+    //     return () => {
+    //         if (contentsRef.current) {
+    //             observer.unobserve(contentsRef.current);
+    //         }
+    //     };
+    // }, [])
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([e]) => {
-                setIsScrolled(!e.isIntersecting);
-            },
-            {
-                rootMargin: '0px 0px'
-            },
-        );
-
-        if (headerRef.current) {
-            observer.observe(headerRef.current);
-        }
-
-        return () => {
-            if (headerRef.current) {
-                observer.unobserve(headerRef.current);
+        // 헤더가 컨텐츠 영역에 도달하면 스타일을 바꾸기 위한 함수
+        const checkScrollTop = () => {
+            if (contentsRef.current !== null) {
+                // isScrolled가 false이며, 스크롤의 위치가 contents-container보다 낮을 경우
+                if (!scrollPassContent && window.scrollY > contentsRef.current.offsetTop) {
+                    setScrollPassContent(true);
+                }
+                // isScrolled가 false이며, 스크롤의 위치가 contents-container보다 높을 경우
+                else if (scrollPassContent && window.scrollY <= contentsRef.current.offsetTop) {
+                    setScrollPassContent(false);
+                }
             }
         };
-    }, [])
+
+        // 스크롤 이벤트 발생시에 함수 호출('이벤트 타입', 이벤트 발생시 실행할 함수)
+        window.addEventListener('scroll', checkScrollTop);
+
+        // 컴포넌트 언마운트시, 혹은 useEffect 재실행 전에 이벤트 리스너 제거
+        return () => {
+            window.removeEventListener('scroll', checkScrollTop);
+        };
+    }, [scrollPassContent]);
+
 
     return (
         <>
@@ -54,9 +81,10 @@ export default function Home() {
                     {/* 헤더 영역 */}
                     <header
                         className='header'
+                        // 스크롤이 contents-container 영역을 지나치면 배경색 지정, 그 외엔 투명
                         style={{
-                            backgroundColor: isScrolled ? 'transparent' : '#36755a',
-                            zIndex: 1000
+                            backgroundColor: scrollPassContent ? '#36755a' : 'transparent',
+                            zIndex: 1000,
                         }}>
                         <span className={`${roboto.className} title`}>All Cook</span>
                         <span className='nav'>
@@ -85,7 +113,7 @@ export default function Home() {
                     <Image src={bannerImg} alt={''} layout="responsive" />
                 </div>
 
-                <div ref={headerRef} className='contents-container'>
+                <div ref={contentsRef} className='contents-container'>
 
                     {/* About 영역을 차지하는 컨테이너 */}
                     <div className='about-container'>
@@ -224,6 +252,11 @@ export default function Home() {
                     width: 100%;
                     height: 80px;
                     color: #ffffff;
+                    transition: background-color 0.3s ease;
+                }
+                .header-visible {
+                    background-color: '#36755a';
+                    z-index: 1000;
                 }
                 .title {
                     font-size: 30px;
