@@ -20,7 +20,28 @@ export default function Home() {
     const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
     const contentsRef = useRef<HTMLDivElement>(null);
 
+    const titleText1 = "환영합니다! 우리는 All Cook,";
+    const titleText2 = "당신의 요리 파트너입니다.";
+    const [displayedText1, setDisplayedText1] = useState("");
+    const [displayedText2, setDisplayedText2] = useState("");
+
     const recomMenu = useSelector((state: RootState) => state.recomMenu);  // 서버로부터 받아온 추천 메뉴를 저장
+
+    useEffect(() => {
+        // titleText를 배열로 만든 후 setTimeout을 이용해 화면의 차례로 출력
+        titleText1.split("").forEach((str, index) => {
+            setTimeout(() => {
+                setDisplayedText1((prev) => prev + str);
+            }, index * 60);
+        });
+        // titleText1이 전부 출력된 후 실행되도록 설정
+        titleText2.split("").forEach((str, index) => {
+            setTimeout(() => {
+                setDisplayedText2((prev) => prev + str);
+            }, (index + titleText1.length) * 60);
+        });
+
+    }, [titleText1, titleText2])
 
     // useEffect(() => {
     //     // 타겟 요소가 뷰포트와 교차하는지를 감시
@@ -80,12 +101,9 @@ export default function Home() {
                 <div className='header-container'>
                     {/* 헤더 영역 */}
                     <header
-                        className='header'
-                        // 스크롤이 contents-container 영역을 지나치면 배경색 지정, 그 외엔 투명
-                        style={{
-                            backgroundColor: scrollPassContent ? '#36755a' : 'transparent',
-                            zIndex: 1000,
-                        }}>
+                        className={`${scrollPassContent ? 'header visible' : 'header'}`}
+                    // 스크롤이 contents-container 영역을 지나치면 배경색 지정, 그 외엔 투명
+                    >
                         <span className={`${roboto.className} title`}>All Cook</span>
                         <span className='nav'>
                             <span className={`${roboto.className} home`}>Home</span>
@@ -97,17 +115,22 @@ export default function Home() {
                     {/* 배너 문구와 검색창을 차지하는 컨테이너 */}
                     <div className='banner-container'>
                         <div className='welcome-section'>
-                            환영합니다! 우리는 All Cook, <br />
-                            당신의 요리 파트너입니다. <br />
+                            {displayedText1} <br />
+                            {displayedText2}
                         </div>
-                        <div className='search-section'>
-                            <div>당신을 위한 1,124개의 레시피</div>
-                            <div className='input-container'>
-                                <input className='search-input' placeholder='메뉴, 재료로 검색' />
-                                <svg className="img-search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="21" height="21">
-                                    <path fill="currentColor" d="M3.5 8a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM8 2a6 6 0 1 0 3.65 10.76l3.58 3.58 1.06-1.06-3.57-3.57A6 6 0 0 0 8 2Z"></path></svg>
-                            </div>
-                        </div>
+                        {
+                            // 화면에 글자가 모두 출력된 후 fade in 효과를 적용하며 출력
+                            displayedText2.length === 14 ?
+                                <div className='search-section'>
+                                    <div>당신을 위한 1,124개의 레시피</div>
+                                    <div className='input-container'>
+                                        <input className='search-input' placeholder='메뉴, 재료로 검색' />
+                                        <svg className="img-search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="21" height="21">
+                                            <path fill="currentColor" d="M3.5 8a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM8 2a6 6 0 1 0 3.65 10.76l3.58 3.58 1.06-1.06-3.57-3.57A6 6 0 0 0 8 2Z"></path></svg>
+                                    </div>
+                                </div> :
+                                ''
+                        }
                     </div>
                     {/* 홈 화면의 배너 및 이미지 컨테이너 */}
                     <Image src={bannerImg} alt={''} layout="responsive" />
@@ -178,25 +201,16 @@ export default function Home() {
                                         recomMenu && recomMenu.map((item) => {
                                             return (
                                                 <td>
-                                                    <Image
-                                                        src={`${item.ATT_FILE_NO_MK}`}
-                                                        width={200}
-                                                        height={200}
-                                                        alt={''}
-                                                    />
-                                                </td>
-                                            )
-
-                                        })
-                                    }
-                                </tr>
-                                <tr>
-                                    {
-                                        recomMenu && recomMenu.map((item) => {
-                                            return (
-                                                <td>
-                                                    <div className='RCP_NM'>{item.RCP_NM}</div>
-                                                    <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
+                                                    <div className='td-content'>
+                                                        <Image
+                                                            src={`${item.ATT_FILE_NO_MK}`}
+                                                            width={200}
+                                                            height={200}
+                                                            alt={''}
+                                                        />
+                                                        <div className='RCP_NM'>{item.RCP_NM}</div>
+                                                        <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
+                                                    </div>
                                                 </td>
                                             )
                                         })
@@ -207,7 +221,7 @@ export default function Home() {
                     </div>
 
                     {/* Contact 영역을 차지하는 컨테이너 */}
-                    <div className='footer-container'>
+                    <footer className='footer-container'>
                         {/* 왼쪽 영역 */}
                         <span className='footer-left'>
                             <div className='footer-title'>All Cook</div>
@@ -228,7 +242,7 @@ export default function Home() {
                             <div className='contact-detail'>이메일: jbljw02@naver.com</div>
                             <div className='contact-button'>Contact Us</div>
                         </span>
-                    </div>
+                    </footer>
                 </div>
             </div>
 
@@ -254,9 +268,10 @@ export default function Home() {
                     color: #ffffff;
                     transition: background-color 0.3s ease;
                 }
-                .header-visible {
-                    background-color: '#36755a';
+                .visible {
+                    background-color: #36755a;
                     z-index: 1000;
+                    box-shadow: 0 10px 9px rgba(0, 0, 0, 0.1);
                 }
                 .title {
                     font-size: 30px;
@@ -286,16 +301,26 @@ export default function Home() {
                     top: 31%;
                     left: 10%;
                 }
+                {/* 서서히 나타나는 애니메이션 */}
+                @keyframes fade-in {
+                    from {
+                        opacity: 0
+                    }
+                    to {
+                        opacity: ;
+                    }
+                }
                 .welcome-section {
                     color: #ffffff;
                     font-size: 50px;
-                    {/* font-weight: bold; */}
+                    {/* animation: fade-in 2.5s ease-out; */}
                 }
                 .search-section {
                     display: flex;
                     flex-direction: column;
                     margin-top: 18px;
-                    margin-left: 7px
+                    margin-left: 7px;
+                    animation: fade-in 2s ease-out;
                 }
                 .search-section div:nth-child(1) {
                     color: #ffffff;
@@ -406,42 +431,46 @@ export default function Home() {
                     max-width: 200px;
                     vertical-align: top;
                     align-self: start;
-                }
-                .recommend-table tr:nth-child(1) td {
+                    transition: transform 0.3s ease;
                     padding: 0 15px;
+                }
+                .recommend-table tr td:hover {
+                    transform: scale(1.05);
+                }
+                .td-content {
+                    cursor: pointer;
                 }
                 .RCP_NM {
                     text-align: left;
-                    padding: 0 15px;
                     font-size: 14.5px;
                     font-weight: 400;
                     word-wrap: break-word;
                     word-break: break-all;
                 }
                 .RCP_PAT2 {
-                    padding: 0 15px;
                     font-size: 12px;
                     color: #5c5c5c;
                 }
 
-                {/* Contact 영역의 컨테이너 */}
+                {/* footer 영역의 컨테이너 */}
                 .footer-container { 
                     display: flex;
                     flex-direction: row;
+                    align-items: center;
                     font-size: 14px;
                     background-color: #36755a;
+                    color: #ffffff;
                 }
                 {/* footer 왼쪽 영역 */}
                 .footer-left {
-                    flex: 0.5;
+                    flex: 0.97;
                     margin-left: 50px;
                     margin-top: 30px;
                     margin-bottom: 30px;
-                    color: #ffffff;
                 }
                 .footer-title {
                     font-size: 22px;
-                    font-weight: 500;
+                    font-weight: 400;
                 }
                 .span-copyright {
                     font-size: 14px;
@@ -458,15 +487,11 @@ export default function Home() {
                 .footer-right {
                     display: flex;
                     flex-direction: column;
-                    align-items: flex-end;
-                    flex: 0.5;
-                    margin-top: 30px;
-                    margin-right: 55px;
-                    text-align: right;
-                    color: #ffffff;
+                    align-items: flex-start;
+                    margin-top: 15px;
                 }
                 .contact-title {
-                    font-size: 20px;
+                    font-size: 22px;
                     font-weight: 400;
                     margin-bottom: 16px;
                 }
@@ -475,7 +500,7 @@ export default function Home() {
                     font-weight: 300;
                 }
                 .contact-button {
-                    margin-top: 23px;
+                    margin-top: 22px;
                     margin-bottom: 18px;
                     font-size: 13.5px;
                     font-weight: 300;
