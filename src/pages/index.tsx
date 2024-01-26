@@ -226,15 +226,13 @@ export default function Home() {
                     <footer className='footer-container'>
                         {/* 왼쪽 영역 */}
                         <span className='footer-left'>
-                            <div className='footer-title'>All Cook</div>
-                            <div className='div-copyright'>
-                                <div className='recipe-source'>
-                                    All Cook에서 제공하는 모든 레시피는 식품의약품안전처에서 제공하는 '조리식품의 레시피 DB'를 따릅니다. <br />
-                                    본 서비스는 상업적인 이익을 추구하지 않습니다.
-                                </div>
-                                <div className='copyright-content'>
-                                    ©2023 All Cook. All Rights Reserved.
-                                </div>
+                            <div className='footer-title'>
+                                All Cook
+                                <span>세상의 모든 레시피</span>
+                            </div>
+                            <div className='recipe-source'>
+                                All Cook에서 제공하는 모든 레시피는 식품의약품안전처에서 제공하는 '조리식품의 레시피 DB'를 따릅니다. <br />
+                                본 서비스는 상업적인 이익을 추구하지 않습니다.
                             </div>
                         </span>
                         {/* 오른쪽 영역 */}
@@ -245,12 +243,11 @@ export default function Home() {
                                 <div className='footer-menu-detail'>Recipe</div>
                                 <div className='footer-menu-detail'>Contact</div>
                             </div>
-                            <div className='email'>
-                                Email: jbljw02@naver.com
+                            <div className='copyright-content'>
+                                ©2023 by All Cook. All Rights Reserved.
                             </div>
-                            <div className='tel'>
-                                Tel: 010-8511-3589
-                            </div>
+
+
                         </span>
                     </footer>
                 </div>
@@ -480,24 +477,25 @@ export default function Home() {
                 {/* footer 왼쪽 영역 */}
                 .footer-left {
                     margin-left: 45px;
-                    margin-top: 30px;
-                    margin-bottom: 30px;
+                    margin-top: 15px;
+                    margin-bottom: 15px;
                 }
                 .footer-title {
-                    font-size: 22px;
+                    margin-top: 10px;
+                    padding-bottom: 12px;
+                    font-size: 25px;
                     font-weight: 400;
+                    border-bottom: 0.8px solid white;
                 }
-                .div-copyright {
+                .footer-title span {
+                    padding-left: 7px;
                     font-size: 13px;
-                }
-                .copyright-content {
-                    font-weight: 200;
-                    text-align: left;
+                    font-weight: 300;
                 }
                 .recipe-source {
+                    font-size: 13px;
                     font-weight: 300;
-                    margin-top: 10px;
-                    margin-bottom: 10px;
+                    margin-top: 15px;
                 }
                 {/* footer 오른쪽 영역 */}
                 .footer-right {
@@ -505,7 +503,8 @@ export default function Home() {
                     flex-direction: column;
                     margin-right: 50px;
                     height: 100%;
-                    margin-top: 30px;
+                    margin-top: 25px;
+                    margin-bottom: 20px;
                 }
                 .footer-menu {
                     display: flex;
@@ -514,21 +513,19 @@ export default function Home() {
                 .footer-menu-detail {
                     margin-right: 20px;
                     font-size: 15px;
+                    text-decoration: underline;
                     font-weight: 300;
                     cursor: pointer;
                 }
                 .footer-menu-detail:nth-child(4) {
                     margin-right: 0px;
                 }
-                .email {
-                    margin-top: 36px;
-                    font-size: 13.5px;
-                    font-weight: 300;
-                }
-                .tel {
-                    margin-top: 7px;
-                    font-size: 13.5px;
-                    font-weight: 300;
+                .copyright-content {
+                    font-size: 13px;
+                    font-weight: 200;
+                    text-align: left;
+                    margin-top: 60px;
+                    margin-bottom: 10px;
                 }
             `}</style>
         </>
@@ -540,8 +537,8 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 
     const API_KEY = process.env.API_KEY;
 
-    // api 요청을 보낼 첫번째 파라미터와 두번째 파라미터를 1~30 사이의 랜덤 정수로 생성
-    const startParam = Math.floor(Math.random() * 27) + 1;
+    // api 요청을 보낼 첫번째 파라미터와 두번째 파라미터를 1~1124 사이의 랜덤 정수로 생성
+    const startParam = Math.floor(Math.random() * 1121) + 1;
     const endParam = startParam + 3;
 
     const response = await fetch(`http://openapi.foodsafetykorea.go.kr/api/
