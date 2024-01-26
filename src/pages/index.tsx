@@ -100,18 +100,20 @@ export default function Home() {
                 {/* 헤더부터 이미지 배너까지의 영역을 차지하는 컨테이너 */}
                 <div className='header-container'>
                     {/* 헤더 영역 */}
-                    <header
-                        className={`${scrollPassContent ? 'header visible' : 'header'}`}
-                    // 스크롤이 contents-container 영역을 지나치면 배경색 지정, 그 외엔 투명
-                    >
-                        <span className={`${roboto.className} title`}>All Cook</span>
-                        <span className='nav'>
-                            <span className={`${roboto.className} home`}>Home</span>
-                            <span className={`${roboto.className} about`}>About</span>
-                            <span className={`${roboto.className} recipe`}>Recipe</span>
-                            <span className={`${roboto.className} contact`}>Contact</span>
-                        </span>
-                    </header>
+                    {
+                        // 스크롤이 contents-container 영역을 지나치면 헤더 사라지도록 설정
+                        !scrollPassContent ?
+                            <header className='header'>
+                                <span className={`${roboto.className} title`}>All Cook</span>
+                                <span className='nav'>
+                                    <span className={`${roboto.className} home`}>Home</span>
+                                    <span className={`${roboto.className} about`}>About</span>
+                                    <span className={`${roboto.className} recipe`}>Recipe</span>
+                                    <span className={`${roboto.className} contact`}>Contact</span>
+                                </span>
+                            </header> :
+                            null
+                    }
                     {/* 배너 문구와 검색창을 차지하는 컨테이너 */}
                     <div className='banner-container'>
                         <div className='welcome-section'>
@@ -225,7 +227,7 @@ export default function Home() {
                         {/* 왼쪽 영역 */}
                         <span className='footer-left'>
                             <div className='footer-title'>All Cook</div>
-                            <div className='span-copyright'>
+                            <div className='div-copyright'>
                                 <div className='recipe-source'>
                                     All Cook에서 제공하는 모든 레시피는 식품의약품안전처에서 제공하는 '조리식품의 레시피 DB'를 따릅니다. <br />
                                     본 서비스는 상업적인 이익을 추구하지 않습니다.
@@ -237,10 +239,18 @@ export default function Home() {
                         </span>
                         {/* 오른쪽 영역 */}
                         <span className='footer-right'>
-                            <div className='contact-title'>Contact</div>
-                            <div className='contact-detail'>대표번호: 010-8511-3589</div>
-                            <div className='contact-detail'>이메일: jbljw02@naver.com</div>
-                            <div className='contact-button'>Contact Us</div>
+                            <div className='footer-menu'>
+                                <div className='footer-menu-detail'>Home</div>
+                                <div className='footer-menu-detail'>About</div>
+                                <div className='footer-menu-detail'>Recipe</div>
+                                <div className='footer-menu-detail'>Contact</div>
+                            </div>
+                            <div className='email'>
+                                Email: jbljw02@naver.com
+                            </div>
+                            <div className='tel'>
+                                Tel: 010-8511-3589
+                            </div>
                         </span>
                     </footer>
                 </div>
@@ -251,6 +261,7 @@ export default function Home() {
                 .container {
                     display: flex;
                     flex-direction: column;
+                    justify-content: center;
                     width: 100%;
                     height: 100%;
                     {/* background-color: #FBF9F1; */}
@@ -269,9 +280,10 @@ export default function Home() {
                     transition: background-color 0.3s ease;
                 }
                 .visible {
-                    background-color: #36755a;
-                    z-index: 1000;
-                    box-shadow: 0 10px 9px rgba(0, 0, 0, 0.1);
+                    {/* z-index: 1000;
+                    color: #000000;
+                    background-color: #36755a; */}
+                    {/* box-shadow: 0 10px 9px rgba(0, 0, 0, 0.1); */}
                 }
                 .title {
                     font-size: 30px;
@@ -364,7 +376,8 @@ export default function Home() {
                     align-items: center;
                     flex-direction: column;
                     position: relative;
-                    margin-bottom: 90px;
+                    margin-top: 50px;
+                    margin-bottom: 120px;
                 }
                 .about-title {
                     text-align: center;
@@ -379,8 +392,11 @@ export default function Home() {
                 }
                 .about-table {
                     text-align: center;
+                    padding-bottom: 120px;
                     border-bottom: 1px solid #000000;
-                    padding-bottom: 100px;
+                }
+                .about-table td {
+                    {/* border-right: 1px solid black; */}
                 }
                 .about-table thead tr:nth-child(1) td span {
                     padding: 0 28px;
@@ -455,16 +471,15 @@ export default function Home() {
                 {/* footer 영역의 컨테이너 */}
                 .footer-container { 
                     display: flex;
-                    flex-direction: row;
-                    align-items: center;
+                    justify-content: space-between;
                     font-size: 14px;
                     background-color: #36755a;
+                    opacity: 0.91;
                     color: #ffffff;
                 }
                 {/* footer 왼쪽 영역 */}
                 .footer-left {
-                    flex: 0.97;
-                    margin-left: 50px;
+                    margin-left: 45px;
                     margin-top: 30px;
                     margin-bottom: 30px;
                 }
@@ -472,43 +487,48 @@ export default function Home() {
                     font-size: 22px;
                     font-weight: 400;
                 }
-                .span-copyright {
-                    font-size: 14px;
-                }
-                .recipe-source {
-                    font-weight: 300;
-                    margin-top: 20px;
-                    margin-bottom: 20px;
+                .div-copyright {
+                    font-size: 13px;
                 }
                 .copyright-content {
                     font-weight: 200;
+                    text-align: left;
+                }
+                .recipe-source {
+                    font-weight: 300;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
                 }
                 {/* footer 오른쪽 영역 */}
                 .footer-right {
                     display: flex;
                     flex-direction: column;
-                    align-items: flex-start;
-                    margin-top: 15px;
+                    margin-right: 50px;
+                    height: 100%;
+                    margin-top: 30px;
                 }
-                .contact-title {
-                    font-size: 22px;
-                    font-weight: 400;
-                    margin-bottom: 16px;
+                .footer-menu {
+                    display: flex;
+                    flex-direction: row;
                 }
-                .contact-detail {
-                    font-size: 13.5px;
+                .footer-menu-detail {
+                    margin-right: 20px;
+                    font-size: 15px;
                     font-weight: 300;
-                }
-                .contact-button {
-                    margin-top: 22px;
-                    margin-bottom: 18px;
-                    font-size: 13.5px;
-                    font-weight: 300;
-                    border: 1px solid #ffffff;
-                    padding: 5px 15px;
-                    border-radius: 5px;
                     cursor: pointer;
-                    float: none;
+                }
+                .footer-menu-detail:nth-child(4) {
+                    margin-right: 0px;
+                }
+                .email {
+                    margin-top: 36px;
+                    font-size: 13.5px;
+                    font-weight: 300;
+                }
+                .tel {
+                    margin-top: 7px;
+                    font-size: 13.5px;
+                    font-weight: 300;
                 }
             `}</style>
         </>
