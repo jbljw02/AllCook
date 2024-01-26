@@ -2,13 +2,14 @@ import bannerImg from '/public/images/banner-img.jpg'
 import aboutImg from '/public/images/about-img.jpg'
 import Image from 'next/image'
 import { Roboto } from 'next/font/google';
-import { useEffect, useRef, useState } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 import { makeStore, RootState } from '../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRecomMenu } from '@/redux/features/recomMenuSlice';
 import { wrapper } from '../redux/store';
 import { GetServerSidePropsContext } from 'next';
 import { menu } from '../redux/store';
+import Link from 'next/link';
 
 const roboto = Roboto({
     subsets: ['latin'],
@@ -19,7 +20,10 @@ export default function Home() {
 
     const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
     const contentsRef = useRef<HTMLDivElement>(null);
+    const homeRef = useRef<HTMLDivElement>(null);
+    const aboutRef = useRef<HTMLDivElement>(null);
 
+    // 홈 화면에 글자에 split 효과를 주기 위함
     const titleText1 = "환영합니다! 우리는 All Cook,";
     const titleText2 = "당신의 요리 파트너입니다.";
     const [displayedText1, setDisplayedText1] = useState("");
@@ -72,11 +76,11 @@ export default function Home() {
         // 헤더가 컨텐츠 영역에 도달하면 스타일을 바꾸기 위한 함수
         const checkScrollTop = () => {
             if (contentsRef.current !== null) {
-                // isScrolled가 false이며, 스크롤의 위치가 contents-container보다 낮을 경우
+                // scrollPassContent가 false이며, 스크롤의 위치가 contents-container보다 낮을 경우
                 if (!scrollPassContent && window.scrollY > contentsRef.current.offsetTop) {
                     setScrollPassContent(true);
                 }
-                // isScrolled가 false이며, 스크롤의 위치가 contents-container보다 높을 경우
+                // scrollPassContent false이며, 스크롤의 위치가 contents-container보다 높을 경우
                 else if (scrollPassContent && window.scrollY <= contentsRef.current.offsetTop) {
                     setScrollPassContent(false);
                 }
@@ -92,13 +96,26 @@ export default function Home() {
         };
     }, [scrollPassContent]);
 
+    // 클릭한 곳으로 스크롤을 이동
+    const clickToScroll = (param: RefObject<HTMLDivElement>) => {
+        if (param === homeRef) {
+            if (homeRef.current !== null) {
+                homeRef.current.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        else if (param === aboutRef) {
+            if (aboutRef.current !== null) {
+                aboutRef.current.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    }
 
     return (
         <>
             {/* 홈 화면의 전체 영역을 차지하는 컨테이너  */}
             <div className='container'>
                 {/* 헤더부터 이미지 배너까지의 영역을 차지하는 컨테이너 */}
-                <div className='header-container'>
+                <div ref={homeRef} className='header-container'>
                     {/* 헤더 영역 */}
                     {
                         // 스크롤이 contents-container 영역을 지나치면 헤더 사라지도록 설정
@@ -106,10 +123,30 @@ export default function Home() {
                             <header className='header'>
                                 <span className={`${roboto.className} title`}>All Cook</span>
                                 <span className='nav'>
-                                    <span className={`${roboto.className} home`}>Home</span>
-                                    <span className={`${roboto.className} about`}>About</span>
-                                    <span className={`${roboto.className} recipe`}>Recipe</span>
-                                    <span className={`${roboto.className} contact`}>Contact</span>
+                                    <span
+                                        onClick={() => clickToScroll(homeRef)}
+                                        className={`${roboto.className} home`}>
+                                        Home
+                                    </span>
+                                    <span
+                                        onClick={() => clickToScroll(aboutRef)}
+                                        className={`${roboto.className} about`}>
+                                        About
+                                    </span>
+                                    <span className={`${roboto.className} recipe`}>
+                                        <Link
+                                            style={{ textDecoration: 'none', color: 'inherit' }}
+                                            href={'/recipe'}>
+                                            Recipe
+                                        </Link>
+                                    </span>
+                                    <span className={`${roboto.className} contact`}>
+                                        <Link
+                                            style={{ textDecoration: 'none', color: 'inherit' }}
+                                            href={'/contact'}>
+                                            Contact
+                                        </Link>
+                                    </span>
                                 </span>
                             </header> :
                             null
@@ -141,7 +178,7 @@ export default function Home() {
                 <div ref={contentsRef} className='contents-container'>
 
                     {/* About 영역을 차지하는 컨테이너 */}
-                    <div className='about-container'>
+                    <div ref={aboutRef} className='about-container'>
                         <div className={`${roboto.className} about-title`}>About All Cook</div>
                         {/* <Image src={aboutImg} className='about-img' width={700} alt={''} /> */}
                         <table className='about-table'>
@@ -238,16 +275,34 @@ export default function Home() {
                         {/* 오른쪽 영역 */}
                         <span className='footer-right'>
                             <div className='footer-menu'>
-                                <div className='footer-menu-detail'>Home</div>
-                                <div className='footer-menu-detail'>About</div>
-                                <div className='footer-menu-detail'>Recipe</div>
-                                <div className='footer-menu-detail'>Contact</div>
+                                <div
+                                    onClick={() => clickToScroll(homeRef)}
+                                    className='footer-menu-detail'>
+                                    Home
+                                </div>
+                                <div
+                                    onClick={() => clickToScroll(aboutRef)}
+                                    className='footer-menu-detail'>
+                                    About
+                                </div>
+                                <div className='footer-menu-detail'>
+                                    <Link
+                                        style={{ textDecoration: 'none', color: 'inherit' }}
+                                        href={'/recipe'}>
+                                        Recipe
+                                    </Link>
+                                </div>
+                                <div className='footer-menu-detail'>
+                                    <Link
+                                        style={{ textDecoration: 'none', color: 'inherit' }}
+                                        href={'/contact'}>
+                                        Contact
+                                    </Link>
+                                </div>
                             </div>
                             <div className='copyright-content'>
                                 ©2023 by All Cook. All Rights Reserved.
                             </div>
-
-
                         </span>
                     </footer>
                 </div>
