@@ -10,6 +10,8 @@ import { wrapper } from '../redux/store';
 import { GetServerSidePropsContext } from 'next';
 import { menu } from '../redux/store';
 import Link from 'next/link';
+import Header from '../components/Header';
+import Footer from '../components/Footer'
 
 const roboto = Roboto({
     subsets: ['latin'],
@@ -97,18 +99,18 @@ export default function Home() {
     }, [scrollPassContent]);
 
     // 클릭한 곳으로 스크롤을 이동
-    const clickToScroll = (param: RefObject<HTMLDivElement>) => {
-        if (param === homeRef) {
-            if (homeRef.current !== null) {
-                homeRef.current.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-        else if (param === aboutRef) {
-            if (aboutRef.current !== null) {
-                aboutRef.current.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-    }
+    // const clickToScroll = (param: RefObject<HTMLDivElement>) => {
+    //     if (param === homeRef) {
+    //         if (homeRef.current !== null) {
+    //             homeRef.current.scrollIntoView({ behavior: 'smooth' });
+    //         }
+    //     }
+    //     else if (param === aboutRef) {
+    //         if (aboutRef.current !== null) {
+    //             aboutRef.current.scrollIntoView({ behavior: 'smooth' });
+    //         }
+    //     }
+    // }
 
     return (
         <>
@@ -116,39 +118,10 @@ export default function Home() {
             <div className='container'>
                 {/* 헤더부터 이미지 배너까지의 영역을 차지하는 컨테이너 */}
                 <div ref={homeRef} className='header-container'>
-                    {/* 헤더 영역 */}
                     {
                         // 스크롤이 contents-container 영역을 지나치면 헤더 사라지도록 설정
                         !scrollPassContent ?
-                            <header className='header'>
-                                <span className={`${roboto.className} title`}>All Cook</span>
-                                <span className='nav'>
-                                    <span
-                                        onClick={() => clickToScroll(homeRef)}
-                                        className={`${roboto.className} home`}>
-                                        Home
-                                    </span>
-                                    <span
-                                        onClick={() => clickToScroll(aboutRef)}
-                                        className={`${roboto.className} about`}>
-                                        About
-                                    </span>
-                                    <span className={`${roboto.className} recipe`}>
-                                        <Link
-                                            style={{ textDecoration: 'none', color: 'inherit' }}
-                                            href={'/recipe'}>
-                                            Recipe
-                                        </Link>
-                                    </span>
-                                    <span className={`${roboto.className} contact`}>
-                                        <Link
-                                            style={{ textDecoration: 'none', color: 'inherit' }}
-                                            href={'/contact'}>
-                                            Contact
-                                        </Link>
-                                    </span>
-                                </span>
-                            </header> :
+                            <Header /> :
                             null
                     }
                     {/* 배너 문구와 검색창을 차지하는 컨테이너 */}
@@ -175,55 +148,8 @@ export default function Home() {
                     <Image src={bannerImg} alt={''} layout="responsive" />
                 </div>
 
+                {/* 헤더 및 배너 컨테이너를 제외한 컨텐츠의 영역 */}
                 <div ref={contentsRef} className='contents-container'>
-
-                    {/* About 영역을 차지하는 컨테이너 */}
-                    <div ref={aboutRef} className='about-container'>
-                        <div className={`${roboto.className} about-title`}>About All Cook</div>
-                        {/* <Image src={aboutImg} className='about-img' width={700} alt={''} /> */}
-                        <table className='about-table'>
-                            <thead>
-                                <tr>
-                                    {/* td 태그는 중앙정렬 되어있어 border 길이가 너무 길고 
-                                    조절이 불가능하기 때문에, span 태그를 추가하여 컨트롤 */}
-                                    <td>
-                                        <span>01</span>
-                                    </td>
-                                    <td>
-                                        <span>02</span>
-                                    </td>
-                                    <td>
-                                        <span>03</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>다양한 레시피</td>
-                                    <td>편리한 검색</td>
-                                    <td>영양성분 제공</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        All Cook은 한식은 물론, 일식, 양식, 중식에 <br />
-                                        이르기까지 1,000개 이상의 다양한 레시피를 <br />
-                                        제공합니다. 다양한 문화의 음식을 요리해보세요.
-                                    </td>
-                                    <td>
-                                        재료를 검색하면 해당 재료가 들어가는 <br />
-                                        레시피를 찾아드리고, 원하는 메뉴의 이름을 <br />
-                                        검색하면 해당 메뉴의 레시피를 제공해드립니다.
-                                    </td>
-                                    <td>
-                                        음식의 레시피 뿐만 아니라 영양성분도 함께 <br />
-                                        제공합니다.
-                                        All Cook과 함께 건강한 식생활을 <br />
-                                        시작해보세요.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
 
                     {/* 추천 메뉴 영역을 차지하는 컨테이너 */}
                     <div className='recommend-container'>
@@ -259,52 +185,8 @@ export default function Home() {
                         </table>
                     </div>
 
-                    {/* Contact 영역을 차지하는 컨테이너 */}
-                    <footer className='footer-container'>
-                        {/* 왼쪽 영역 */}
-                        <span className='footer-left'>
-                            <div className='footer-title'>
-                                All Cook
-                                <span>세상의 모든 레시피</span>
-                            </div>
-                            <div className='recipe-source'>
-                                All Cook에서 제공하는 모든 레시피는 식품의약품안전처에서 제공하는 '조리식품의 레시피 DB'를 따릅니다. <br />
-                                본 서비스는 상업적인 이익을 추구하지 않습니다.
-                            </div>
-                        </span>
-                        {/* 오른쪽 영역 */}
-                        <span className='footer-right'>
-                            <div className='footer-menu'>
-                                <div
-                                    onClick={() => clickToScroll(homeRef)}
-                                    className='footer-menu-detail'>
-                                    Home
-                                </div>
-                                <div
-                                    onClick={() => clickToScroll(aboutRef)}
-                                    className='footer-menu-detail'>
-                                    About
-                                </div>
-                                <div className='footer-menu-detail'>
-                                    <Link
-                                        style={{ textDecoration: 'none', color: 'inherit' }}
-                                        href={'/recipe'}>
-                                        Recipe
-                                    </Link>
-                                </div>
-                                <div className='footer-menu-detail'>
-                                    <Link
-                                        style={{ textDecoration: 'none', color: 'inherit' }}
-                                        href={'/contact'}>
-                                        Contact
-                                    </Link>
-                                </div>
-                            </div>
-                            <div className='copyright-content'>
-                                ©2023 by All Cook. All Rights Reserved.
-                            </div>
-                        </span>
-                    </footer>
+                    {/* footer 영역을 차지하는 컨테이너 */}
+                    <Footer />
                 </div>
             </div>
 
@@ -323,42 +205,6 @@ export default function Home() {
                 .header-container {
                     display: flex;
                     flex-direction: column;
-                }
-                .header {
-                    position: fixed;
-                    width: 100%;
-                    height: 80px;
-                    color: #ffffff;
-                    transition: background-color 0.3s ease;
-                }
-                .visible {
-                    {/* z-index: 1000;
-                    color: #000000;
-                    background-color: #36755a; */}
-                    {/* box-shadow: 0 10px 9px rgba(0, 0, 0, 0.1); */}
-                }
-                .title {
-                    font-size: 30px;
-                    padding-top: 25px;
-                    padding-left: 50px;
-                    padding-bottom: 20px;
-                    display: inline-block;
-                    font-weight: 400;
-                    cursor: pointer;
-                }
-                .nav {
-                    position: relative;
-                    float: right;
-                    padding-top: 30px;
-                    margin-right: 35px;
-                    font-size: 20px;
-                }
-                .nav span {
-                    margin-right: 30px;
-                    cursor: pointer;
-                }
-                .nav span:nth-child(4) {
-                    margin-right: 15px;
                 }
                 .banner-container {
                     position: absolute;
@@ -421,56 +267,6 @@ export default function Home() {
                     {/* margin-right: 15%; */}
                 }
 
-                {/* About 컨테이너 */}
-                .about-container {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    flex-direction: column;
-                    position: relative;
-                    margin-top: 50px;
-                    margin-bottom: 120px;
-                }
-                .about-title {
-                    text-align: center;
-                    margin-top: 80px;
-                    margin-bottom: 35px;
-                    font-size: 35px;
-                    font-weight: 700;
-                }
-                .about-img {
-                    position: absolute;
-                    left: 300px;
-                }
-                .about-table {
-                    text-align: center;
-                    padding-bottom: 120px;
-                    border-bottom: 1px solid #000000;
-                }
-                .about-table td {
-                    {/* border-right: 1px solid black; */}
-                }
-                .about-table thead tr:nth-child(1) td span {
-                    padding: 0 28px;
-                    font-size: 22px;
-                    border-bottom: 1.5px solid #000000;
-                    padding-bottom: 5px;
-                    font-weight: 600;
-                }
-                .about-table thead tr:nth-child(1) td {
-                    padding-bottom: 20px;
-                }
-                .about-table thead tr:nth-child(2) {
-                    font-size: 20px;
-                }
-                .about-table thead tr:nth-child(2) td {
-                    padding-bottom: 20px;
-                }
-                .about-table tbody td {
-                    padding: 0px 25px;
-                    font-size: 14px;
-                }
-
                 {/* 추천 메뉴에 대한 컨테이너 */}
                 .recommend-container {
                     display: flex;
@@ -478,6 +274,7 @@ export default function Home() {
                     align-items: center;
                     flex-direction: column;
                     position: relative;
+                    margin-top: 130px;
                     margin-bottom: 160px;
                 }
                 .recommend-title {
@@ -518,69 +315,6 @@ export default function Home() {
                 .RCP_PAT2 {
                     font-size: 12px;
                     color: #5c5c5c;
-                }
-
-                {/* footer 영역의 컨테이너 */}
-                .footer-container { 
-                    display: flex;
-                    justify-content: space-between;
-                    font-size: 14px;
-                    background-color: #36755a;
-                    opacity: 0.91;
-                    color: #ffffff;
-                }
-                {/* footer 왼쪽 영역 */}
-                .footer-left {
-                    margin-left: 45px;
-                    margin-top: 15px;
-                    margin-bottom: 15px;
-                }
-                .footer-title {
-                    margin-top: 10px;
-                    padding-bottom: 12px;
-                    font-size: 25px;
-                    font-weight: 400;
-                    border-bottom: 0.8px solid white;
-                }
-                .footer-title span {
-                    padding-left: 7px;
-                    font-size: 13px;
-                    font-weight: 300;
-                }
-                .recipe-source {
-                    font-size: 13px;
-                    font-weight: 300;
-                    margin-top: 15px;
-                }
-                {/* footer 오른쪽 영역 */}
-                .footer-right {
-                    display: flex;
-                    flex-direction: column;
-                    margin-right: 50px;
-                    height: 100%;
-                    margin-top: 25px;
-                    margin-bottom: 20px;
-                }
-                .footer-menu {
-                    display: flex;
-                    flex-direction: row;
-                }
-                .footer-menu-detail {
-                    margin-right: 20px;
-                    font-size: 15px;
-                    text-decoration: underline;
-                    font-weight: 300;
-                    cursor: pointer;
-                }
-                .footer-menu-detail:nth-child(4) {
-                    margin-right: 0px;
-                }
-                .copyright-content {
-                    font-size: 13px;
-                    font-weight: 200;
-                    text-align: left;
-                    margin-top: 60px;
-                    margin-bottom: 10px;
                 }
             `}</style>
         </>
