@@ -13,11 +13,6 @@ import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer'
 
-const roboto = Roboto({
-    subsets: ['latin'],
-    weight: ["100", "300", "400", "500", "700", "900"],
-})
-
 export default function Home() {
 
     const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
@@ -185,22 +180,11 @@ export default function Home() {
                         </table>
                     </div>
 
-                    {/* footer 영역을 차지하는 컨테이너 */}
-                    <Footer />
                 </div>
+                {/* footer 영역을 차지하는 컨테이너 */}
+                <Footer />
             </div>
-
             <style jsx> {`
-                {/* 전체 영역 컨테이너 */}
-                .container {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    width: 100%;
-                    height: 100%;
-                    {/* background-color: #FBF9F1; */}
-                }
-
                 {/* 헤더 컨테이너 */}
                 .header-container {
                     display: flex;

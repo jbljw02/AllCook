@@ -62,12 +62,12 @@ export default function Footer() {
                     background-color: #36755a;
                     opacity: 0.91;
                     color: #ffffff;
+                    margin-top: auto;
                 }
                 {/* footer 왼쪽 영역 */}
                 .footer-left {
                     margin-left: 45px;
                     margin-top: 15px;
-                    margin-bottom: 15px;
                 }
                 .footer-title {
                     margin-top: 10px;

@@ -2,11 +2,6 @@ import { RefObject, useEffect, useRef, useState } from 'react';
 import { Roboto } from 'next/font/google';
 import Link from 'next/link';
 
-const roboto = Roboto({
-    subsets: ['latin'],
-    weight: ["100", "300", "400", "500", "700", "900"],
-})
-
 export default function Header() {
 
     // 클릭한 곳으로 스크롤을 이동
@@ -26,30 +21,30 @@ export default function Header() {
     return (
         <>
             <header className='header'>
-                <span className={`${roboto.className} title`}>All Cook</span>
+                <span className={`title`}>All Cook</span>
                 <span className='nav'>
-                    <span className={`${roboto.className} home`}>
+                    <span className='home'>
                         <Link
                             style={{ textDecoration: 'none', color: 'inherit' }}
                             href={'/'}>
                             Home
                         </Link>
                     </span>
-                    <span className={`${roboto.className} about`}>
+                    <span className='about'>
                         <Link
                             style={{ textDecoration: 'none', color: 'inherit' }}
                             href={'/about'}>
                             About
                         </Link>
                     </span>
-                    <span className={`${roboto.className} recipe`}>
+                    <span className='recipe'>
                         <Link
                             style={{ textDecoration: 'none', color: 'inherit' }}
                             href={'/recipe'}>
                             Recipe
                         </Link>
                     </span>
-                    <span className={`${roboto.className} contact`}>
+                    <span className='contact'>
                         <Link
                             style={{ textDecoration: 'none', color: 'inherit' }}
                             href={'/contact'}>
@@ -59,13 +54,14 @@ export default function Header() {
                 </span>
             </header>
             <style jsx>{`
-                {/* 헤더 */}
                 .header {
                     position: fixed;
                     width: 100%;
                     height: 80px;
                     color: #ffffff;
                     transition: background-color 0.3s ease;
+                    background-color: #36755a;
+                    top: 0;
                 }
                 .visible {
                     {/* z-index: 1000;

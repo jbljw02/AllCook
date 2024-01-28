@@ -12,7 +12,7 @@ const nextConfig = {
     //         }
     //     ]
     // },   
-    
+
     async rewrites() {
         return [
             {
@@ -21,7 +21,7 @@ const nextConfig = {
             },
         ]
     },
-    
+
     images: {
         domains: ['www.foodsafetykorea.go.kr']
     }
