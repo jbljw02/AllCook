@@ -26,13 +26,13 @@ export default function Footer() {
                                 Home
                             </Link>
                         </div>
-                        <div className='footer-menu-detail'>
+                        {/* <div className='footer-menu-detail'>
                             <Link
                                 style={{ textDecoration: 'none', color: 'inherit' }}
                                 href={'/about'}>
                                 About
                             </Link>
-                        </div>
+                        </div> */}
                         <div className='footer-menu-detail'>
                             <Link
                                 style={{ textDecoration: 'none', color: 'inherit' }}
@@ -59,10 +59,13 @@ export default function Footer() {
                     display: flex;
                     justify-content: space-between;
                     font-size: 14px;
-                    background-color: #36755a;
-                    opacity: 0.91;
-                    color: #ffffff;
+                    color: #111111;
                     margin-top: auto;
+                    background-color: #f9f7f5;
+                    {/* background-color: #6E4938; */}
+                    {/* background-color: #36755a; */}
+                    {/* background-color: #e7e59b; */}
+                    {/* color: #403f2b; */}
                 }
                 {/* footer 왼쪽 영역 */}
                 .footer-left {
@@ -74,16 +77,16 @@ export default function Footer() {
                     padding-bottom: 12px;
                     font-size: 25px;
                     font-weight: 400;
-                    border-bottom: 0.8px solid white;
+                    border-bottom: 1px solid #111111;
                 }
                 .footer-title span {
                     padding-left: 7px;
-                    font-size: 13px;
-                    font-weight: 300;
+                    font-size: 12.2px;
+                    {/* font-weight: 300; */}
                 }
                 .recipe-source {
                     font-size: 13px;
-                    font-weight: 300;
+                    {/* font-weight: 300; */}
                     margin-top: 15px;
                 }
                 {/* footer 오른쪽 영역 */}
@@ -98,6 +101,7 @@ export default function Footer() {
                 .footer-menu {
                     display: flex;
                     flex-direction: row;
+                    justify-content: flex-end;
                 }
                 .footer-menu-detail {
                     margin-right: 20px;
@@ -106,8 +110,8 @@ export default function Footer() {
                     font-weight: 300;
                     cursor: pointer;
                 }
-                .footer-menu-detail:nth-child(4) {
-                    margin-right: 0px;
+                .footer-menu-detail:nth-child(3) {
+                    margin-right: 6px;
                 }
                 .copyright-content {
                     font-size: 13px;

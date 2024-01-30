@@ -2,7 +2,7 @@ import { RefObject, useEffect, useRef, useState } from 'react';
 import { Roboto } from 'next/font/google';
 import Link from 'next/link';
 
-export default function Header() {
+export default function Header({ backgroundColor, color }: { backgroundColor: string, color: string }) {
 
     // 클릭한 곳으로 스크롤을 이동
     // const clickToScroll = (param: RefObject<HTMLDivElement>) => {
@@ -20,7 +20,7 @@ export default function Header() {
 
     return (
         <>
-            <header className='header'>
+            <header style={{ backgroundColor: backgroundColor, color: color }} className='header'>
                 <span className={`title`}>All Cook</span>
                 <span className='nav'>
                     <span className='home'>
@@ -30,13 +30,13 @@ export default function Header() {
                             Home
                         </Link>
                     </span>
-                    <span className='about'>
+                    {/* <span className='about'>
                         <Link
                             style={{ textDecoration: 'none', color: 'inherit' }}
                             href={'/about'}>
                             About
                         </Link>
-                    </span>
+                    </span> */}
                     <span className='recipe'>
                         <Link
                             style={{ textDecoration: 'none', color: 'inherit' }}
@@ -55,13 +55,19 @@ export default function Header() {
             </header>
             <style jsx>{`
                 .header {
-                    position: fixed;
+                    position: absolute;
                     width: 100%;
-                    height: 80px;
-                    color: #ffffff;
+                    height: auto;
+                    color: #1E1E1E;
                     transition: background-color 0.3s ease;
-                    background-color: #36755a;
                     top: 0;
+                    z-index: 1000;
+                    {/* border-bottom: 0.8px solid #ebebeb; */}
+                    {/* box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);  */}
+                    {/* color: white; */}
+                    {/* background-color: #107070; */}
+                    {/* background-color: #faf8f1; */}
+                    {/* background-color: #36755a; */}
                 }
                 .visible {
                     {/* z-index: 1000;
@@ -70,10 +76,10 @@ export default function Header() {
                     {/* box-shadow: 0 10px 9px rgba(0, 0, 0, 0.1); */}
                 }
                 .title {
-                    font-size: 30px;
-                    padding-top: 25px;
+                    font-size: 25px;
+                    padding-top: 20px;
                     padding-left: 50px;
-                    padding-bottom: 20px;
+                    padding-bottom: 18px;
                     display: inline-block;
                     font-weight: 400;
                     cursor: pointer;
@@ -81,15 +87,16 @@ export default function Header() {
                 .nav {
                     position: relative;
                     float: right;
-                    padding-top: 30px;
-                    margin-right: 35px;
-                    font-size: 20px;
+                    padding-top: 26px;
+                    margin-right: 20px;
+                    font-size: 16px;
+                    font-weight: 300;
                 }
                 .nav span {
-                    margin-right: 30px;
+                    margin-right: 35px;
                     cursor: pointer;
                 }
-                .nav span:nth-child(4) {
+                .nav span:nth-child(3) {
                     margin-right: 15px;
                 }
         `}</style>
