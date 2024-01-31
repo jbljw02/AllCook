@@ -4,7 +4,7 @@ import { Roboto } from 'next/font/google';
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { makeStore, RootState } from '../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { setRecomMenu, setDessertMenu } from '@/redux/features/menuSlice';
+import { setRecomMenu, setDessertMenu, setTestMenu } from '@/redux/features/menuSlice';
 import { wrapper } from '../redux/store';
 import { Menu } from '../redux/store';
 import Link from 'next/link';
@@ -25,13 +25,13 @@ export default function Home() {
     const [displayedText1, setDisplayedText1] = useState("");
     const [displayedText2, setDisplayedText2] = useState("");
 
-    // 서버로부터 받아온 추천 메뉴를 저장
+    // 서버로부터 받아온 메뉴를 저장
     const recomMenu = useSelector((state: RootState) => state.recomMenu);
     const dessertMenu = useSelector((state: RootState) => state.dessertMenu);
 
-    console.log("recomMenu : ", recomMenu);
-    console.log("dessert : ", dessertMenu);
-
+    // const testMenu = useSelector((state: RootState) => state.testMenu);
+    // let results = testMenu.filter((item) => item.RCP_NM.includes('돼지'))
+    
     useEffect(() => {
         // titleText를 배열로 만든 후 setTimeout을 이용해 화면의 차례로 출력
         titleText1.split("").forEach((str, index) => {
@@ -133,7 +133,7 @@ export default function Home() {
                             // 화면에 글자가 모두 출력된 후 fade in 효과를 적용하며 출력
                             displayedText2.length === 14 ?
                                 <div className='search-section'>
-                                    <div>당신을 위한 1,124개의 레시피</div>
+                                    <div>당신을 위한 수많은 레시피</div>
                                     <div className='input-container'>
                                         <input className='search-input' placeholder='메뉴, 재료로 검색' />
                                         <svg className="img-search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="21" height="21">
@@ -184,8 +184,8 @@ export default function Home() {
                                 <tr>
                                     <td>
                                         All Cook은 한식은 물론, 일식, 양식, 중식에 <br />
-                                        이르기까지 1,000개 이상의 다양한 레시피를 <br />
-                                        제공합니다. 다양한 문화의 음식을 요리해보세요.
+                                        이르기까지 다양한 지역을 아우르는 레시피를 <br />
+                                        제공합니다. 주방에서 세계를 요리해보세요.
                                     </td>
                                     <td>
                                         재료를 검색하면 해당 재료가 들어가는 <br />
@@ -250,10 +250,10 @@ export default function Home() {
                     {/* 추천 후식 영역을 차지하는 컨테이너 */}
                     <div className='recommend-container'>
                         <div className='recommend-title'>
-                            입안을 상쾌하게 해줄 후식
+                            이미 식사하셨나요? 
                         </div>
                         <div className='recommend-subtitle'>
-                            식사 후 텁텁한 입을 후식으로 채워보세요!
+                            식사 후엔 후식도 잊지 마세요!
                         </div>
                         <table className='recommend-table'>
                             <tbody>
@@ -469,7 +469,7 @@ export default function Home() {
                     flex-direction: column;
                 }
                 .recommend-table tr td {
-                    max-width: 400px;
+                    max-width: 220px;
                     vertical-align: top;
                     align-self: start;
                     transition: transform 0.3s ease;
@@ -526,27 +526,26 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
     const jsonResult = await response.json();
     const result = jsonResult.COOKRCP01.row;
 
-    const menuData = result.map((item: Menu) => {
-        // 구조 분해 할당 - 각 item에서 필요한 필드들을 추출 선언
-        const { RCP_NM, ATT_FILE_NO_MK, INFO_CAR,
-            INFO_ENG, INFO_FAT, INFO_NA, INFO_PRO,
-            MANUAL01, MANUAL02, MANUAL03, RCP_NA_TIP,
-            RCP_PARTS_DTLS, RCP_PAT2 } = item;
-        return {
-            RCP_NM, ATT_FILE_NO_MK, INFO_CAR,
-            INFO_ENG, INFO_FAT, INFO_NA, INFO_PRO,
-            MANUAL01, MANUAL02, MANUAL03, RCP_NA_TIP,
-            RCP_PARTS_DTLS, RCP_PAT2
-        };
+    // 포함하지 않을 문자열을 필터링하는 정규식
+    // 미완된 음식의 이미지나, 워터마크가 있는 음식을 필터링하기 위함
+    const regex = /(uploadimg\/(2014|2015|2019|2020|2021|2023)|common\/ecmFileView\.do\?)/;
+
+    const menuData = result.filter((item: Menu) => {
+        // ATT_FILE_NO_MK 값에서 정규식과 일치하는 부분을 찾음
+        // match 함수를 이용해 정규식과 일치한다면 배열로 반환하고, 일치하지 않는다면 null
+        const match = (item.ATT_FILE_NO_MK).match(regex);
+        // match가 null인 경우에만 item 반환
+        // filter 함수가 true일 때 item을 반환하고, false일 땐 반환하지 않는 것을 이용
+        return match === null;
     });
+
+    store.dispatch(setTestMenu(menuData));
 
     // '후식'을 제외한 카테고리만 받아와서 배열로 생성
     const categories = ['반찬', '국&찌개', '일품'];
     const foodData = menuData.filter((menuData: Menu) => categories.includes(menuData.RCP_PAT2));
     // '후식'만 받아와서 배열로 생성
     const dessertData = menuData.filter((menuData: Menu) => menuData.RCP_PAT2 === '후식');
-
-    console.log("디저트임 : ", dessertData);
 
     // 배열의 길이 안에서 랜덤 인덱스를 받아옴
     const getRandomIndex = (length: number) => {
