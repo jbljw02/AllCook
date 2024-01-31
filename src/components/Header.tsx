@@ -58,11 +58,11 @@ export default function Header({ backgroundColor, color }: { backgroundColor: st
                     position: absolute;
                     width: 100%;
                     height: auto;
-                    color: #1E1E1E;
+                    color: #111111;
                     transition: background-color 0.3s ease;
                     top: 0;
                     z-index: 1000;
-                    {/* border-bottom: 0.8px solid #ebebeb; */}
+                    {/* border-bottom: 0.8px solid #e8e8e8; */}
                     {/* box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);  */}
                     {/* color: white; */}
                     {/* background-color: #107070; */}

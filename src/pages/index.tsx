@@ -4,14 +4,12 @@ import { Roboto } from 'next/font/google';
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { makeStore, RootState } from '../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { setRecomMenu } from '@/redux/features/recomMenuSlice';
+import { setRecomMenu, setDessertMenu } from '@/redux/features/menuSlice';
 import { wrapper } from '../redux/store';
-import { GetServerSidePropsContext } from 'next';
-import { menu } from '../redux/store';
+import { Menu } from '../redux/store';
 import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import aboutImage from '../../public/images/about.jpg';
 
 
 export default function Home() {
@@ -27,7 +25,12 @@ export default function Home() {
     const [displayedText1, setDisplayedText1] = useState("");
     const [displayedText2, setDisplayedText2] = useState("");
 
-    const recomMenu = useSelector((state: RootState) => state.recomMenu);  // 서버로부터 받아온 추천 메뉴를 저장
+    // 서버로부터 받아온 추천 메뉴를 저장
+    const recomMenu = useSelector((state: RootState) => state.recomMenu);
+    const dessertMenu = useSelector((state: RootState) => state.dessertMenu);
+
+    console.log("recomMenu : ", recomMenu);
+    console.log("dessert : ", dessertMenu);
 
     useEffect(() => {
         // titleText를 배열로 만든 후 setTimeout을 이용해 화면의 차례로 출력
@@ -199,11 +202,11 @@ export default function Home() {
                             </tbody>
                         </table>
                         <div className='learn-more'>
-                        <Link
-                            style={{ textDecoration: 'none', color: 'inherit' }}
-                            href={'/recipe'}>
-                            더 알아보기
-                        </Link>
+                            <Link
+                                style={{ textDecoration: 'none', color: 'inherit' }}
+                                href={'/recipe'}>
+                                레시피 보기
+                            </Link>
                         </div>
                     </div>
 
@@ -219,14 +222,54 @@ export default function Home() {
                             <tbody>
                                 <tr>
                                     {
-                                        recomMenu && recomMenu.map((item) => {
+                                        recomMenu && recomMenu.slice(0, 4).map((item, index) => {
                                             return (
                                                 <td>
                                                     <div className='td-content'>
                                                         <Image
                                                             src={`${item.ATT_FILE_NO_MK}`}
-                                                            width={200}
-                                                            height={200}
+                                                            style={{ borderRadius: 2 }}
+                                                            width={220}
+                                                            height={220}
+                                                            // layout='fill'
+                                                            // objectFit='contain'
+                                                            alt={''}
+                                                        />
+                                                        <div className='RCP_NM'>{item.RCP_NM}</div>
+                                                        <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
+                                                    </div>
+                                                </td>
+                                            )
+                                        })
+                                    }
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* 추천 후식 영역을 차지하는 컨테이너 */}
+                    <div className='recommend-container'>
+                        <div className='recommend-title'>
+                            입안을 상쾌하게 해줄 후식
+                        </div>
+                        <div className='recommend-subtitle'>
+                            식사 후 텁텁한 입을 후식으로 채워보세요!
+                        </div>
+                        <table className='recommend-table'>
+                            <tbody>
+                                <tr>
+                                    {
+                                        dessertMenu && dessertMenu.slice(0, 4).map((item, index) => {
+                                            return (
+                                                <td>
+                                                    <div className='td-content'>
+                                                        <Image
+                                                            src={`${item.ATT_FILE_NO_MK}`}
+                                                            style={{ borderRadius: 2 }}
+                                                            width={220}
+                                                            height={220}
+                                                            // layout='fill'
+                                                            // objectFit='contain'
                                                             alt={''}
                                                         />
                                                         <div className='RCP_NM'>{item.RCP_NM}</div>
@@ -319,8 +362,8 @@ export default function Home() {
                     justify-content: center;
                     align-items: center;
                     margin-top: 150px;
-                    padding-top: 40px;
-                    padding-bottom: 35px;
+                    padding-top: 50px;
+                    padding-bottom: 40px;
                     color: #002312;
                     background-color: #f9f7f5;
                     {/* background-color: #fcfcfa; */}
@@ -329,7 +372,7 @@ export default function Home() {
 
                 }
                 .explain-svg {
-                    width: 120px;
+                    width: 115px;
                 }
                 .explain-detail {
                     text-align: center;
@@ -337,6 +380,7 @@ export default function Home() {
                     font-weight: 300;
                     margin-top: 10px;
                     margin-bottom: 50px;
+                    font-weight: 400;
                 }
                 .explain-table {
                     text-align: center;
@@ -398,7 +442,6 @@ export default function Home() {
                     opacity: 0.1;
                 }
                 
-
                 {/* 추천 메뉴에 대한 컨테이너 */}
                 .recommend-container {
                     display: flex;
@@ -411,13 +454,13 @@ export default function Home() {
                     color: #111111;
                 }
                 .recommend-title {
-                    margin-bottom: 10px;
+                    margin-bottom: 8px;
                     text-align: center;
-                    font-size: 28px;
+                    font-size: 30px;
                     font-weight: 700;
                 }
                 .recommend-subtitle {
-                    margin-bottom: 20px;
+                    margin-bottom: 35px;
                     font-size: 13.5px;
                     color: #5c5c5c;
                 }
@@ -426,17 +469,21 @@ export default function Home() {
                     flex-direction: column;
                 }
                 .recommend-table tr td {
-                    max-width: 200px;
+                    max-width: 400px;
                     vertical-align: top;
                     align-self: start;
                     transition: transform 0.3s ease;
-                    padding: 0 15px;
+                    padding: 0 9px;
+                    {/* max-width: 400px; */}
                 }
                 .recommend-table tr td:hover {
                     transform: scale(1.05);
                 }
                 .td-content {
                     cursor: pointer;
+                    {/* position: relative; */}
+                    {/* width: 100%; */}
+                    {/* height: 100%; */}
                 }
                 .RCP_NM {
                     text-align: left;
@@ -449,6 +496,9 @@ export default function Home() {
                     font-size: 12px;
                     color: #5c5c5c;
                 }
+
+                {/* 추천 후식에 대한 컨테이너 */}
+                
             `}</style>
         </>
     )
@@ -460,8 +510,14 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
     const API_KEY = process.env.API_KEY;
 
     // api 요청을 보낼 첫번째 파라미터와 두번째 파라미터를 1~1124 사이의 랜덤 정수로 생성
-    const startParam = Math.floor(Math.random() * 1121) + 1;
-    const endParam = startParam + 3;
+    // const startParam = Math.floor(Math.random() * 1121) + 1;
+    // const endParam = startParam + 20;
+
+    const startParam = 1;
+    const endParam = 1000;
+
+    // console.log("시작 : ", startParam);
+    // console.log("끝 : ", endParam);
 
     const response = await fetch(`http://openapi.foodsafetykorea.go.kr/api/
     ${API_KEY}/COOKRCP01/json/${startParam}/${endParam}`, {
@@ -470,7 +526,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
     const jsonResult = await response.json();
     const result = jsonResult.COOKRCP01.row;
 
-    const menuData = result.map((item: menu) => {
+    const menuData = result.map((item: Menu) => {
         // 구조 분해 할당 - 각 item에서 필요한 필드들을 추출 선언
         const { RCP_NM, ATT_FILE_NO_MK, INFO_CAR,
             INFO_ENG, INFO_FAT, INFO_NA, INFO_PRO,
@@ -482,9 +538,45 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
             MANUAL01, MANUAL02, MANUAL03, RCP_NA_TIP,
             RCP_PARTS_DTLS, RCP_PAT2
         };
-    })
+    });
 
-    store.dispatch(setRecomMenu(menuData));
+    // '후식'을 제외한 카테고리만 받아와서 배열로 생성
+    const categories = ['반찬', '국&찌개', '일품'];
+    const foodData = menuData.filter((menuData: Menu) => categories.includes(menuData.RCP_PAT2));
+    // '후식'만 받아와서 배열로 생성
+    const dessertData = menuData.filter((menuData: Menu) => menuData.RCP_PAT2 === '후식');
+
+    console.log("디저트임 : ", dessertData);
+
+    // 배열의 길이 안에서 랜덤 인덱스를 받아옴
+    const getRandomIndex = (length: number) => {
+        return Math.floor(Math.random() * length);
+    }
+
+    // 랜덤 인덱스를 저장하는 변수
+    let foodRandomIndicies: number[] = [];
+    let dessertRandomIndicies: number[] = [];
+
+    // 4개의 요소만 사용할 것이기 때문에, 랜덤 인덱스 배열의 길이가 4미만일 때까지 반복
+    while (foodRandomIndicies.length < 4) {
+        let foodIndex = getRandomIndex(foodData.length);
+        let dessertIndex = getRandomIndex(dessertData.length);
+
+        // 배열에 이미 인덱스가 존재하지 않는 경우에만 요소 추가
+        if (!foodRandomIndicies.includes(foodIndex)) {
+            foodRandomIndicies.push(foodIndex);
+        }
+        if (!dessertRandomIndicies.includes(dessertIndex)) {
+            dessertRandomIndicies.push(dessertIndex);
+        }
+    }
+
+    // 랜덤 인덱스의 길이만큼 배열의 요소를 추출해서 새 배열 생성
+    const randomFoodData = foodRandomIndicies.map((index) => foodData[index]);
+    const randomDessertData = dessertRandomIndicies.map((index) => dessertData[index]);
+
+    store.dispatch(setRecomMenu(randomFoodData));
+    store.dispatch(setDessertMenu(randomDessertData));
 
     return {
         props: {}
