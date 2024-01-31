@@ -59,7 +59,7 @@ export default function Footer() {
                     display: flex;
                     justify-content: space-between;
                     font-size: 14px;
-                    color: #111111;
+                    color: #212529;
                     margin-top: auto;
                     background-color: #f9f7f5;
                     {/* background-color: #6E4938; */}
@@ -77,7 +77,7 @@ export default function Footer() {
                     padding-bottom: 12px;
                     font-size: 25px;
                     font-weight: 400;
-                    border-bottom: 1px solid #111111;
+                    border-bottom: 0.9px solid #212529;
                 }
                 .footer-title span {
                     padding-left: 7px;
@@ -86,8 +86,8 @@ export default function Footer() {
                 }
                 .recipe-source {
                     font-size: 13px;
-                    {/* font-weight: 300; */}
                     margin-top: 15px;
+                    {/* font-weight: 300; */}
                 }
                 {/* footer 오른쪽 영역 */}
                 .footer-right {

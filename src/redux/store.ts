@@ -1,14 +1,16 @@
 import { combineReducers, configureStore, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE, createWrapper } from "next-redux-wrapper";
-import recomMenuSlice from './features/recomMenuSlice';
+import reducers from './features/menuSlice';
 
 export type RootState = {
-    recomMenu: menu[],
+    recomMenu: Menu[],
+    dessertMenu: Menu[],
 }
 
-export type menu = {
+export type Menu = {
     RCP_NM: string,
     ATT_FILE_NO_MK: string,
+    ATT_FILE_NO_MAIN: string,
     INFO_CAR: string,
     INFO_ENG: string,
     INFO_FAT: string,
@@ -24,7 +26,8 @@ export type menu = {
 
 // 각각의 기능을 가진 리듀서들을 병합
 const combinedReducer = combineReducers({
-    recomMenu: recomMenuSlice,
+    recomMenu: reducers.recomMenu,
+    dessertMenu: reducers.dessertMenu,
 });
 
 // 전체 리듀서를 관리
@@ -52,4 +55,5 @@ export const makeStore = () => {
     })
 }
 
-export const wrapper = createWrapper(makeStore, { debug: true });
+// export const wrapper = createWrapper(makeStore, { debug: true });
+export const wrapper = createWrapper(makeStore);

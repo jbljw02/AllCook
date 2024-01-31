@@ -27,5 +27,23 @@ export const recomMenuSlice = createSlice({
     }
 })
 
+// 홈 화면의 추천 후식에 대한 Slice
+export const dessertMenuSlice = createSlice({
+    name: 'dessertMenu',
+    initialState: initialState,
+    reducers: {
+        setDessertMenu: (state, action) => {
+            return action.payload;
+        }
+    }
+})
+
 export const { setRecomMenu } = recomMenuSlice.actions;
-export default recomMenuSlice.reducer;
+export const { setDessertMenu } = dessertMenuSlice.actions;
+
+const reducers = {
+    recomMenu: recomMenuSlice.reducer,
+    dessertMenu: dessertMenuSlice.reducer,
+}
+
+export default reducers;
