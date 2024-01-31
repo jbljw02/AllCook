@@ -560,12 +560,14 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
     // 4개의 요소만 사용할 것이기 때문에, 랜덤 인덱스 배열의 길이가 4미만일 때까지 반복
     while (foodRandomIndicies.length < 4) {
         let foodIndex = getRandomIndex(foodData.length);
-        let dessertIndex = getRandomIndex(dessertData.length);
-
         // 배열에 이미 인덱스가 존재하지 않는 경우에만 요소 추가
         if (!foodRandomIndicies.includes(foodIndex)) {
             foodRandomIndicies.push(foodIndex);
         }
+    }
+
+    while (dessertRandomIndicies.length < 4) {
+        let dessertIndex = getRandomIndex(dessertData.length);
         if (!dessertRandomIndicies.includes(dessertIndex)) {
             dessertRandomIndicies.push(dessertIndex);
         }
