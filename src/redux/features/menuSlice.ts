@@ -38,12 +38,24 @@ export const dessertMenuSlice = createSlice({
     }
 })
 
+export const testMenuSlice = createSlice({
+    name: 'testMenu',
+    initialState: initialState,
+    reducers: {
+        setTestMenu: (state, action) => {
+            return action.payload;
+        }
+    }
+})
+
 export const { setRecomMenu } = recomMenuSlice.actions;
 export const { setDessertMenu } = dessertMenuSlice.actions;
+export const { setTestMenu } = testMenuSlice.actions;
 
 const reducers = {
     recomMenu: recomMenuSlice.reducer,
     dessertMenu: dessertMenuSlice.reducer,
+    testMenu: testMenuSlice.reducer,
 }
 
 export default reducers;

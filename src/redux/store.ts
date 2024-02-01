@@ -5,12 +5,13 @@ import reducers from './features/menuSlice';
 export type RootState = {
     recomMenu: Menu[],
     dessertMenu: Menu[],
+    testMenu: Menu[],
 }
 
 export type Menu = {
     RCP_NM: string,
     ATT_FILE_NO_MK: string,
-    ATT_FILE_NO_MAIN: string,
+    ATT_FILE_NO_MAIN?: string,
     INFO_CAR: string,
     INFO_ENG: string,
     INFO_FAT: string,
@@ -22,12 +23,14 @@ export type Menu = {
     RCP_NA_TIP: string,
     RCP_PARTS_DTLS: string,
     RCP_PAT2: string,
+    HASH_TAG: string,
 }
 
 // 각각의 기능을 가진 리듀서들을 병합
 const combinedReducer = combineReducers({
     recomMenu: reducers.recomMenu,
     dessertMenu: reducers.dessertMenu,
+    testMenu: reducers.testMenu,
 });
 
 // 전체 리듀서를 관리
