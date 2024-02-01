@@ -1,4 +1,10 @@
 import Link from "next/link";
+import { Anek_Tamil } from 'next/font/google'
+
+const titleFont = Anek_Tamil({
+    subsets: ['latin'],
+    weight: ['100', '200', '300', '400', '500'],
+});
 
 export default function Footer() {
 

@@ -1,6 +1,5 @@
 import { AppProps } from 'next/app'
 import { Noto_Sans_KR } from 'next/font/google'
-import { createWrapper } from 'next-redux-wrapper';
 import { wrapper } from '@/redux/store';
 import '../styles/global.css'
 
