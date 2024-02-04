@@ -10,13 +10,17 @@ import { Menu } from '../redux/store';
 import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import HeaderOnContent from '../components/HeaderOnContents'
 
 export default function Home() {
 
     const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
+    const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
     const contentsRef = useRef<HTMLDivElement>(null);
     const homeRef = useRef<HTMLDivElement>(null);
     const aboutRef = useRef<HTMLDivElement>(null);
+
+    console.log("scrollPassContet : ", scrollPassContent);
 
     // 홈 화면에 글자에 split 효과를 주기 위함
     const titleText1 = "환영합니다! 우리는 All Cook,";
@@ -51,7 +55,6 @@ export default function Home() {
     //     // 타겟 요소가 뷰포트와 교차하는지를 감시
     //     const observer = new IntersectionObserver(
     //         ([e]) => {
-    //             console.log("DD");
     //             // true = 교차, false = 비교차
     //             setIsScrolled(!e.isIntersecting);
     //         },
@@ -73,16 +76,22 @@ export default function Home() {
     // }, [])
 
     useEffect(() => {
-        // 헤더가 컨텐츠 영역에 도달하면 스타일을 바꾸기 위한 함수
+        // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
         const checkScrollTop = () => {
             if (contentsRef.current !== null) {
                 // scrollPassContent가 false이며, 스크롤의 위치가 contents-container보다 낮을 경우
                 if (!scrollPassContent && window.scrollY > contentsRef.current.offsetTop) {
+                    setHeaderSlide(false)
                     setScrollPassContent(true);
                 }
                 // scrollPassContent false이며, 스크롤의 위치가 contents-container보다 높을 경우
                 else if (scrollPassContent && window.scrollY <= contentsRef.current.offsetTop) {
-                    setScrollPassContent(false);
+                    /* scrollPassContent가 바로 false로 변경되면 unmount animation을 적용할 수 없음(애니메이션이 적용되기도 전에 컴포넌트가 사라지기 때문). 
+                    그렇기 때문에 headerSlide를 통해 애니메이션을 미리 제어하고, 0.5초 뒤에 상태를 변경 */
+                    setHeaderSlide(true)
+                    setTimeout(() => {
+                        setScrollPassContent(false);
+                    }, 300);
                 }
             }
         };
@@ -96,20 +105,6 @@ export default function Home() {
         };
     }, [scrollPassContent]);
 
-    // 클릭한 곳으로 스크롤을 이동
-    // const clickToScroll = (param: RefObject<HTMLDivElement>) => {
-    //     if (param === homeRef) {
-    //         if (homeRef.current !== null) {
-    //             homeRef.current.scrollIntoView({ behavior: 'smooth' });
-    //         }
-    //     }
-    //     else if (param === aboutRef) {
-    //         if (aboutRef.current !== null) {
-    //             aboutRef.current.scrollIntoView({ behavior: 'smooth' });
-    //         }
-    //     }
-    // }
-
     return (
         <>
             {/* 홈 화면의 전체 영역을 차지하는 컨테이너  */}
@@ -117,7 +112,7 @@ export default function Home() {
                 {/* 헤더부터 이미지 배너까지의 영역을 차지하는 컨테이너 */}
                 <div ref={homeRef} className='header-container'>
                     {
-                        // 스크롤이 contents-container 영역을 지나치면 헤더 사라지도록 설정
+                        // 스크롤이 contents-container 영역을 지나치면 헤더가 사라지도록 설정
                         !scrollPassContent ?
                             <Header
                                 backgroundColor='transparent'
@@ -125,7 +120,17 @@ export default function Home() {
                                 borderColor='transparent'
                                 svgFill='#ffffff'
                             /> :
-                            null
+                            <HeaderOnContent
+                                className={
+                                    !headerSlide ?
+                                        'slide-down' :
+                                        'slide-up'
+                                }
+                                backgroundColor='#ffffff'
+                                color='#111111'
+                                borderColor='#e8e8e8'
+                                svgFill='#000000'
+                            />
                     }
                     {/* 배너 문구와 검색창을 차지하는 컨테이너 */}
                     <div className='banner-container'>
@@ -292,7 +297,7 @@ export default function Home() {
 
                 </div>
                 <Footer />
-            </div>
+            </div >
             <style jsx> {`
                 {/* 헤더 컨테이너 */}
                 .header-container {
@@ -310,13 +315,12 @@ export default function Home() {
                         opacity: 0
                     }
                     to {
-                        opacity: ;
+                        opacity: 1;
                     }
                 }
                 .welcome-section {
                     color: #ffffff;
                     font-size: 50px;
-                    {/* animation: fade-in 2.5s ease-out; */}
                 }
                 .search-section {
                     display: flex;
