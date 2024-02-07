@@ -119,6 +119,8 @@ export default function Home() {
                                 color='#ffffff'
                                 borderColor='transparent'
                                 svgFill='#ffffff'
+                                lightLogo={true}
+                                inputBackgroundColor='#ffffff'
                             /> :
                             <HeaderOnContent
                                 className={
@@ -126,31 +128,43 @@ export default function Home() {
                                         'slide-down' :
                                         'slide-up'
                                 }
-                                backgroundColor='#ffffff'
-                                color='#111111'
-                                borderColor='#e8e8e8'
-                                svgFill='#000000'
                             />
                     }
                     {/* 배너 문구와 검색창을 차지하는 컨테이너 */}
                     <div className='banner-container'>
                         <div className='welcome-section'>
-                            {displayedText1} <br />
-                            {displayedText2}
+                            환영합니다! 우리는 All Cook, <br />
+                            당신의 요리 파트너입니다
                         </div>
-                        {
+                        {/* {
                             // 화면에 글자가 모두 출력된 후 fade in 효과를 적용하며 출력
                             displayedText2.length === 14 ?
                                 <div className='search-section'>
                                     <div>당신을 위한 모든 레시피</div>
                                     <div className='input-container'>
-                                        <input className='search-input' placeholder='메뉴, 재료로 검색' />
-                                        <svg className="img-search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="21" height="21">
-                                            <path fill="currentColor" d="M3.5 8a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM8 2a6 6 0 1 0 3.65 10.76l3.58 3.58 1.06-1.06-3.57-3.57A6 6 0 0 0 8 2Z"></path></svg>
+                                        <div className='learn-more'>
+                                            <Link
+                                                style={{ textDecoration: 'none', color: 'inherit' }}
+                                                href={'/recipe'}>
+                                                레시피 보기
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div> :
                                 ''
-                        }
+                        } */}
+                        <div className='search-section'>
+                            <div>당신을 위한 모든 레시피를 찾아보세요!</div>
+                            <div className='banner-button'>
+                                <span>
+                                    <Link
+                                        style={{ textDecoration: 'none', color: 'inherit' }}
+                                        href={'/recipe'}>
+                                        지금 레시피 보기
+                                    </Link>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                     <span className='banner-img'>
                         <Image src={bannerImg} alt={''} layout='responsive' />
@@ -306,7 +320,7 @@ export default function Home() {
                 }
                 .banner-container {
                     position: absolute;
-                    top: 31%;
+                    top: 35%;
                     left: 10%;
                 }
                 {/* 서서히 나타나는 애니메이션 */}
@@ -320,26 +334,36 @@ export default function Home() {
                 }
                 .welcome-section {
                     color: #ffffff;
-                    font-size: 50px;
+                    font-size: 55px;
                 }
                 .search-section {
-                    display: flex;
-                    flex-direction: column;
-                    margin-top: 18px;
+                    margin-top: 25px;
                     margin-left: 7px;
-                    animation: fade-in 2s ease-out;
+                    color: #ffffff;
+                    {/* animation: fade-in 2s ease-out; */}
                 }
                 .search-section div:nth-child(1) {
-                    color: #ffffff;
                     font-size: 18px;
                     font-weight: 300;
+                }
+                .banner-button {
+                    display: inline-block;
+                    margin-top: 40px;
+                }
+                .banner-button span {
+                    padding: 20px 40px;
+                    margin-right: 20px;
+                    border-radius: 12px;
+                    font-size: 17px;
+                    background-color: #ffffff;
+                    color: #111111;
+                    cursor: pointer;
                 }
                 .input-container {
                     display: flex;
                     padding-top: 18px;
                     border: none;
                 }
-
                 .search-input {
                     outline: none;
                     width: 300px;
@@ -382,9 +406,6 @@ export default function Home() {
                     background-color: #f9f7f5;
                     {/* margin-top: 150px; */}
                     {/* background-color: #fcfcfa; */}
-                }
-                .explain-img {
-
                 }
                 .explain-svg {
                     width: 115px;
