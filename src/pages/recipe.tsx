@@ -10,6 +10,8 @@ export default function Recipe() {
                 color="#111111"
                 borderColor="#e8e8e8"
                 svgFill="#000000"
+                lightLogo={false}
+                inputBackgroundColor="#f2f2f2"
             />
             <Footer />
         </div>
