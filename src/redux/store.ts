@@ -5,7 +5,7 @@ import reducers from './features/menuSlice';
 export type RootState = {
     recomMenu: Menu[],
     dessertMenu: Menu[],
-    testMenu: Menu[],
+    allMenu: Menu[],
 }
 
 export type Menu = {
@@ -30,7 +30,7 @@ export type Menu = {
 const combinedReducer = combineReducers({
     recomMenu: reducers.recomMenu,
     dessertMenu: reducers.dessertMenu,
-    testMenu: reducers.testMenu,
+    allMenu: reducers.allMenu,
 });
 
 // 전체 리듀서를 관리
