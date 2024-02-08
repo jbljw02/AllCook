@@ -7,12 +7,15 @@ const titleFont = Anek_Tamil({
     weight: ['100', '200', '300', '400', '500'],
 });
 
-export default function Header({ backgroundColor, color, borderColor, svgFill, lightLogo, inputBackgroundColor }: { backgroundColor: string, color: string, borderColor: string, svgFill: string, lightLogo: boolean, inputBackgroundColor: string }) {
+type Position = 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky';
+
+export default function Header({ position, backgroundColor, color, borderColor, svgFill, lightLogo, inputBackgroundColor }: { position: Position, backgroundColor: string, color: string, borderColor: string, svgFill: string, lightLogo: boolean, inputBackgroundColor: string }) {
 
     return (
         <>
             <header
                 style={{
+                    position: position,
                     backgroundColor: backgroundColor,
                     color: color,
                     borderColor: borderColor,
@@ -83,14 +86,13 @@ export default function Header({ backgroundColor, color, borderColor, svgFill, l
             </header>
             <style jsx>{`
                 .header {
-                    position: absolute;
                     width: 100%;
                     height: auto;
                     padding-top: 20px;
                     padding-bottom: 10px;
                     top: 0;
-                    z-index: 1000;
                     border-bottom: 0.8px solid;
+                    {/* z-index: 1000; */}
                 }
                 .header-div {
                     display: flex;
@@ -103,6 +105,7 @@ export default function Header({ backgroundColor, color, borderColor, svgFill, l
                     font-size: 17px;
                     font-weight: 300;
                     padding-left: 10%;
+                    margin-top: -10px;
                 }
                 .left-nav span {
                     margin-right: 22px;
@@ -143,6 +146,7 @@ export default function Header({ backgroundColor, color, borderColor, svgFill, l
                 } 
                 .right-nav {
                     padding-right: 10%;
+                    margin-top: -6px;
                 }
                 .user-img-span {
                     position: relative;
