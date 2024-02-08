@@ -22,7 +22,11 @@ export default function Recipe() {
                     lightLogo={false}
                     inputBackgroundColor="#f2f2f2" />
                 <div className="top-contents-section">
-                    <div></div>
+                    <div className="sort-button">
+                        <span>가나다순</span>
+                        <svg className="sort-svg" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m9 4.5-3 3-3-3" stroke="currentColor" stroke-linecap="round"></path>
+                        </svg>
+                    </div>
                     <div className="filter-button">
                         <svg className="filter-svg" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M2 4H14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
@@ -32,6 +36,36 @@ export default function Recipe() {
                         <span>필터</span>
                     </div>
                 </div>
+                {/* <div className="contents-container">
+                    <div className="filter-section">
+                        <div id="filter-title">
+                            <svg className="filter-svg" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 4H14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+                                <path d="M4 8H12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+                                <path d="M6 12H10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+                            </svg>
+                            <span>상세 검색</span>
+                        </div>
+                        <div>
+                            <span>음식의 종류</span>
+                            <svg className="plus-svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11,5 L10.999,10 L16,10 L16,11 L11,11 L11,16 L10,16 L9.999,11 L5,11 L5,10 L10,9.999 L10,5 L11,5 Z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <span>요리 방법</span>
+                            <svg className="plus-svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11,5 L10.999,10 L16,10 L16,11 L11,11 L11,16 L10,16 L9.999,11 L5,11 L5,10 L10,9.999 L10,5 L11,5 Z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <span>영양성분 포함량</span>
+                            <svg className="plus-svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11,5 L10.999,10 L16,10 L16,11 L11,11 L11,16 L10,16 L9.999,11 L5,11 L5,10 L10,9.999 L10,5 L11,5 Z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div> */}
                 <div className="menu-section">
                     <table className="menu-table">
                         <tbody>
@@ -41,8 +75,8 @@ export default function Recipe() {
                                 // allMenu의 길이를 5로 나누고 소수점이 떨어지지 않을 경우를 대비하여 올림
                                 // 그 후에, map은 undefined은 무시하기 때문에 fill을 사용해 모든 요소를 0으로 초기화
                                 new Array(Math.ceil(allMenu.length / 5)).fill(0).map((_, index) => {
-                                    // 0번 인덱스 = slice(0, 5), 1번 인덱스 = slice(5, 10)... 5개씩 나누어 출력
-                                    const items = allMenu.slice(index * 5, index * 5 + 5);
+                                    // 0번 인덱스 = slice(0, 4), 1번 인덱스 = slice(4, 10)... 5개씩 나누어 출력
+                                    const items = allMenu.slice(index * 4, index * 4 + 4);
                                     return (
                                         <tr>
                                             {
@@ -73,15 +107,42 @@ export default function Recipe() {
             <style jsx> {`
                .top-contents-section {
                     display: flex;
-                    justify-content: space-between;
-                    padding: 0 10%;
+                    justify-content: center;
+                    color: #111111;
+                    margin-top: 13px;
+                    margin-bottom: 5px;
+                    {/* padding: 0 10%; */}
+               }
+               .sort-button {
+                    display: flex;
+                    margin-top: 20px;
+                    margin-right: 755px;
+                    padding: 5px 5px 5px 10px;
+                    border: 1px solid #e8e8e8;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: border-color 0.3s ease;
+               }
+               .sort-button:hover {
+                    border-color: rgb(130, 130, 130);
+               }
+               .sort-button span {
+                    font-size: 13px;
+                    font-weight: 500;
+               }
+               .sort-svg {
+                    position: relative;
+                    width: 18px;
+                    top: 1px;
+                    margin-left: 20px;
                }
                .filter-button {
                     display: flex;
                     margin-top: 20px;
-                    padding: 4px 12px;
+                    padding: 5px 12px;
+                    padding: 5px 13px 5px 10px;
                     border: 1px solid #e8e8e8;
-                    border-radius: 10px;
+                    border-radius: 8px;
                     cursor: pointer;
                     transition: border-color 0.3s ease;
                }
@@ -89,25 +150,62 @@ export default function Recipe() {
                     border-color: rgb(130, 130, 130);
                }
                .filter-svg {
-                    width: 16px;
+                    position: relative;
+                    width: 17.5px;
+                    top: 0.5px;
                     margin-right: 5px;
-                    margin-top: 1px;
                }
                .filter-button span {
-                    font-size: 14px;
+                    font-size: 13px;
                     font-weight: 500;
                }    
+               {/* .contents-container {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    padding: 0 10%;
+                    color: #111111;
+                    margin-top: 30px;
+               } */}
+               .filter-section {
+                    margin-top: 25px;
+                    margin-right: 80px;
+               }
+               #filter-title {
+                    display: flex;
+                    justify-content: flex-start;
+               }
+               #filter-title span {
+                    font-weight: 400;
+                    font-size: 18px;
+               }
+               .filter-section div {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 20px 0 20px 0;
+                    border-bottom: 1px solid #d1d1d1;
+               }
+               .filter-section div span {
+                    margin-right: 65px;
+                    font-weight: 300;
+                    font-size: 15px;
+               }
+               .plus-svg {
+                    position: relative;
+                    width: 20px;
+               }
                .menu-section {
                     display: flex;
                     justify-content: center;
                     margin-top: 30px;
-                    padding: 0 10%;
                }
                .menu-table {
                     display: flex;
                     flex-direction: column;
                     border-collapse: separate;
                     border-spacing: 0 25px;
+                    margin-top: -25px;
+                    color: #111111;
                }
                .menu-table tr td {
                     max-width: 220px;
@@ -120,7 +218,7 @@ export default function Recipe() {
                     transform: scale(1.05);
                }
                .td-content {
-                cursor: pointer;
+                    cursor: pointer;
                }
                .RCP_NM {
                     text-align: left;
