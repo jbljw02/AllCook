@@ -252,8 +252,8 @@ export default function Home() {
                                                         <Image
                                                             src={`${item.ATT_FILE_NO_MK}`}
                                                             style={{ borderRadius: 8 }}
-                                                            width={220}
-                                                            height={220}
+                                                            width={250}
+                                                            height={250}
                                                             // layout='fill'
                                                             // objectFit='contain'
                                                             alt={''}
@@ -288,9 +288,9 @@ export default function Home() {
                                                     <div className='td-content'>
                                                         <Image
                                                             src={`${item.ATT_FILE_NO_MK}`}
-                                                            style={{ borderRadius: 2 }}
-                                                            width={220}
-                                                            height={220}
+                                                            style={{ borderRadius: 8 }}
+                                                            width={250}
+                                                            height={250}
                                                             // layout='fill'
                                                             // objectFit='contain'
                                                             alt={''}
@@ -506,7 +506,7 @@ export default function Home() {
                     vertical-align: top;
                     align-self: start;
                     transition: transform 0.3s ease;
-                    padding: 0 9px;
+                    padding: 0 25px;
                     {/* max-width: 400px; */}
                 }
                 .recommend-table tr td:hover {
@@ -517,13 +517,13 @@ export default function Home() {
                 }
                 .RCP_NM {
                     text-align: left;
-                    font-size: 14.5px;
+                    font-size: 15px;
                     font-weight: 400;
                     word-wrap: break-word;
                     word-break: break-all;
                 }
                 .RCP_PAT2 {
-                    font-size: 12px;
+                    font-size: 13px;
                     color: #5c5c5c;
                 }
 
