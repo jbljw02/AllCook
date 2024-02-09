@@ -115,7 +115,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                     margin-right: 0px;
                 }
                 .title-logo-div {
-                    margin-left: 130px;
+                    margin-left: 167px;
                 }
                 .title-logo {
                     width: 85px;
