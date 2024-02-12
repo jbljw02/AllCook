@@ -5,6 +5,7 @@ import { Menu, RootState, wrapper } from "@/redux/store";
 import { setAllMenu } from "@/redux/features/menuSlice";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import Seo from "../components/Seo";
 
 export default function Recipe() {
     const allMenu = useSelector((state: RootState) => state.allMenu);
@@ -46,6 +47,12 @@ export default function Recipe() {
         setRecomHashTags(fixedSideTags);
     }, [allMenu]);
 
+    // 현재 페이지 번호가 변경될 때마다 블록번호를 업데이트
+    // currentPage가 1~10일 때, currentBlock은 1, 11~20일 때 2...
+    useEffect(() => {
+        setCurrentBlock(Math.ceil(currentPage / pagesPerBlock));
+    }, [currentPage])
+
     // 버튼을 통해 페이지를 이동
     const movePage = (param: string) => {
         if (param === 'up' && currentPage < totalPagecount) {
@@ -57,10 +64,12 @@ export default function Recipe() {
     }
 
     console.log("페이지 번호 : ", currentPage);
-    console.log("결과 : ", Math.ceil(allMenu.length / tdPerPage));
+    console.log("시작 번호 : ", startPage);
+    console.log("현재 블록 : ", currentBlock);
 
     return (
         <>
+            <Seo title="레시피" />
             <div className="container">
                 <Header
                     position="relative"
@@ -184,11 +193,18 @@ export default function Recipe() {
                             // length = 10, startPage + index = 11 + 0, 11 + 1, ... 11 + 9
                             // 즉, 11, 12, 13, .. 20으로 이루어진 배열 생성 
                             Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index)
-                                .map(pageNumber => (
-                                    pageNumber === currentPage ?
-                                        <span>{pageNumber}</span> :
-                                        <span>{pageNumber}</span>
-                                ))
+                                .map((pageNumber) => {
+                                    return (
+                                        pageNumber === currentPage ?
+                                            <span
+                                                onClick={() => setCurrentPage(pageNumber)}
+                                                style={{ backgroundColor: '#002312', color: '#ffffff' }}>
+                                                {pageNumber}
+                                            </span> :
+                                            <span onClick={() => setCurrentPage(pageNumber)}>{pageNumber}</span>
+                                    )
+                                })
+
                         }
                         <span
                             onClick={() => movePage('up')}
@@ -369,10 +385,22 @@ export default function Recipe() {
                     margin-bottom: 65px;
                 }
                 .pagination-section span {
-                    margin-right: 35px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                     cursor: pointer;
+                    border-radius: 50%;
+                    margin-top: 6px;
+                    margin-right: 13px;
+                    width: 32px;
+                    height: 32px;
+                    font-size: 15px;
+                }
+                .pagination-section span:first-child {
+                    margin-top: 0px;
                 }
                 .pagination-section span:last-child {
+                    margin-top: 0px;
                     margin-right: 0px;
                 }
                 .movePage-span {

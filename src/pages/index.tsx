@@ -10,9 +10,9 @@ import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import HeaderOnContent from '../components/HeaderOnContents'
+import Seo from '../components/Seo';
 
 export default function Home() {
-
     const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
     const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
     const contentsRef = useRef<HTMLDivElement>(null);
@@ -106,6 +106,7 @@ export default function Home() {
 
     return (
         <>
+            <Seo title="홈" />
             {/* 홈 화면의 전체 영역을 차지하는 컨테이너  */}
             <div className='container'>
                 {/* 헤더부터 이미지 배너까지의 영역을 차지하는 컨테이너 */}
