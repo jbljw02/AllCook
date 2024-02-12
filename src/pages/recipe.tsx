@@ -5,6 +5,7 @@ import { Menu, RootState, wrapper } from "@/redux/store";
 import { setAllMenu } from "@/redux/features/menuSlice";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import Seo from "../components/Seo";
 
 export default function Recipe() {
     const allMenu = useSelector((state: RootState) => state.allMenu);
@@ -68,6 +69,7 @@ export default function Recipe() {
 
     return (
         <>
+            <Seo title="레시피" />
             <div className="container">
                 <Header
                     position="relative"
