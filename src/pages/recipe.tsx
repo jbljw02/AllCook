@@ -1,14 +1,25 @@
 import Header from "../components/Header"
 import Footer from "../components/Footer"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { Menu, RootState, wrapper } from "@/redux/store";
 import { setAllMenu } from "@/redux/features/menuSlice";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Seo from "../components/Seo";
+import MultiRangeSlider from "../components/multiRangeSlider";
+import { setCarInfo, setEngInfo, setFatInfo, setNaInfo, setProInfo } from "@/redux/features/ingredientSlice";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit/react";
 
 export default function Recipe() {
+    const dispatch = useDispatch();
+
     const allMenu = useSelector((state: RootState) => state.allMenu);
+
+    const carInfo = useSelector((state: RootState) => state.carInfo);
+    const engInfo = useSelector((state: RootState) => state.engInfo);
+    const fatInfo = useSelector((state: RootState) => state.fatInfo);
+    const naInfo = useSelector((state: RootState) => state.naInfo);
+    const proInfo = useSelector((state: RootState) => state.proInfo);
 
     const [recomHashTags, setRecomHashTags] = useState<string[]>();  // 사용자에게 추천할 해시태그
 
@@ -26,6 +37,18 @@ export default function Recipe() {
     // ex) 23이 마지막 페이지 번호라고 한다면, 30과 23중엔 23이 작은 값이므로 23 할당
     const endPage = Math.min(currentBlock * pagesPerBlock, totalPagecount);
 
+    const [filterVisible, setFilterVisible] = useState<boolean>(false);  // '상세검색' 클릭 시 띄워지는 창을 관리하기 위한 state
+
+    allMenu.map((item: Menu) => {
+        // console.log("탄수화물 : ", item.INFO_CAR);
+        // console.log("열량 : ", item.INFO_ENG);
+        // console.log("지방 : ", item.INFO_FAT);
+        // console.log("나트륨 : ", item.INFO_NA);
+        // console.log("단백질 : ", item.INFO_PRO);
+        return (
+            undefined
+        )
+    })
     // 피셔-예이츠 셔플 알고리즘
     // 배열의 마지막 요소부터 처음 요소까지 반복, 각 반복에서 해당 요소와 그 이전의 무작위 위치의 요소를 교환
     const shuffle = (array: string[]) => {
@@ -51,7 +74,7 @@ export default function Recipe() {
     // currentPage가 1~10일 때, currentBlock은 1, 11~20일 때 2...
     useEffect(() => {
         setCurrentBlock(Math.ceil(currentPage / pagesPerBlock));
-    }, [currentPage])
+    }, [currentPage]);
 
     // 버튼을 통해 페이지를 이동
     const movePage = (param: string) => {
@@ -63,9 +86,17 @@ export default function Recipe() {
         }
     }
 
-    console.log("페이지 번호 : ", currentPage);
-    console.log("시작 번호 : ", startPage);
-    console.log("현재 블록 : ", currentBlock);
+    // RangeSlider의 파라미터를 받아와서 dispatch
+    // 고차함수 - 다른 함수를 인자로 받거나 함수를 결과로 반환
+    const infoChange = (paramState: ActionCreatorWithPayload<{ min: number, max: number }>) => (min: number, max: number) => {
+        dispatch(paramState({ min, max }));
+    }
+
+    const carInfoChange = infoChange(setCarInfo);
+    const engInfoChange = infoChange(setEngInfo);
+    const fatInfoChange = infoChange(setFatInfo);
+    const naInfoChange = infoChange(setNaInfo);
+    const proInfoChange = infoChange(setProInfo);
 
     return (
         <>
@@ -97,13 +128,104 @@ export default function Recipe() {
                                 })
                             }
                         </div>
-                        <div className="filter-button">
+                        <div onClick={() => setFilterVisible(true)} className="filter-button">
                             <svg className="filter-svg" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M2 4H14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
                                 <path d="M4 8H12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
                                 <path d="M6 12H10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
                             </svg>
                             <span>상세검색</span>
+                            {
+                                filterVisible &&
+                                <div className="filter-detail">
+                                    <div className="filter-checkbox-div">
+                                        <div className="filter-detail-category">음식의 종류</div>
+                                        <div className="filter-detail-div">
+                                            <span className="filter-detail-span">
+                                                <input className='checkbox' type="checkbox" />
+                                                반찬
+                                            </span>
+                                            <span className="filter-detail-span">
+                                                <input className='checkbox' type="checkbox" />
+                                                일품
+                                            </span>
+                                            <span className="filter-detail-span">
+                                                <input className='checkbox' type="checkbox" />
+                                                국&찌개
+                                            </span>
+                                            <span className="filter-detail-span">
+                                                <input className='checkbox' type="checkbox" />
+                                                후식
+                                            </span>
+                                        </div>
+                                        <div className="filter-detail-category">요리 방법</div>
+                                        <div className="filter-detail-div">
+                                            <span className="filter-detail-span">
+                                                <input className='checkbox' type="checkbox" />
+                                                찌기
+                                            </span>
+                                            <span className="filter-detail-span">
+                                                <input className='checkbox' type="checkbox" />
+                                                끓이기
+                                            </span>
+                                            <span className="filter-detail-span">
+                                                <input className='checkbox' type="checkbox" />
+                                                굽기
+                                            </span>
+                                            <span className="filter-detail-span">
+                                                <input className='checkbox' type="checkbox" />
+                                                볶기
+                                            </span>
+                                            <span className="filter-detail-span">
+                                                <input className='checkbox' type="checkbox" />
+                                                튀기기
+                                            </span>
+                                            <span className="filter-detail-span">
+                                                <input className='checkbox' type="checkbox" />
+                                                기타
+                                            </span>
+                                        </div>
+                                        <div className="filter-detail-category">영양성분</div>
+                                        <div className="filter-detail-div">
+                                            <span className="filter-detail-span range-span">
+                                                탄수화물
+                                                <span></span>
+                                                <div className="input-slide-container">
+                                                    <MultiRangeSlider min={0} max={1000} onChange={carInfoChange} />
+                                                </div>
+                                            </span>
+                                            <span className="filter-detail-span range-span">
+                                                열량
+                                                <div className="input-slide-container">
+                                                    <MultiRangeSlider min={0} max={1000} onChange={engInfoChange} />
+                                                </div>
+                                            </span>
+                                            <span className="filter-detail-span range-span">
+                                                지방
+                                                <div className="input-slide-container">
+                                                    <MultiRangeSlider min={0} max={1000} onChange={fatInfoChange} />
+                                                </div>
+                                            </span>
+                                            <span className="filter-detail-span range-span">
+                                                나트륨
+                                                <div className="input-slide-container">
+                                                    <MultiRangeSlider min={0} max={1000} onChange={naInfoChange} />
+                                                </div>
+                                            </span>
+                                            <span className="filter-detail-span range-span">
+                                                단백질
+                                                <div className="input-slide-container">
+                                                    <MultiRangeSlider min={0} max={1000} onChange={proInfoChange} />
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="filter-submit">
+                                        <div>필터 적용하기</div>
+                                        <div>필터 지우기</div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                     {/* <div className="contents-container">
@@ -332,9 +454,91 @@ export default function Recipe() {
                     font-weight: 300;
                     font-size: 15px;
                 }
-                .plus-svg {
+                .filter-detail { 
+                    position: absolute;
+                    display: flex;
+                    flex-direction: column;
+                    top: 175px;
+                    right: 300px;
+                    padding: 30px 40px 30px 40px;
+                    border: 1px solid #e8e8e8;
+                    border-radius: 10px;
+                    background-color: #ffffff;
+                    cursor: auto;
+                    z-index: 1000;
+                    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+                }
+                .filter-checkbox-div {
+                    padding-bottom: 40px;
+                    border-bottom: 1px solid #e8e8e8;
+                }
+                .filter-detail-category:first-child {
+                    margin-top: 0px;
+                } 
+                .filter-detail-category {
+                    font-size: 15px;
+                    margin-top: 25px;
+                    margin-bottom: 7px;
+                    font-weight: 500;
+                }
+                .filter-detail-div {
+                    margin-left: -2px;
+                }
+                .filter-detail-span {
+                    margin-right: 14px;
+                    font-size: 14px !important;
+                    font-weight: 300 !important;
+                    cursor: pointer;
+                }
+                .input-slide-container {
+                    margin: 15px 0 40px 0;
+                }
+                .range-span {
+                    display: block;
+                    cursor: auto;
+                    margin-left: 3px;
+                }
+                .checkbox, .range {
                     position: relative;
-                    width: 20px;
+                    top: 1.72px;
+                    margin-right: 5px;
+                }
+                {/* input 슬라이더 */}
+                input[type=range] {
+                    appearance: none;
+                    -webkit-appearance: none;
+                    width: 50%;
+                    height: 3px;
+                    background: #e8e8e8;
+                }
+                {/* input 커서 */}
+                input[type=range]::-webkit-slider-thumb {
+                    appearance: none;
+                    -webkit-appearance: none;
+                    width: 15px;
+                    height: 15px;
+                    border-radius: 50%;
+                    background-color: #111111;
+                }
+                .range {
+                    display: block;
+                    margin: 12px 0 16px 2px;
+                }
+                .range:hover::-webkit-slider-thumb {
+                    background-color: #111111;
+                }
+                .filter-submit {
+                    display: flex;  
+                    flex-direction: row;
+                    margin-top: 45px;
+                    font-size: 13.5px;
+                }
+                .filter-submit div {
+                    margin-right: 20px;
+                    padding: 5px 10px 5px 10px;
+                    border: 1px solid #e8e8e8;
+                    border-radius: 8px;
+                    cursor: pointer;
                 }
                 .menu-section {
                     display: flex;

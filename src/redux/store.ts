@@ -1,22 +1,28 @@
 import { combineReducers, configureStore, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE, createWrapper } from "next-redux-wrapper";
-import reducers from './features/menuSlice';
+import meneReducers from './features/menuSlice';
+import ingredientReducers from './features/ingredientSlice';
 
 export type RootState = {
     recomMenu: Menu[],
     dessertMenu: Menu[],
     allMenu: Menu[],
+    carInfo: Ingredient,
+    engInfo: Ingredient,
+    fatInfo: Ingredient,
+    naInfo: Ingredient,
+    proInfo: Ingredient,
 }
 
 export type Menu = {
     RCP_NM: string,
     ATT_FILE_NO_MK: string,
     ATT_FILE_NO_MAIN?: string,
-    INFO_CAR: string,
-    INFO_ENG: string,
-    INFO_FAT: string,
-    INFO_NA: string,
-    INFO_PRO: string,
+    INFO_CAR: string,  // 탄수화물
+    INFO_ENG: string, // 열량
+    INFO_FAT: string,  // 지방
+    INFO_NA: string,  // 나트륨
+    INFO_PRO: string,  // 단백질
     MANUAL01: string,
     MANUAL02: string,
     MANUAL03: string,
@@ -26,11 +32,21 @@ export type Menu = {
     HASH_TAG: string,
 }
 
+export type Ingredient = {
+    min: number,
+    max: number,
+}
+
 // 각각의 기능을 가진 리듀서들을 병합
 const combinedReducer = combineReducers({
-    recomMenu: reducers.recomMenu,
-    dessertMenu: reducers.dessertMenu,
-    allMenu: reducers.allMenu,
+    recomMenu: meneReducers.recomMenu,
+    dessertMenu: meneReducers.dessertMenu,
+    allMenu: meneReducers.allMenu,
+    carInfo: ingredientReducers.carInfo,
+    engInfo: ingredientReducers.engInfo,
+    fatInfo: ingredientReducers.engInfo,
+    naInfo: ingredientReducers.naInfo,
+    proInfo: ingredientReducers.proInfo,
 });
 
 // 전체 리듀서를 관리
