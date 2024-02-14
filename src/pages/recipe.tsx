@@ -7,30 +7,59 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Seo from "../components/Seo";
 import MultiRangeSlider from "../components/multiRangeSlider";
-import { setCarInfo, setEngInfo, setFatInfo, setNaInfo, setProInfo } from "@/redux/features/ingredientSlice";
+import { setCarInfo, setEngInfo, setFatInfo, setNaInfo, setProInfo, setNutritionInfo } from "@/redux/features/nutritionSlice";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit/react";
+import { NutritionKey } from "../redux/features/nutritionSlice";
 
 export default function Recipe() {
     const dispatch = useDispatch();
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
 
-    const carInfo = useSelector((state: RootState) => state.carInfo);
-    const engInfo = useSelector((state: RootState) => state.engInfo);
-    const fatInfo = useSelector((state: RootState) => state.fatInfo);
-    const naInfo = useSelector((state: RootState) => state.naInfo);
-    const proInfo = useSelector((state: RootState) => state.proInfo);
+    // const carInfo = useSelector((state: RootState) => state.carInfo);
+    // const engInfo = useSelector((state: RootState) => state.engInfo);
+    // const fatInfo = useSelector((state: RootState) => state.fatInfo);
+    // const naInfo = useSelector((state: RootState) => state.naInfo);
+    // const proInfo = useSelector((state: RootState) => state.proInfo);
+
+    // 음식의 종류, 요리 방법, 영양성분의 선택 여부 및 범위를 담는 state들 
+    const [foodType, setFoodType] = useState({
+        sideDish: false,
+        specialDish: false,
+        stew: false,
+        dessert: false,
+    });
+    const [cookWay, setCookWay] = useState({
+        steam: false,
+        grill: false,
+        stir: false,
+        fry: false,
+        etc: false,
+    });
+    const nutritionInfo = useSelector((state: RootState) => state.nutritionInfo);
+
+    // 음식의 종류, 요리 방법의 체크 여부를 토글
+    const changefoodCheck = (event: { target: { name: string; checked: boolean; }; }) => {
+        setFoodType({
+            ...foodType,  // 다른 요소는 그대로 유지
+            [event.target.name]: event.target.checked,  // 파라미터로 받은 요소의 체크 여부를 토글
+        })
+    }
+    const changeCookCheck = (event: { target: { name: string; checked: boolean; }; }) => {
+        setCookWay({
+            ...cookWay,
+            [event.target.name]: event.target.checked,
+        })
+    }
 
     const [recomHashTags, setRecomHashTags] = useState<string[]>();  // 사용자에게 추천할 해시태그
 
     const [currentPage, setCurrentPage] = useState(1);  // 현재 페이지 번호
     const trPerPage = 6;  // 한 페이지에 출력할 tr의 개수
     const tdPerPage = 24;  // 한 페이지에 출력할 td의 개수
-
     const [currentBlock, setCurrentBlock] = useState(1);  // 현재 페이지 블록의 번호
     const pagesPerBlock = 10;  // 한 블록에 출력할 페이지 번호의 개수
     const totalPagecount = Math.ceil(allMenu.length / tdPerPage);  // 전체 페이지의 수의 올림값
-
     const startPage = (currentBlock - 1) * pagesPerBlock + 1;  // 페이지의 시작 인덱스
     // 마지막 페이지는 10, 20, 30.. 등등이 마지막 페이지 번호가 아닐 수 있음
     // 그렇기 때문에 전체 페이지의 개수와 현재 블록의 마지막 인덱스중 더 작은 값을 endPage로 설정
@@ -88,15 +117,15 @@ export default function Recipe() {
 
     // RangeSlider의 파라미터를 받아와서 dispatch
     // 고차함수 - 다른 함수를 인자로 받거나 함수를 결과로 반환
-    const infoChange = (paramState: ActionCreatorWithPayload<{ min: number, max: number }>) => (min: number, max: number) => {
-        dispatch(paramState({ min, max }));
+    const infoChange = (name: NutritionKey) => (min: number, max: number) => {
+        dispatch(setNutritionInfo({ name, values: { min, max } }));
     }
 
-    const carInfoChange = infoChange(setCarInfo);
-    const engInfoChange = infoChange(setEngInfo);
-    const fatInfoChange = infoChange(setFatInfo);
-    const naInfoChange = infoChange(setNaInfo);
-    const proInfoChange = infoChange(setProInfo);
+    const carInfoChange = infoChange('car');
+    const engInfoChange = infoChange('eng');
+    const fatInfoChange = infoChange('fat');
+    const naInfoChange = infoChange('na');
+    const proInfoChange = infoChange('pro');
 
     return (
         <>
@@ -142,47 +171,97 @@ export default function Recipe() {
                                         <div className="filter-detail-category">음식의 종류</div>
                                         <div className="filter-detail-div">
                                             <span className="filter-detail-span">
-                                                <input className='checkbox' type="checkbox" />
-                                                반찬
+                                                <input
+                                                    id="checkbox-sideDish"
+                                                    name='sideDish'
+                                                    onChange={changefoodCheck}
+                                                    className='filter-detail-span checkbox'
+                                                    type="checkbox" />
+                                                <label htmlFor="checkbox-sideDish">반찬</label>
                                             </span>
                                             <span className="filter-detail-span">
-                                                <input className='checkbox' type="checkbox" />
-                                                일품
+                                                <input
+                                                    id="checkbox-specialDish"
+                                                    name='specialDish'
+                                                    onChange={changefoodCheck}
+                                                    className='checkbox'
+                                                    type="checkbox" />
+                                                <label htmlFor="checkbox-specialDish">일품</label>
                                             </span>
                                             <span className="filter-detail-span">
-                                                <input className='checkbox' type="checkbox" />
-                                                국&찌개
+                                                <input
+                                                    id="checkbox-stew"
+                                                    name='stew'
+                                                    onChange={changefoodCheck}
+                                                    className='checkbox'
+                                                    type="checkbox" />
+                                                <label htmlFor="checkbox-stew">국&찌개</label>
                                             </span>
                                             <span className="filter-detail-span">
-                                                <input className='checkbox' type="checkbox" />
-                                                후식
+                                                <input
+                                                    id="checkbox-dessert"
+                                                    name='dessert'
+                                                    onChange={changefoodCheck}
+                                                    className='checkbox'
+                                                    type="checkbox" />
+                                                <label htmlFor="checkbox-dessert">후식</label>
                                             </span>
                                         </div>
                                         <div className="filter-detail-category">요리 방법</div>
                                         <div className="filter-detail-div">
                                             <span className="filter-detail-span">
-                                                <input className='checkbox' type="checkbox" />
-                                                찌기
+                                                <input
+                                                    id="checkbox-steam"
+                                                    name='steam'
+                                                    onChange={changeCookCheck}
+                                                    className='checkbox'
+                                                    type="checkbox" />
+                                                <label htmlFor="checkbox-steam">찌기</label>
                                             </span>
                                             <span className="filter-detail-span">
-                                                <input className='checkbox' type="checkbox" />
-                                                끓이기
+                                                <input
+                                                    id="checkbox-boil"
+                                                    name="boil"
+                                                    onChange={changeCookCheck}
+                                                    className='checkbox'
+                                                    type="checkbox" />
+                                                <label htmlFor="checkbox-boil">끓이기</label>
                                             </span>
                                             <span className="filter-detail-span">
-                                                <input className='checkbox' type="checkbox" />
-                                                굽기
+                                                <input
+                                                    id="checkbox-grill"
+                                                    name="grill"
+                                                    onChange={changeCookCheck}
+                                                    className='checkbox'
+                                                    type="checkbox" />
+                                                <label htmlFor="checkbox-grill">굽기</label>
                                             </span>
                                             <span className="filter-detail-span">
-                                                <input className='checkbox' type="checkbox" />
-                                                볶기
+                                                <input
+                                                    id="checkbox-stir"
+                                                    name="stir"
+                                                    onChange={changeCookCheck}
+                                                    className='checkbox'
+                                                    type="checkbox" />
+                                                <label htmlFor="checkbox-stir">볶기</label>
                                             </span>
                                             <span className="filter-detail-span">
-                                                <input className='checkbox' type="checkbox" />
-                                                튀기기
+                                                <input
+                                                    id="checkbox-fry"
+                                                    name="fry"
+                                                    onChange={changeCookCheck}
+                                                    className='checkbox'
+                                                    type="checkbox" />
+                                                <label htmlFor="checkbox-fry">튀기기</label>
                                             </span>
                                             <span className="filter-detail-span">
-                                                <input className='checkbox' type="checkbox" />
-                                                기타
+                                                <input
+                                                    id="checkbox-etc"
+                                                    name="etc"
+                                                    onChange={changeCookCheck}
+                                                    className='checkbox'
+                                                    type="checkbox" />
+                                                <label htmlFor="checkbox-etc">기타</label>
                                             </span>
                                         </div>
                                         <div className="filter-detail-category">영양성분</div>
@@ -191,37 +270,38 @@ export default function Recipe() {
                                                 탄수화물
                                                 <span></span>
                                                 <div className="input-slide-container">
-                                                    <MultiRangeSlider min={0} max={1000} onChange={carInfoChange} />
+                                                    <MultiRangeSlider min={0} max={1000} unit="g" onChange={carInfoChange} />
                                                 </div>
                                             </span>
                                             <span className="filter-detail-span range-span">
                                                 열량
                                                 <div className="input-slide-container">
-                                                    <MultiRangeSlider min={0} max={1000} onChange={engInfoChange} />
+                                                    <MultiRangeSlider min={0} max={1000} unit="kcal" onChange={engInfoChange} />
                                                 </div>
                                             </span>
                                             <span className="filter-detail-span range-span">
                                                 지방
                                                 <div className="input-slide-container">
-                                                    <MultiRangeSlider min={0} max={1000} onChange={fatInfoChange} />
+                                                    <MultiRangeSlider min={0} max={1000} unit="g" onChange={fatInfoChange} />
                                                 </div>
                                             </span>
                                             <span className="filter-detail-span range-span">
                                                 나트륨
                                                 <div className="input-slide-container">
-                                                    <MultiRangeSlider min={0} max={1000} onChange={naInfoChange} />
+                                                    <MultiRangeSlider min={0} max={1000} unit="mg" onChange={naInfoChange} />
                                                 </div>
                                             </span>
                                             <span className="filter-detail-span range-span">
                                                 단백질
                                                 <div className="input-slide-container">
-                                                    <MultiRangeSlider min={0} max={1000} onChange={proInfoChange} />
+                                                    <MultiRangeSlider min={0} max={1000} unit="g" onChange={proInfoChange} />
                                                 </div>
                                             </span>
                                         </div>
                                     </div>
                                     <div className="filter-submit">
-                                        <div>필터 적용하기</div>
+                                        {/* filter-button 하위에 존재하기 때문에 이벤트 버블링 발생 - 막도록 설정 */}
+                                        <div onClick={(e) => { e.stopPropagation(); setFilterVisible(false); }}>필터 적용하기</div>
                                         <div>필터 지우기</div>
                                     </div>
                                 </div>
@@ -491,41 +571,22 @@ export default function Recipe() {
                     cursor: pointer;
                 }
                 .input-slide-container {
-                    margin: 15px 0 40px 0;
+                    margin: 12px 0 40px 0;
                 }
                 .range-span {
                     display: block;
                     cursor: auto;
+                    margin-top: 14px;
                     margin-left: 3px;
                 }
-                .checkbox, .range {
+                .checkbox {
                     position: relative;
                     top: 1.72px;
                     margin-right: 5px;
+                    cursor: pointer;
                 }
-                {/* input 슬라이더 */}
-                input[type=range] {
-                    appearance: none;
-                    -webkit-appearance: none;
-                    width: 50%;
-                    height: 3px;
-                    background: #e8e8e8;
-                }
-                {/* input 커서 */}
-                input[type=range]::-webkit-slider-thumb {
-                    appearance: none;
-                    -webkit-appearance: none;
-                    width: 15px;
-                    height: 15px;
-                    border-radius: 50%;
-                    background-color: #111111;
-                }
-                .range {
-                    display: block;
-                    margin: 12px 0 16px 2px;
-                }
-                .range:hover::-webkit-slider-thumb {
-                    background-color: #111111;
+                label {
+                    cursor: pointer;
                 }
                 .filter-submit {
                     display: flex;  
@@ -539,6 +600,10 @@ export default function Recipe() {
                     border: 1px solid #e8e8e8;
                     border-radius: 8px;
                     cursor: pointer;
+                    transition: border-color 0.3s ease;
+                }
+                .filter-submit div:hover {
+                    border-color: rgb(130, 130, 130);
                 }
                 .menu-section {
                     display: flex;
@@ -623,9 +688,6 @@ export default function Recipe() {
                 }
                 .left {
                     transform: rotate(180deg);
-                }
-                .right {
-
                 }
             `}</style>
         </>

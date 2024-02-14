@@ -5,10 +5,11 @@ import { RootState } from '@/redux/store';
 interface MultiRangeSliderProps {
     min: number;
     max: number;
+    unit: string;
     onChange: (minVal: number, maxVal: number) => void;
 }
 
-const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, onChange }) => {
+const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange }) => {
     const [minVal, setMinVal] = useState(min);
     const [maxVal, setMaxVal] = useState(max);
     const minValRef = useRef(min);
@@ -48,7 +49,7 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, onChange }) => 
         // 최대값 및 최소값을 onChange의 파라미터로 전송
         onChange(minValRef.current, maxValRef.current);
     }
-    
+
     // 최대값을 설정
     const maxValChange = (event: ChangeEvent<HTMLInputElement>) => {
         const value = Math.max(Number(event.target.value), minVal + 1);
@@ -78,8 +79,8 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, onChange }) => 
                 <div className="slider">
                     <div className="slider__track"></div>
                     <div ref={range} className="slider__range"></div>
-                    <div className="slider__left-value">{minVal}</div>
-                    <div className="slider__right-value">{maxVal}</div>
+                    <div className="slider__left-value">{`${minVal} ${unit}`}</div>
+                    <div className="slider__right-value">{`${maxVal} ${unit}`}</div>
                 </div>
             </div>
             <style jsx>{`
@@ -118,15 +119,15 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, onChange }) => 
                 .slider__right-value {
                     color: #111111;
                     font-size: 12px;
-                    margin-top: 12px;
+                    margin-top: 11px;
                 }
                 {/* 좌측 슬라이더 */}
                 .slider__left-value {
-                    left: 6px;
+                    left: 1px;
                 }
-                {/* 우측 슬라이더 슬라이더 */}
+                {/* 우측 슬라이더 */}
                 .slider__right-value {
-                    right: -4px;
+                    right: 1px;
                 }
                 {/* 기본 커서 삭제 */}
                 .thumb,
@@ -145,10 +146,12 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, onChange }) => 
                 {/* 왼쪽 커서 */}
                 .thumb--left {
                     z-index: 3;
+                    margin-top: 0px;
                 }
                 {/* 오른쪽 커서 */}
                 .thumb--right {
                     z-index: 4;
+                    margin-top: 0px;
                 }
                 /* 크롬 */
                 .thumb::-webkit-slider-thumb {
@@ -156,8 +159,8 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, onChange }) => 
                     border: none;
                     border-radius: 50%;
                     cursor: pointer;
-                    height: 15px;
-                    width: 15px;
+                    height: 10px;
+                    width: 10px;
                     margin-top: 4px;
                     pointer-events: all;
                     position: relative;
@@ -168,8 +171,8 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, onChange }) => 
                     border: none;
                     border-radius: 50%;
                     cursor: pointer;
-                    height: 15px;
-                    width: 15px;
+                    height: 10px;
+                    width: 10px;
                     margin-top: 4px;
                     pointer-events: all;
                     position: relative;
