@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FC, useCallback, useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+import { RootState } from '../redux/store';
 
 interface MultiRangeSliderProps {
     min: number;
@@ -10,11 +10,18 @@ interface MultiRangeSliderProps {
 }
 
 const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange }) => {
-    const [minVal, setMinVal] = useState(min);
-    const [maxVal, setMaxVal] = useState(max);
+    const [minVal, setMinVal] = useState<number>(min);
+    const [maxVal, setMaxVal] = useState<number>(max);
     const minValRef = useRef(min);
     const maxValRef = useRef(max);
     const range = useRef<HTMLDivElement>(null);
+
+    const sliderReset = useSelector((state: RootState) => state.sliderReset);
+
+    // useEffect(() => {
+    //     setMinVal(0);
+    //     setMaxVal(1000);
+    // }, [sliderReset]);
 
     // 퍼센테이지로 변경
     const getPercent = useCallback((value: number) =>
@@ -29,7 +36,7 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange 
             range.current.style.left = `${minPercent}%`;
             range.current.style.width = `${maxPercent - minPercent}%`;
         }
-    }, [minVal, getPercent]);
+    }, [minVal, min, max]);
 
     // 범위의 너비를 오른쪽에서 줄이도록 설정
     useEffect(() => {
@@ -39,7 +46,7 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange 
         if (range.current) {
             range.current.style.width = `${maxPercent - minPercent}%`;
         }
-    }, [maxVal, getPercent]);
+    }, [maxVal, min, max]);
 
     // 최소값을 설정
     const minValChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -83,6 +90,9 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange 
                     <div className="slider__right-value">{`${maxVal} ${unit}`}</div>
                 </div>
             </div>
+            {/* <div style={{ display: 'none' }}>
+                <Recipe setMinVal={setMinVal} setMaxVal={setMaxVal} />
+            </div> */}
             <style jsx>{`
                 .slide-container {
                     display: flex;
@@ -91,7 +101,7 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange 
                 }
                 .slider {
                     position: relative;
-                    width: 200px;
+                    width: 380px;
                 }
                 .slider__track,
                 .slider__range,
@@ -124,10 +134,12 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange 
                 {/* 좌측 슬라이더 */}
                 .slider__left-value {
                     left: 1px;
+                    color: #5C5C5C;
                 }
                 {/* 우측 슬라이더 */}
                 .slider__right-value {
                     right: 1px;
+                    color: #5C5C5C;
                 }
                 {/* 기본 커서 삭제 */}
                 .thumb,
@@ -139,7 +151,7 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange 
                     pointer-events: none;
                     position: absolute;
                     height: 0;
-                    width: 200px;
+                    width: 380px;
                     outline: none;
                     margin-left: -0.1px;
                 }
@@ -159,8 +171,8 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange 
                     border: none;
                     border-radius: 50%;
                     cursor: pointer;
-                    height: 10px;
-                    width: 10px;
+                    height: 8px;
+                    width: 8px;
                     margin-top: 4px;
                     pointer-events: all;
                     position: relative;
@@ -171,8 +183,8 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange 
                     border: none;
                     border-radius: 50%;
                     cursor: pointer;
-                    height: 10px;
-                    width: 10px;
+                    height: 8px;
+                    width: 8px;
                     margin-top: 4px;
                     pointer-events: all;
                     position: relative;
