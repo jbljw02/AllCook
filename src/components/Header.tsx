@@ -1,6 +1,7 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Anek_Tamil } from 'next/font/google'
+import { Anek_Tamil } from 'next/font/google';
+import pressSearch from './pressSearch';
 
 const titleFont = Anek_Tamil({
     subsets: ['latin'],
@@ -69,7 +70,8 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                     {/* 검색창 및 로그인 네비게이션 바 */}
                     <div className='right-nav'>
                         <span className='input-container'>
-                            <input style={{ backgroundColor: inputBackgroundColor }} className='search-input' placeholder='메뉴, 재료로 검색' />
+                            {/* onKeyDown = 키가 눌렸을 때 발생 */}
+                            <input onKeyDown={pressSearch} style={{ backgroundColor: inputBackgroundColor }} className='search-input' placeholder='메뉴, 재료로 검색' />
                             <svg className="img-search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="21" height="21">
                                 <path fill="currentColor" d="M3.5 8a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM8 2a6 6 0 1 0 3.65 10.76l3.58 3.58 1.06-1.06-3.57-3.57A6 6 0 0 0 8 2Z"></path></svg>
                         </span>

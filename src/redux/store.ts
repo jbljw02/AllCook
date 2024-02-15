@@ -1,6 +1,6 @@
 import { combineReducers, configureStore, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE, createWrapper } from "next-redux-wrapper";
-import meneReducers from './features/menuSlice';
+import menuReducers from './features/menuSlice';
 import NutritionReducers from './features/nutritionSlice';
 
 export type RootState = {
@@ -8,11 +8,9 @@ export type RootState = {
     dessertMenu: Menu[],
     allMenu: Menu[],
     nutritionInfo: Nutrition,
-    // carInfo: Nutrition,
-    // engInfo: Nutrition,
-    // fatInfo: Nutrition,
-    // naInfo: Nutrition,
-    // proInfo: Nutrition,
+    sliderReset: boolean,
+    minValue: number,
+    maxValue: number,
 }
 
 export type Menu = {
@@ -43,15 +41,12 @@ export type Nutrition = {
 
 // 각각의 기능을 가진 리듀서들을 병합
 const combinedReducer = combineReducers({
-    recomMenu: meneReducers.recomMenu,
-    dessertMenu: meneReducers.dessertMenu,
-    allMenu: meneReducers.allMenu,
+    recomMenu: menuReducers.recomMenu,
+    dessertMenu: menuReducers.dessertMenu,
+    allMenu: menuReducers.allMenu,
+    searchedMenu: menuReducers.searchedMenu,
     nutritionInfo: NutritionReducers.nutritionInfo,
-    carInfo: NutritionReducers.carInfo,
-    engInfo: NutritionReducers.engInfo,
-    fatInfo: NutritionReducers.engInfo,
-    naInfo: NutritionReducers.naInfo,
-    proInfo: NutritionReducers.proInfo,
+    sliderReset: NutritionReducers.sliderReset,
 });
 
 // 전체 리듀서를 관리

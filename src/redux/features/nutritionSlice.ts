@@ -27,75 +27,24 @@ export const nutritionInfoSlice = createSlice({
     },
 });
 
-// 칼로리의 검색 범위를 정하는 슬라이더의 Slice
-export const carInfoSlice = createSlice({
-    name: 'carInfo',
-    initialState: initialState,
+// slider의 초기화를 위한 Slice
+export const sliderResetSlice = createSlice({
+    name: 'sliderReset',
+    initialState: false,
     reducers: {
-        setCarInfo: (state, action) => {
-            return action.payload;
-        }
-    }
-})
-
-// 열량의 검색 범위를 정하는 슬라이더의 Slice
-export const engInfoSlice = createSlice({
-    name: 'engInfo',
-    initialState: initialState,
-    reducers: {
-        setEngInfo: (state, action) => {
-            return action.payload;
-        }
-    }
-})
-
-// 지방의 검색 범위를 정하는 슬라이더의 Slice
-export const fatInfoSlice = createSlice({
-    name: 'fatInfo',
-    initialState: initialState,
-    reducers: {
-        setFatInfo: (state, action) => {
-            return action.payload;
-        }
-    }
-})
-
-// 나트륨의 검색 범위를 정하는 슬라이더의 Slice
-export const naInfoSlice = createSlice({
-    name: 'naInfo',
-    initialState: initialState,
-    reducers: {
-        setNaInfo: (state, action) => {
-            return action.payload;
-        }
-    }
-})
-
-// 단백질의 검색 범위를 정하는 슬라이더의 Slice
-export const proInfoSlice = createSlice({
-    name: 'proInfo',
-    initialState: initialState,
-    reducers: {
-        setProInfo: (state, action) => {
-            return action.payload;
+        setSliderReset: (state) => {
+            return !state;
         }
     }
 })
 
 export const { setNutritionInfo } = nutritionInfoSlice.actions;
-export const { setCarInfo } = carInfoSlice.actions;
-export const { setEngInfo } = engInfoSlice.actions;
-export const { setFatInfo } = fatInfoSlice.actions;
-export const { setNaInfo } = naInfoSlice.actions;
-export const { setProInfo } = proInfoSlice.actions;
+export const { setSliderReset } = sliderResetSlice.actions;
 
 const reducers = {
     nutritionInfo: nutritionInfoSlice.reducer,
-    carInfo: carInfoSlice.reducer,
-    engInfo: engInfoSlice.reducer,
-    fatInfo: fatInfoSlice.reducer,
-    naInfo: naInfoSlice.reducer,
-    proInfo: proInfoSlice.reducer,
+    sliderReset: sliderResetSlice.reducer,
+
 }
 
 export default reducers;

@@ -48,14 +48,26 @@ export const allMenuSlice = createSlice({
     }
 })
 
+export const searchedMenuSlice = createSlice({
+    name: 'searchedMenu',
+    initialState: initialState,
+    reducers: {
+        setSearchedMenu: (state, action) => {
+            return action.payload;
+        }
+    }
+})
+
 export const { setRecomMenu } = recomMenuSlice.actions;
 export const { setDessertMenu } = dessertMenuSlice.actions;
 export const { setAllMenu } = allMenuSlice.actions;
+export const { setSearchedMenu } = searchedMenuSlice.actions;
 
 const reducers = {
     recomMenu: recomMenuSlice.reducer,
     dessertMenu: dessertMenuSlice.reducer,
     allMenu: allMenuSlice.reducer,
+    searchedMenu: searchedMenuSlice.reducer,
 }
 
 export default reducers;
