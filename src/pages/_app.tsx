@@ -2,6 +2,7 @@ import { AppProps } from 'next/app'
 import { Noto_Sans_KR } from 'next/font/google'
 import { wrapper } from '@/redux/store';
 import '../styles/global.css'
+import '../styles/menuTable.css'
 
 const noto = Noto_Sans_KR({
     subsets: ['latin'],

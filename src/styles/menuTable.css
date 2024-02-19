@@ -1,0 +1,38 @@
+.menu-table {
+    display: flex;
+    flex-direction: column;
+    border-collapse: separate;
+    border-spacing: 0 25px;
+    margin-top: -25px;
+    color: #111111;
+}
+.menu-table tr td {
+    max-width: 250px;
+    vertical-align: top;
+    align-self: start;
+    padding: 0 10.5px;
+}
+.menu-table tr td:first-child {
+    padding-left: 0px;
+}
+.menu-table tr td:last-child {
+    padding-right: 0px;
+}
+.td-content {
+    overflow: hidden;
+    border-radius: 8px;
+    width: 250px;
+    height: 250px;
+    margin-bottom: 6px;
+}
+.RCP_NM {
+    text-align: left;
+    font-size: 15px;
+    font-weight: 400;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+.RCP_PAT2 {
+    font-size: 13px;
+    color: #5c5c5c;
+}

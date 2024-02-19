@@ -17,62 +17,6 @@ export default function Home() {
     const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
     const contentsRef = useRef<HTMLDivElement>(null);
     const homeRef = useRef<HTMLDivElement>(null);
-    const aboutRef = useRef<HTMLDivElement>(null);
-
-    console.log("scrollPassContet : ", scrollPassContent);
-
-    // 홈 화면에 글자에 split 효과를 주기 위함
-    const titleText1 = "환영합니다! 우리는 All Cook,";
-    const titleText2 = "당신의 요리 파트너입니다.";
-    const [displayedText1, setDisplayedText1] = useState("");
-    const [displayedText2, setDisplayedText2] = useState("");
-
-    // 서버로부터 받아온 메뉴를 저장
-    const recomMenu = useSelector((state: RootState) => state.recomMenu);
-    const dessertMenu = useSelector((state: RootState) => state.dessertMenu);
-
-    // const testMenu = useSelector((state: RootState) => state.testMenu);
-    // let results = testMenu.filter((item) => item.RCP_NM.includes('돼지'))
-
-    useEffect(() => {
-        // titleText를 배열로 만든 후 setTimeout을 이용해 화면의 차례로 출력
-        titleText1.split("").forEach((str, index) => {
-            setTimeout(() => {
-                setDisplayedText1((prev) => prev + str);
-            }, index * 60);
-        });
-        // titleText1이 전부 출력된 후 실행되도록 설정
-        titleText2.split("").forEach((str, index) => {
-            setTimeout(() => {
-                setDisplayedText2((prev) => prev + str);
-            }, (index + titleText1.length) * 60);
-        });
-
-    }, [titleText1, titleText2])
-
-    // useEffect(() => {
-    //     // 타겟 요소가 뷰포트와 교차하는지를 감시
-    //     const observer = new IntersectionObserver(
-    //         ([e]) => {
-    //             // true = 교차, false = 비교차
-    //             setIsScrolled(!e.isIntersecting);
-    //         },
-    //         {
-    //             root: null,
-    //             rootMargin: '600px 0px 0px 0px',
-    //         }
-    //     );
-
-    //     if (contentsRef.current) {
-    //         observer.observe(contentsRef.current);
-    //     }
-
-    //     return () => {
-    //         if (contentsRef.current) {
-    //             observer.unobserve(contentsRef.current);
-    //         }
-    //     };
-    // }, [])
 
     useEffect(() => {
         // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
@@ -103,6 +47,72 @@ export default function Home() {
             window.removeEventListener('scroll', checkScrollTop);
         };
     }, [scrollPassContent]);
+
+    // 서버로부터 받아온 메뉴를 저장
+    const recomMenu = useSelector((state: RootState) => state.recomMenu);
+    const dessertMenu = useSelector((state: RootState) => state.dessertMenu);
+
+    // 홈 화면에 글자에 split 효과를 주기 위함
+    const titleText1 = "환영합니다! 우리는 All Cook,";
+    const titleText2 = "당신의 요리 파트너입니다.";
+    const [displayedText1, setDisplayedText1] = useState("");
+    const [displayedText2, setDisplayedText2] = useState("");
+
+
+    // const testMenu = useSelector((state: RootState) => state.testMenu);
+    // let results = testMenu.filter((item) => item.RCP_NM.includes('돼지'))
+
+    // useEffect(() => {
+    //     // titleText를 배열로 만든 후 setTimeout을 이용해 화면의 차례로 출력
+    //     titleText1.split("").forEach((str, index) => {
+    //         setTimeout(() => {
+    //             setDisplayedText1((prev) => prev + str);
+    //         }, index * 60);
+    //     });
+    //     // titleText1이 전부 출력된 후 실행되도록 설정
+    //     titleText2.split("").forEach((str, index) => {
+    //         setTimeout(() => {
+    //             setDisplayedText2((prev) => prev + str);
+    //         }, (index + titleText1.length) * 60);
+    //     });
+
+    // }, [titleText1, titleText2]);
+
+    const [recomHovered, setRecomHovered] = useState<boolean[]>([]);
+    const [dessertHovered, setDessertHovered] = useState<boolean[]>([]);
+
+    const imgMouseEnter = (index: number, param: string) => {
+        if (param === 'recom') {
+            setRecomHovered(prev => {
+                const newHoverState = [...prev];
+                newHoverState[index] = true;
+                return newHoverState;
+            });
+        }
+        if (param === 'dessert') {
+            setDessertHovered(prev => {
+                const newHoverState = [...prev];
+                newHoverState[index] = true;
+                return newHoverState;
+            })
+        }
+    }
+    const imgMouseOut = (index: number, param: string) => {
+        if (param === 'recom') {
+            setRecomHovered(prev => {
+                const newHoverState = [...prev];
+                newHoverState[index] = false;
+                return newHoverState;
+            });
+        }
+        if (param === 'dessert') {
+            setDessertHovered(prev => {
+                const newHoverState = [...prev];
+                newHoverState[index] = false;
+                return newHoverState;
+            })
+        }
+    };
 
     return (
         <>
@@ -242,23 +252,31 @@ export default function Home() {
                         <div className='recommend-subtitle'>
                             All Cook이 추천드리는 메뉴입니다. 오늘은 이 레시피 어떠신가요?
                         </div>
-                        <table className='recommend-table'>
+                        <table className='menu-table'>
                             <tbody>
                                 <tr>
                                     {
                                         recomMenu.length !== undefined && recomMenu.slice(0, 4).map((item, index) => {
+                                            const isHovered = recomHovered;
                                             return (
                                                 <td>
-                                                    <div className='td-content'>
-                                                        <Image
-                                                            src={`${item.ATT_FILE_NO_MK}`}
-                                                            style={{ borderRadius: 8 }}
-                                                            width={250}
-                                                            height={250}
-                                                            // layout='fill'
-                                                            // objectFit='contain'
-                                                            alt={''}
-                                                        />
+                                                    <div>
+                                                        <div className="td-content">
+                                                            <Image
+                                                                src={`${item.ATT_FILE_NO_MK}`}
+                                                                style={{
+                                                                    borderRadius: 8,
+                                                                    cursor: 'pointer',
+                                                                    transition: 'transform 0.3s ease',
+                                                                    transform: isHovered[index] ? 'scale(1.05)' : 'scale(1)'
+                                                                }}
+                                                                width={250}
+                                                                height={250}
+                                                                alt={''}
+                                                                onMouseEnter={() => imgMouseEnter(index, 'recom')}
+                                                                onMouseLeave={() => imgMouseOut(index, 'recom')}
+                                                            />
+                                                        </div>
                                                         <div className='RCP_NM'>{item.RCP_NM}</div>
                                                         <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
                                                     </div>
@@ -279,23 +297,31 @@ export default function Home() {
                         <div className='recommend-subtitle'>
                             식사 후엔 후식도 잊지 마세요!
                         </div>
-                        <table className='recommend-table'>
+                        <table className='menu-table'>
                             <tbody>
                                 <tr>
                                     {
                                         dessertMenu.length !== undefined && dessertMenu.slice(0, 4).map((item, index) => {
+                                            const isHovered = dessertHovered;
                                             return (
                                                 <td>
-                                                    <div className='td-content'>
-                                                        <Image
-                                                            src={`${item.ATT_FILE_NO_MK}`}
-                                                            style={{ borderRadius: 8 }}
-                                                            width={250}
-                                                            height={250}
-                                                            // layout='fill'
-                                                            // objectFit='contain'
-                                                            alt={''}
-                                                        />
+                                                    <div>
+                                                        <div className="td-content">
+                                                            <Image
+                                                                src={`${item.ATT_FILE_NO_MK}`}
+                                                                style={{
+                                                                    borderRadius: 8,
+                                                                    cursor: 'pointer',
+                                                                    transition: 'transform 0.3s ease',
+                                                                    transform: isHovered[index] ? 'scale(1.05)' : 'scale(1)'
+                                                                }}
+                                                                width={250}
+                                                                height={250}
+                                                                alt={''}
+                                                                onMouseEnter={() => imgMouseEnter(index, 'dessert')}
+                                                                onMouseLeave={() => imgMouseOut(index, 'dessert')}
+                                                            />
+                                                        </div>
                                                         <div className='RCP_NM'>{item.RCP_NM}</div>
                                                         <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
                                                     </div>
@@ -498,43 +524,10 @@ export default function Home() {
                     font-size: 13.5px;
                     color: #5c5c5c;
                 }
-                .recommend-table {
-                    display: flex;
-                    flex-direction: column;
-                }
-                .recommend-table tr td {
-                    max-width: 220px;
-                    vertical-align: top;
-                    align-self: start;
-                    transition: transform 0.3s ease;
-                    padding: 0 25px;
-                    {/* max-width: 400px; */}
-                }
-                .recommend-table tr td:hover {
-                    transform: scale(1.05);
-                }
-                .td-content {
-                    cursor: pointer;
-                }
-                .RCP_NM {
-                    text-align: left;
-                    font-size: 15px;
-                    font-weight: 400;
-                    word-wrap: break-word;
-                    word-break: break-all;
-                }
-                .RCP_PAT2 {
-                    font-size: 13px;
-                    color: #5c5c5c;
-                }
-
-                {/* 추천 후식에 대한 컨테이너 */}
-                
             `}</style>
         </>
     )
 }
-
 
 export const getServerSideProps = wrapper.getServerSideProps(store => async () => {
     const API_KEY = process.env.API_KEY;
