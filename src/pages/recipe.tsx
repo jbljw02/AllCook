@@ -126,7 +126,7 @@ export default function Recipe() {
     }
 
     const [isHovered, setIsHovered] = useState(new Array(allMenu.length).fill(false));  // 페이지 전체에 있는 이미지의 hover 여부를 관리
-
+    
     const imgMouseEnter = (globalIndex: number) => {
         setIsHovered(prev => {
             // state의 이전 상태를 그대로 가져와서, 마우스가 들어온 인덱스만 true로 변경
@@ -428,7 +428,7 @@ export default function Recipe() {
                                         const menuPerPage = allMenu.slice(startIndex, endIndex);
                                         // 0번째 tr = slice(0, 4), 2번째 tr = slice(4, 8)... 4개씩 나누어 출력
                                         const items = menuPerPage.slice(index * 4, index * 4 + 4);
-                                        const hoverState = isHovered.slice(startIndex, endIndex);
+                                        const hoverState = isHovered;
 
                                         return (
                                             <tr>
