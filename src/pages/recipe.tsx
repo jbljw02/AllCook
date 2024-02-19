@@ -125,6 +125,25 @@ export default function Recipe() {
         }
     }
 
+    const [isHovered, setIsHovered] = useState(new Array(allMenu.length).fill(false));  // 페이지 전체에 있는 이미지의 hover 여부를 관리
+
+    const imgMouseEnter = (globalIndex: number) => {
+        setIsHovered(prev => {
+            // state의 이전 상태를 그대로 가져와서, 마우스가 들어온 인덱스만 true로 변경
+            const newHoverState = [...prev];
+            newHoverState[globalIndex] = true;
+            return newHoverState;
+        });
+    }
+    const imgMouseOut = (globalIndex: number) => {
+        setIsHovered(prev => {
+            const newHoverState = [...prev];
+            // state의 이전 상태를 그대로 가져와서, 마우스가 나간 인덱스만 false로 변경
+            newHoverState[globalIndex] = false;
+            return newHoverState;
+        });
+    };
+
     const [filterVisible, setFilterVisible] = useState<boolean>(false);  // '상세검색' 클릭 시 띄워지는 창을 관리하기 위한 state
     const filterRef = useRef<HTMLDivElement | null>(null);
 
@@ -154,6 +173,8 @@ export default function Recipe() {
     const fatInfoChange = infoChange('fat');
     const naInfoChange = infoChange('na');
     const proInfoChange = infoChange('pro');
+
+
 
     allMenu.map((item: Menu) => {
         // console.log("탄수화물 : ", item.INFO_CAR);
@@ -407,24 +428,39 @@ export default function Recipe() {
                                         const menuPerPage = allMenu.slice(startIndex, endIndex);
                                         // 0번째 tr = slice(0, 4), 2번째 tr = slice(4, 8)... 4개씩 나누어 출력
                                         const items = menuPerPage.slice(index * 4, index * 4 + 4);
+                                        const hoverState = isHovered.slice(startIndex, endIndex);
+
                                         return (
                                             <tr>
                                                 {
-                                                    items.map(item => (
-                                                        <td>
-                                                            <div className='td-content'>
-                                                                <Image
-                                                                    src={`${item.ATT_FILE_NO_MK}`}
-                                                                    style={{ borderRadius: 8 }}
-                                                                    width={250}
-                                                                    height={250}
-                                                                    alt={''}
-                                                                />
-                                                                <div className='RCP_NM'>{item.RCP_NM}</div>
-                                                                <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
-                                                            </div>
-                                                        </td>
-                                                    ))}
+                                                    items.map((item, localIndex) => {
+                                                        // 단순 index를 사용하면 현재 tr 내부로 제한되기 때문에, 페이지 전체의 인덱스를 계산해서 사용
+                                                        const globalIndex = startIndex + index * 4 + localIndex;
+                                                        return (
+                                                            <td>
+                                                                <div>
+                                                                    <div className="td-content">
+                                                                        <Image
+                                                                            src={`${item.ATT_FILE_NO_MK}`}
+                                                                            style={{
+                                                                                borderRadius: 8,
+                                                                                cursor: 'pointer',
+                                                                                transition: 'transform 0.3s ease',
+                                                                                transform: hoverState[globalIndex] ? 'scale(1.05)' : 'scale(1)'
+                                                                            }}
+                                                                            width={250}
+                                                                            height={250}
+                                                                            alt={''}
+                                                                            onMouseEnter={() => imgMouseEnter(globalIndex)}
+                                                                            onMouseLeave={() => imgMouseOut(globalIndex)}
+                                                                        />
+                                                                    </div>
+                                                                    <div className='RCP_NM'>{item.RCP_NM}</div>
+                                                                    <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
+                                                                </div>
+                                                            </td>
+                                                        )
+                                                    })}
                                             </tr>
                                         )
                                     })
@@ -687,41 +723,6 @@ export default function Recipe() {
                     justify-content: center;
                     margin-top: 30px;
                     width: 1080px;
-                }
-                .menu-table {
-                    display: flex;
-                    flex-direction: column;
-                    border-collapse: separate;
-                    border-spacing: 0 25px;
-                    margin-top: -25px;
-                    color: #111111;
-                }
-                .menu-table tr td {
-                    max-width: 220px;
-                    vertical-align: top;
-                    align-self: start;
-                    transition: transform 0.3s ease;
-                    padding: 0 25px;
-                }
-                .menu-table tr td:first-child {
-                    padding-left: 0px;
-                }
-                .menu-table tr td:hover {
-                    transform: scale(1.05);
-                }
-                .td-content {
-                    cursor: pointer;
-                }
-                .RCP_NM {
-                    text-align: left;
-                    font-size: 15px;
-                    font-weight: 400;
-                    word-wrap: break-word;
-                    word-break: break-all;
-                }
-                .RCP_PAT2 {
-                    font-size: 13px;
-                    color: #5c5c5c;
                 }
                 .pagination-section {
                     display: flex;
