@@ -7,6 +7,8 @@ export type RootState = {
     recomMenu: Menu[],
     dessertMenu: Menu[],
     allMenu: Menu[],
+    displayedMenu: Menu[],
+    searchedMenu: Menu[],
     nutritionInfo: Nutrition,
     sliderReset: boolean,
     minValue: number,
@@ -44,7 +46,7 @@ const combinedReducer = combineReducers({
     recomMenu: menuReducers.recomMenu,
     dessertMenu: menuReducers.dessertMenu,
     allMenu: menuReducers.allMenu,
-    searchedMenu: menuReducers.searchedMenu,
+    displayedMenu: menuReducers.displayedMenuSlice,
     nutritionInfo: NutritionReducers.nutritionInfo,
     sliderReset: NutritionReducers.sliderReset,
 });
@@ -74,5 +76,5 @@ export const makeStore = () => {
     })
 }
 
-export const wrapper = createWrapper(makeStore, { debug: true });
-// export const wrapper = createWrapper(makeStore);
+// export const wrapper = createWrapper(makeStore, { debug: true });
+export const wrapper = createWrapper(makeStore);

@@ -1,7 +1,9 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Anek_Tamil } from 'next/font/google';
-import pressSearch from './pressSearch';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { setAllMenu, setDisplayedMenu } from '@/redux/features/menuSlice';
 
 const titleFont = Anek_Tamil({
     subsets: ['latin'],
@@ -11,6 +13,21 @@ const titleFont = Anek_Tamil({
 type Position = 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky';
 
 export default function Header({ position, backgroundColor, color, borderColor, svgFill, lightLogo, inputBackgroundColor }: { position: Position, backgroundColor: string, color: string, borderColor: string, svgFill: string, lightLogo: boolean, inputBackgroundColor: string }) {
+    const dispatch = useDispatch();
+
+    const allMenu = useSelector((state: RootState) => state.allMenu);
+
+    const [inputValue, setInputValue] = useState<string>();
+
+    const pressSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            // 메뉴, 재료명으로 검색
+            const searchedMenu = allMenu.filter(item =>
+                (item.RCP_NM).includes(event.currentTarget.value) ||
+                (item.RCP_PARTS_DTLS).includes(event.currentTarget.value));
+            dispatch(setDisplayedMenu(searchedMenu));
+        }
+    }
 
     return (
         <>
@@ -71,7 +88,12 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                     <div className='right-nav'>
                         <span className='input-container'>
                             {/* onKeyDown = 키가 눌렸을 때 발생 */}
-                            <input onKeyDown={pressSearch} style={{ backgroundColor: inputBackgroundColor }} className='search-input' placeholder='메뉴, 재료로 검색' />
+                            <input
+                                onKeyDown={pressSearch}
+                                value={inputValue}
+                                style={{ backgroundColor: inputBackgroundColor }}
+                                className='search-input'
+                                placeholder='메뉴, 재료로 검색' />
                             <svg className="img-search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="21" height="21">
                                 <path fill="currentColor" d="M3.5 8a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM8 2a6 6 0 1 0 3.65 10.76l3.58 3.58 1.06-1.06-3.57-3.57A6 6 0 0 0 8 2Z"></path></svg>
                         </span>
