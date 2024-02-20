@@ -1,19 +1,27 @@
 import Header from "../components/Header"
 import Footer from "../components/Footer"
 import { useDispatch, useSelector } from "react-redux"
-import { Menu, RootState, wrapper } from "@/redux/store";
-import { setAllMenu } from "@/redux/features/menuSlice";
+import { Menu, RootState, wrapper } from "../redux/store";
+import { setAllMenu, setDisplayedMenu } from "../redux/features/menuSlice";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Seo from "../components/Seo";
 import MultiRangeSlider from "../components/multiRangeSlider";
-import { setNutritionInfo, setSliderReset } from "../redux/features/nutritionSlice";
+import { setNutritionInfo } from "../redux/features/nutritionSlice";
 import { NutritionKey } from "../redux/features/nutritionSlice";
+import { filterMenu, searchByRange } from "../utils/filterMenu";
 
 export default function Recipe() {
     const dispatch = useDispatch();
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
+    const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
+
+    // 화면이 첫 렌더링 될 때 보일 메뉴를 allMenu와 동일하게 업데이트
+    useEffect(() => {
+        dispatch(setDisplayedMenu(allMenu));
+    }, [])
+
     const [recomHashTags, setRecomHashTags] = useState<string[]>();  // 사용자에게 추천할 해시태그
 
     const [sliderKey, setSliderKey] = useState(0);
@@ -39,27 +47,22 @@ export default function Recipe() {
         setRecomHashTags(fixedSideTags);
     }, [allMenu]);
 
-    // const carInfo = useSelector((state: RootState) => state.carInfo);
-    // const engInfo = useSelector((state: RootState) => state.engInfo);
-    // const fatInfo = useSelector((state: RootState) => state.fatInfo);
-    // const naInfo = useSelector((state: RootState) => state.naInfo);
-    // const proInfo = useSelector((state: RootState) => state.proInfo);
-
     // 음식의 종류, 요리 방법, 영양성분의 선택 여부 및 범위를 담는 state들 
     const [foodType, setFoodType] = useState({
-        sideDish: false,
-        specialDish: false,
-        stew: false,
-        dessert: false,
+        sideDish: false,  // 반찬
+        specialDish: false,  // 일품
+        stew: false,  // 국&찌개
+        dessert: false,  // 후식
     });
     const [cookWay, setCookWay] = useState({
-        steam: false,
-        boil: false,
-        grill: false,
-        stir: false,
-        fry: false,
-        etc: false,
+        steam: false,  // 찌기
+        boil: false,  // 끓이기
+        grill: false,  // 굽기
+        stir: false,  // 볶기
+        fry: false,  // 튀기기
+        etc: false,  // 기타
     });
+
     const nutritionInfo = useSelector((state: RootState) => state.nutritionInfo);
 
     // 음식의 종류, 요리 방법의 체크 여부를 토글
@@ -76,7 +79,43 @@ export default function Recipe() {
         })
     }
 
-    const sliderReset = useSelector((state: RootState) => state.sliderReset);  // 영양성분 slider를 리셋시키기 위한 state
+    // console.log("영양성분 : ", nutritionInfo);
+    // console.log("디스플레이 메뉴 : ", displayedMenu);
+
+    // 필터를 적용하여 검색
+    const searchByFilter = () => {
+        setFilterVisible(false);
+
+        // Object.entries = 객체f의 키, 값 쌍을 배열로 반환
+        // ex) ['sideDish', false], ['specialDish', true]...
+        // ([]) = 배열 구조 분해 할당 => 각 위치에 있는 요소를 파라미터에 할당
+        const foodTypeEntries = Object.entries(foodType).filter(([key, value]) => value === true);
+        const cookWayEntries = Object.entries(cookWay).filter(([key, value]) => value === true);
+
+        let filteredMenu = allMenu;
+
+        // 값이 true인 경우가 없을 때(선택된 항목이 없는 경우)는 기존 메뉴로 되돌림
+        if (foodTypeEntries.length === 0 && cookWayEntries.length === 0) {
+            filteredMenu = allMenu;
+        }
+        // 음식의 종류만 선택된 경우
+        else if (foodTypeEntries.length !== 0 && cookWayEntries.length === 0) {
+            filteredMenu = filterMenu(foodTypeEntries, 'RCP_PAT2', allMenu);
+        }
+        // 요리 방법만 선택된 경우
+        else if (foodTypeEntries.length === 0 && cookWayEntries.length !== 0) {
+            filteredMenu = filterMenu(cookWayEntries, 'RCP_WAY2', allMenu);
+        }
+        // 음식의 종류, 요리 방법 모두 선택된 경우
+        else if (foodTypeEntries.length !== 0 && cookWayEntries.length !== 0) {
+            filteredMenu = filterMenu(foodTypeEntries, 'RCP_PAT2', allMenu);
+            filteredMenu = filterMenu(cookWayEntries, 'RCP_WAY2', filteredMenu);
+        }
+
+        let finalFilteredMenu = searchByRange(filteredMenu, nutritionInfo);
+        dispatch(setDisplayedMenu(finalFilteredMenu));  // 최종 분류 결과를 dispatch
+        setCurrentPage(1);  // 화면에 출력되는 메뉴가 변경되었기 때문에 페이지를 초기 상태로 돌림
+    }
 
     // 체크박스를 모두 해제
     const unCheck = () => {
@@ -93,7 +132,7 @@ export default function Recipe() {
         Object.keys(nutritionInfo).forEach((key: string) => {
             dispatch(setNutritionInfo({ name: key as NutritionKey, values: { min: 0, max: 1000 } }));
         })
-        // dispatch(setSliderReset());
+
         setSliderKey(sliderKey + 1);
     }
 
@@ -102,7 +141,7 @@ export default function Recipe() {
     const tdPerPage = 24;  // 한 페이지에 출력할 td의 개수
     const [currentBlock, setCurrentBlock] = useState(1);  // 현재 페이지 블록의 번호
     const pagesPerBlock = 10;  // 한 블록에 출력할 페이지 번호의 개수
-    const totalPagecount = Math.ceil(allMenu.length / tdPerPage);  // 전체 페이지의 수의 올림값
+    const totalPagecount = Math.ceil(displayedMenu.length / tdPerPage);  // 전체 페이지의 수의 올림값
     const startPage = (currentBlock - 1) * pagesPerBlock + 1;  // 페이지의 시작 인덱스
     // 마지막 페이지는 10, 20, 30.. 등등이 마지막 페이지 번호가 아닐 수 있음
     // 그렇기 때문에 전체 페이지의 개수와 현재 블록의 마지막 인덱스중 더 작은 값을 endPage로 설정
@@ -125,8 +164,8 @@ export default function Recipe() {
         }
     }
 
-    const [isHovered, setIsHovered] = useState(new Array(allMenu.length).fill(false));  // 페이지 전체에 있는 이미지의 hover 여부를 관리
-    
+    const [isHovered, setIsHovered] = useState(new Array(displayedMenu.length).fill(false));  // 페이지 전체에 있는 이미지의 hover 여부를 관리
+
     const imgMouseEnter = (globalIndex: number) => {
         setIsHovered(prev => {
             // state의 이전 상태를 그대로 가져와서, 마우스가 들어온 인덱스만 true로 변경
@@ -173,8 +212,6 @@ export default function Recipe() {
     const fatInfoChange = infoChange('fat');
     const naInfoChange = infoChange('na');
     const proInfoChange = infoChange('pro');
-
-
 
     allMenu.map((item: Menu) => {
         // console.log("탄수화물 : ", item.INFO_CAR);
@@ -373,63 +410,32 @@ export default function Recipe() {
                                     </div>
                                     <div className="filter-submit">
                                         {/* filter-button-div 하위에 존재하기 때문에 이벤트 버블링 발생 - 막도록 설정 */}
-                                        <div onClick={(e) => { e.stopPropagation(); setFilterVisible(false); }}>필터 적용하기</div>
+                                        <div onClick={(e) => { e.stopPropagation(); searchByFilter(); }}>필터 적용하기</div>
                                         <div onClick={unCheck}>필터 지우기</div>
                                     </div>
                                 </div>
                             }
                         </div>
                     </div>
-                    {/* <div className="contents-container">
-                    <div className="filter-section">
-                        <div id="filter-title">
-                            <svg className="filter-svg" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M2 4H14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
-                                <path d="M4 8H12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
-                                <path d="M6 12H10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
-                            </svg>
-                            <span>상세 검색</span>
-                        </div>
-                        <div>
-                            <span>음식의 종류</span>
-                            <svg className="plus-svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M11,5 L10.999,10 L16,10 L16,11 L11,11 L11,16 L10,16 L9.999,11 L5,11 L5,10 L10,9.999 L10,5 L11,5 Z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <span>요리 방법</span>
-                            <svg className="plus-svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M11,5 L10.999,10 L16,10 L16,11 L11,11 L11,16 L10,16 L9.999,11 L5,11 L5,10 L10,9.999 L10,5 L11,5 Z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <span>영양성분 포함량</span>
-                            <svg className="plus-svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M11,5 L10.999,10 L16,10 L16,11 L11,11 L11,16 L10,16 L9.999,11 L5,11 L5,10 L10,9.999 L10,5 L11,5 Z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div> */}
                     {/* 메뉴를 보여주는 영역 */}
                     <div className="menu-section">
                         <table className="menu-table">
                             <tbody>
                                 {
-                                    allMenu.length !== undefined &&
-                                    // new Array를 이용하여 새 배열 생성(allMenu를 4로 나눈 몫만큼 map을 사용하기 위함)
-                                    // allMenu의 길이를 4로 나누고 소수점이 떨어지지 않을 경우를 대비하여 Math.ceil을 이용해 올림
+                                    displayedMenu.length !== undefined &&
+                                    // new Array를 이용하여 새 배열 생성(displayedMenu를 4로 나눈 몫만큼 map을 사용하기 위함)
+                                    // displayedMenu의 길이를 4로 나누고 소수점이 떨어지지 않을 경우를 대비하여 Math.ceil을 이용해 올림
                                     // Math.min을 통해 tr의 최대 개수를 trPerPage(6개) 만큼으로 제한
                                     // 그 후에, map은 undefined은 무시하기 때문에 fill을 사용해 모든 요소를 0으로 초기화
-                                    Array(Math.min(Math.ceil(allMenu.length / 4), trPerPage)).fill(0).map((_, index) => {
+                                    Array(Math.min(Math.ceil(displayedMenu.length / 4), trPerPage)).fill(0).map((_, index) => {
                                         // 한 페이지에 출력할 메뉴의 개수를 설정
                                         // 1페이지 = slice(0, 24), 2페이지 = slice(24, 48)...
                                         const startIndex = (currentPage - 1) * tdPerPage;
                                         const endIndex = startIndex + tdPerPage;
-                                        const menuPerPage = allMenu.slice(startIndex, endIndex);
+                                        const menuPerPage = displayedMenu.slice(startIndex, endIndex);
                                         // 0번째 tr = slice(0, 4), 2번째 tr = slice(4, 8)... 4개씩 나누어 출력
                                         const items = menuPerPage.slice(index * 4, index * 4 + 4);
                                         const hoverState = isHovered;
-
                                         return (
                                             <tr>
                                                 {
@@ -460,7 +466,8 @@ export default function Recipe() {
                                                                 </div>
                                                             </td>
                                                         )
-                                                    })}
+                                                    })
+                                                }
                                             </tr>
                                         )
                                     })
@@ -502,7 +509,6 @@ export default function Recipe() {
                                             <span className="pagination-hover" onClick={() => setCurrentPage(pageNumber)}>{pageNumber}</span>
                                     )
                                 })
-
                         }
                         {
                             // 현재 페이지가 마지막 페이지라면, 이후 페이지로 이동할 수 없음을 알림
@@ -510,12 +516,28 @@ export default function Recipe() {
                                 <span
                                     onClick={() => movePage('up')}
                                     className="movePage-span">
-                                    <svg className="movePage-svg right" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke={currentPage === Math.ceil(allMenu.length / tdPerPage) ? '#E8EBEE' : 'currentColor'} stroke-linecap="round" stroke-width="1.4" d="m6 12 4-4-4-4"></path>
+                                    <svg className="movePage-svg right"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 16 16">
+                                        <path
+                                            stroke={currentPage === Math.ceil(displayedMenu.length / tdPerPage) ? '#E8EBEE' : 'currentColor'}
+                                            stroke-linecap="round"
+                                            stroke-width="1.4" d="m6 12 4-4-4-4">
+                                        </path>
                                     </svg>
                                 </span> :
                                 <span
                                     id="no-movePage-span">
-                                    <svg className="no-movePage-svg right" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke={currentPage === Math.ceil(allMenu.length / tdPerPage) ? '#E8EBEE' : 'currentColor'} stroke-linecap="round" stroke-width="1.4" d="m6 12 4-4-4-4"></path>
+                                    <svg
+                                        className="no-movePage-svg right"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 16 16">
+                                        <path
+                                            stroke={currentPage === Math.ceil(displayedMenu.length / tdPerPage) ? '#E8EBEE' : 'currentColor'}
+                                            stroke-linecap="round"
+                                            stroke-width="1.4"
+                                            d="m6 12 4-4-4-4">
+                                        </path>
                                     </svg>
                                 </span>
                         }
