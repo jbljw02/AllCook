@@ -17,13 +17,14 @@ export type RootState = {
 
 export type Menu = {
     RCP_NM: string,
+    RCP_WAY2: string,
     ATT_FILE_NO_MK: string,
     ATT_FILE_NO_MAIN?: string,
-    INFO_CAR: string,  // 탄수화물
-    INFO_ENG: string, // 열량
-    INFO_FAT: string,  // 지방
-    INFO_NA: string,  // 나트륨
-    INFO_PRO: string,  // 단백질
+    INFO_CAR: number,  // 탄수화물
+    INFO_ENG: number, // 열량
+    INFO_FAT: number,  // 지방
+    INFO_NA: number,  // 나트륨
+    INFO_PRO: number,  // 단백질
     MANUAL01: string,
     MANUAL02: string,
     MANUAL03: string,
@@ -76,5 +77,5 @@ export const makeStore = () => {
     })
 }
 
-// export const wrapper = createWrapper(makeStore, { debug: true });
-export const wrapper = createWrapper(makeStore);
+export const wrapper = createWrapper(makeStore, { debug: true });
+// export const wrapper = createWrapper(makeStore);

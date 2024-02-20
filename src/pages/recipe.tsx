@@ -1,14 +1,15 @@
 import Header from "../components/Header"
 import Footer from "../components/Footer"
 import { useDispatch, useSelector } from "react-redux"
-import { Menu, RootState, wrapper } from "@/redux/store";
-import { setAllMenu, setDisplayedMenu } from "@/redux/features/menuSlice";
+import { Menu, RootState, wrapper } from "../redux/store";
+import { setAllMenu, setDisplayedMenu } from "../redux/features/menuSlice";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Seo from "../components/Seo";
 import MultiRangeSlider from "../components/multiRangeSlider";
-import { setNutritionInfo, setSliderReset } from "../redux/features/nutritionSlice";
+import { setNutritionInfo } from "../redux/features/nutritionSlice";
 import { NutritionKey } from "../redux/features/nutritionSlice";
+import { filterMenu, searchByRange } from "../utils/filterMenu";
 
 export default function Recipe() {
     const dispatch = useDispatch();
@@ -48,19 +49,20 @@ export default function Recipe() {
 
     // 음식의 종류, 요리 방법, 영양성분의 선택 여부 및 범위를 담는 state들 
     const [foodType, setFoodType] = useState({
-        sideDish: false,
-        specialDish: false,
-        stew: false,
-        dessert: false,
+        sideDish: false,  // 반찬
+        specialDish: false,  // 일품
+        stew: false,  // 국&찌개
+        dessert: false,  // 후식
     });
     const [cookWay, setCookWay] = useState({
-        steam: false,
-        boil: false,
-        grill: false,
-        stir: false,
-        fry: false,
-        etc: false,
+        steam: false,  // 찌기
+        boil: false,  // 끓이기
+        grill: false,  // 굽기
+        stir: false,  // 볶기
+        fry: false,  // 튀기기
+        etc: false,  // 기타
     });
+
     const nutritionInfo = useSelector((state: RootState) => state.nutritionInfo);
 
     // 음식의 종류, 요리 방법의 체크 여부를 토글
@@ -77,7 +79,43 @@ export default function Recipe() {
         })
     }
 
-    const sliderReset = useSelector((state: RootState) => state.sliderReset);  // 영양성분 slider를 리셋시키기 위한 state
+    // console.log("영양성분 : ", nutritionInfo);
+    // console.log("디스플레이 메뉴 : ", displayedMenu);
+
+    // 필터를 적용하여 검색
+    const searchByFilter = () => {
+        setFilterVisible(false);
+
+        // Object.entries = 객체f의 키, 값 쌍을 배열로 반환
+        // ex) ['sideDish', false], ['specialDish', true]...
+        // ([]) = 배열 구조 분해 할당 => 각 위치에 있는 요소를 파라미터에 할당
+        const foodTypeEntries = Object.entries(foodType).filter(([key, value]) => value === true);
+        const cookWayEntries = Object.entries(cookWay).filter(([key, value]) => value === true);
+
+        let filteredMenu = allMenu;
+
+        // 값이 true인 경우가 없을 때(선택된 항목이 없는 경우)는 기존 메뉴로 되돌림
+        if (foodTypeEntries.length === 0 && cookWayEntries.length === 0) {
+            filteredMenu = allMenu;
+        }
+        // 음식의 종류만 선택된 경우
+        else if (foodTypeEntries.length !== 0 && cookWayEntries.length === 0) {
+            filteredMenu = filterMenu(foodTypeEntries, 'RCP_PAT2', allMenu);
+        }
+        // 요리 방법만 선택된 경우
+        else if (foodTypeEntries.length === 0 && cookWayEntries.length !== 0) {
+            filteredMenu = filterMenu(cookWayEntries, 'RCP_WAY2', allMenu);
+        }
+        // 음식의 종류, 요리 방법 모두 선택된 경우
+        else if (foodTypeEntries.length !== 0 && cookWayEntries.length !== 0) {
+            filteredMenu = filterMenu(foodTypeEntries, 'RCP_PAT2', allMenu);
+            filteredMenu = filterMenu(cookWayEntries, 'RCP_WAY2', filteredMenu);
+        }
+
+        let finalFilteredMenu = searchByRange(filteredMenu, nutritionInfo);
+        dispatch(setDisplayedMenu(finalFilteredMenu));  // 최종 분류 결과를 dispatch
+        setCurrentPage(1);  // 화면에 출력되는 메뉴가 변경되었기 때문에 페이지를 초기 상태로 돌림
+    }
 
     // 체크박스를 모두 해제
     const unCheck = () => {
@@ -94,7 +132,7 @@ export default function Recipe() {
         Object.keys(nutritionInfo).forEach((key: string) => {
             dispatch(setNutritionInfo({ name: key as NutritionKey, values: { min: 0, max: 1000 } }));
         })
-        // dispatch(setSliderReset());
+
         setSliderKey(sliderKey + 1);
     }
 
@@ -372,7 +410,7 @@ export default function Recipe() {
                                     </div>
                                     <div className="filter-submit">
                                         {/* filter-button-div 하위에 존재하기 때문에 이벤트 버블링 발생 - 막도록 설정 */}
-                                        <div onClick={(e) => { e.stopPropagation(); setFilterVisible(false); }}>필터 적용하기</div>
+                                        <div onClick={(e) => { e.stopPropagation(); searchByFilter(); }}>필터 적용하기</div>
                                         <div onClick={unCheck}>필터 지우기</div>
                                     </div>
                                 </div>
@@ -398,7 +436,6 @@ export default function Recipe() {
                                         // 0번째 tr = slice(0, 4), 2번째 tr = slice(4, 8)... 4개씩 나누어 출력
                                         const items = menuPerPage.slice(index * 4, index * 4 + 4);
                                         const hoverState = isHovered;
-
                                         return (
                                             <tr>
                                                 {
@@ -500,7 +537,6 @@ export default function Recipe() {
                                             stroke-linecap="round"
                                             stroke-width="1.4"
                                             d="m6 12 4-4-4-4">
-
                                         </path>
                                     </svg>
                                 </span>
