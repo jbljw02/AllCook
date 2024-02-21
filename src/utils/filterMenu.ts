@@ -14,14 +14,10 @@ const keyToKorean = {
     stir: '볶기',
     fry: '튀기기',
     etc: '기타',
-    car: '탄수화물',
-    eng: '열량',
-    fat: '지방',
-    na: '나트륨',
-    pro: '단백질',
 };
 
-export const filterMenu = (entries: [string, boolean][], filterKey: 'RCP_PAT2' | 'RCP_WAY2', allMenu: Menu[]) => {
+// 음식의 종류, 요리 방법에 따른 분류
+export const searchByKey = (entries: [string, boolean][], filterKey: 'RCP_PAT2' | 'RCP_WAY2', allMenu: Menu[]) => {
     let filteredMenu: Menu[] = [];
     // 각 키마다 반복하여 검색한 뒤 배열에 중첩하여 할당
     entries.forEach(([key]) => {
@@ -32,6 +28,7 @@ export const filterMenu = (entries: [string, boolean][], filterKey: 'RCP_PAT2' |
     return filteredMenu;
 }
 
+// 설정한 영양성분의 범위에 따른 분류
 export const searchByRange = (filteredMenu: Menu[], nutritionInfo : Nutrition) => {
     const nutritionEntries = Object.entries(nutritionInfo);
     let finalFilteredMenu : Menu[] = [...filteredMenu];

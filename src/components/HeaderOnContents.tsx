@@ -1,9 +1,34 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Anek_Tamil } from 'next/font/google'
+import { searchByMenuIngredient } from '../utils/headerSearch';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import { setDisplayedMenu } from '../redux/features/menuSlice';
 
 export default function Header({ className }: { className: string }) {
+    const dispatch = useDispatch();
 
+    const allMenu = useSelector((state: RootState) => state.allMenu);
+    const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
+
+    const [inputValue, setInputValue] = useState<string>();
+    const changeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(event.target.value);
+    }
+
+    const pressSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        console.log(inputValue);
+        if (event.key === 'Enter') {
+            let newDisplayedMenu = searchByMenuIngredient(event, allMenu);
+            dispatch(setDisplayedMenu(newDisplayedMenu));
+
+            // 검색어가 공란일 경우 초기 상태로 되돌림
+            if (inputValue === '') {
+                dispatch(setDisplayedMenu(allMenu));
+            }
+        }
+    }
     return (
         <>
             <header className={`${className} header`}>
@@ -46,7 +71,12 @@ export default function Header({ className }: { className: string }) {
                     <div className='right-nav'>
                         <span className='input-container'>
                             {/* onKeyDown = 키가 눌렸을 때 발생 */}
-                            <input className='search-input' placeholder='메뉴, 재료로 검색' />
+                            <input
+                                onKeyDown={pressSearch}
+                                value={inputValue}
+                                onChange={changeInput}
+                                className='search-input'
+                                placeholder='메뉴, 재료로 검색' />
                             <svg className="img-search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="21" height="21">
                                 <path fill="currentColor" d="M3.5 8a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM8 2a6 6 0 1 0 3.65 10.76l3.58 3.58 1.06-1.06-3.57-3.57A6 6 0 0 0 8 2Z"></path></svg>
                         </span>
