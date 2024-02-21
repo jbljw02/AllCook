@@ -75,7 +75,7 @@ export default function SortList() {
                     position: relative;
                     width: 18px;
                     top: 1px;
-                    transition: transform 0.1s ease-in-out;
+                    transition: transform 0.15s ease-in-out;
                 }
                 .counter-clockwise {
                     transform: rotate(-90deg);

@@ -282,7 +282,8 @@ export default function Recipe() {
                     {/* 정렬, 해시태그, 상세검색 등을 보여주는 영역 */}
                     <div className="top-contents-section">
                         <div>
-                            <SortList />
+                            {/* 레시피의 정렬 기준을 결정하는 영역 */}
+                            <SortList /> 
                         </div>
                         <div className="hash-tag-section">
                             {
