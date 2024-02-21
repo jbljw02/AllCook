@@ -173,7 +173,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                     display: flex;
                     flex-direction: row;
                     align-items: center;
-                    margin-top: -6px;
+                    margin-top: -11px;
                     {/* padding-right: 10%; */}
                 }
                 .input-container {
