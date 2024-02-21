@@ -281,15 +281,8 @@ export default function Recipe() {
                 <div className="contents-container">
                     {/* 정렬, 해시태그, 상세검색 등을 보여주는 영역 */}
                     <div className="top-contents-section">
-                        <div className="sort-button">
-                            <span onClick={() => setIsSortClicked(!isSortClicked)} className="no-drag">추천순</span>
-                            <svg className="sort-svg" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m9 4.5-3 3-3-3" stroke="currentColor" stroke-linecap="round"></path>
-                            </svg>
-                            {
-                                isSortClicked ?
-                                    <SortList /> :
-                                    null
-                            }
+                        <div>
+                            <SortList />
                         </div>
                         <div className="hash-tag-section">
                             {
@@ -597,9 +590,6 @@ export default function Recipe() {
                     flex-direction: column;
                     align-items: center;
                 }
-                .no-drag {
-                    user-select: none;
-                }
                 .top-contents-section {
                     display: flex;
                     justify-content: space-between;
@@ -611,6 +601,7 @@ export default function Recipe() {
                 }
                 .sort-button {
                     display: flex;
+                    justify-content: center;
                     margin-top: 20px;
                     margin-left: 12px;
                     padding: 5px 5px 5px 10px;
