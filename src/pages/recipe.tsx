@@ -9,20 +9,52 @@ import Seo from "../components/Seo";
 import MultiRangeSlider from "../components/multiRangeSlider";
 import { setNutritionInfo } from "../redux/features/nutritionSlice";
 import { NutritionKey } from "../redux/features/nutritionSlice";
-import { filterMenu, searchByRange } from "../utils/filterMenu";
+import { searchByKey, searchByRange } from "../utils/filterMenu";
+import SortList from "../components/SortList";
+import HeaderOnContents from '../components/HeaderOnContents';
 
 export default function Recipe() {
     const dispatch = useDispatch();
+
+    const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
+    const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
+    const contentsRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
+        const checkScrollLocation = () => {
+            const margin = 50;
+            if (contentsRef.current !== null) {
+                if (!scrollPassContent && window.scrollY > contentsRef.current.offsetTop + margin) {
+                    setScrollPassContent(true);
+                    setHeaderSlide(false)
+                }
+                else if (scrollPassContent && window.scrollY <= contentsRef.current.offsetTop - margin) {
+                    setHeaderSlide(true)
+                    setTimeout(() => {
+                        setScrollPassContent(false);
+                    }, 300);
+                }
+            }
+        };
+
+        window.addEventListener('scroll', checkScrollLocation);
+        return () => {
+            window.removeEventListener('scroll', checkScrollLocation);
+        };
+    }, [scrollPassContent]);
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
 
     // 화면이 첫 렌더링 될 때 보일 메뉴를 allMenu와 동일하게 업데이트
     useEffect(() => {
-        dispatch(setDisplayedMenu(allMenu));
-    }, [])
-
-    const [recomHashTags, setRecomHashTags] = useState<string[]>();  // 사용자에게 추천할 해시태그
+        // 페이지를 이동하지 않은 경우에만 업데이트(검색을 통해 이동하지 않은 경우에만)
+        if (!sessionStorage.getItem('navigated')) {
+            dispatch(setDisplayedMenu(allMenu));
+        }
+        sessionStorage.removeItem('navigated');
+    }, [allMenu])
 
     const [sliderKey, setSliderKey] = useState(0);
 
@@ -79,8 +111,14 @@ export default function Recipe() {
         })
     }
 
-    // console.log("영양성분 : ", nutritionInfo);
-    // console.log("디스플레이 메뉴 : ", displayedMenu);
+    const [isSortClicked, setIsSortClicked] = useState<boolean>(false);
+    const [recomHashTags, setRecomHashTags] = useState<string[]>();  // 사용자에게 추천할 해시태그
+
+    // 해시태그를 클릭하면 일치하는 요소들을 반환
+    const searchByHashTag = (hashTag: string) => {
+        let filteredMenu = allMenu.filter(item => item.HASH_TAG === hashTag);
+        dispatch(setDisplayedMenu(filteredMenu));
+    }
 
     // 필터를 적용하여 검색
     const searchByFilter = () => {
@@ -100,16 +138,16 @@ export default function Recipe() {
         }
         // 음식의 종류만 선택된 경우
         else if (foodTypeEntries.length !== 0 && cookWayEntries.length === 0) {
-            filteredMenu = filterMenu(foodTypeEntries, 'RCP_PAT2', allMenu);
+            filteredMenu = searchByKey(foodTypeEntries, 'RCP_PAT2', allMenu);
         }
         // 요리 방법만 선택된 경우
         else if (foodTypeEntries.length === 0 && cookWayEntries.length !== 0) {
-            filteredMenu = filterMenu(cookWayEntries, 'RCP_WAY2', allMenu);
+            filteredMenu = searchByKey(cookWayEntries, 'RCP_WAY2', allMenu);
         }
         // 음식의 종류, 요리 방법 모두 선택된 경우
         else if (foodTypeEntries.length !== 0 && cookWayEntries.length !== 0) {
-            filteredMenu = filterMenu(foodTypeEntries, 'RCP_PAT2', allMenu);
-            filteredMenu = filterMenu(cookWayEntries, 'RCP_WAY2', filteredMenu);
+            filteredMenu = searchByKey(foodTypeEntries, 'RCP_PAT2', allMenu);
+            filteredMenu = searchByKey(cookWayEntries, 'RCP_WAY2', filteredMenu);
         }
 
         let finalFilteredMenu = searchByRange(filteredMenu, nutritionInfo);
@@ -213,43 +251,44 @@ export default function Recipe() {
     const naInfoChange = infoChange('na');
     const proInfoChange = infoChange('pro');
 
-    allMenu.map((item: Menu) => {
-        // console.log("탄수화물 : ", item.INFO_CAR);
-        // console.log("열량 : ", item.INFO_ENG);
-        // console.log("지방 : ", item.INFO_FAT);
-        // console.log("나트륨 : ", item.INFO_NA);
-        // console.log("단백질 : ", item.INFO_PRO);
-        return (
-            undefined
-        )
-    })
-
     return (
         <>
+            <div ref={contentsRef} className="contents-ref" />
             <Seo title="레시피" />
             <div className="container">
-                <Header
-                    position="relative"
-                    backgroundColor="#ffffff"
-                    color="#111111"
-                    borderColor="#e8e8e8"
-                    svgFill="#000000"
-                    lightLogo={false}
-                    inputBackgroundColor="#f2f2f2" />
+                <div className="header-container">
+                    {
+                        // 스크롤이 contents-container 영역을 지나치면 헤더가 사라지도록 설정
+                        !scrollPassContent ?
+                            <Header
+                                position="relative"
+                                backgroundColor="#ffffff"
+                                color="#111111"
+                                borderColor="#e8e8e8"
+                                svgFill="#000000"
+                                lightLogo={false}
+                                inputBackgroundColor="#f2f2f2" /> :
+                            <HeaderOnContents
+                                className={
+                                    !headerSlide ?
+                                        'slide-down' :
+                                        'slide-up'
+                                }
+                            />
+                    }
+                </div>
                 {/* 헤더와 풋터를 제외한 영역 */}
                 <div className="contents-container">
                     {/* 정렬, 해시태그, 상세검색 등을 보여주는 영역 */}
                     <div className="top-contents-section">
-                        <div className="sort-button">
-                            <span className="no-drag">가나다순</span>
-                            <svg className="sort-svg" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m9 4.5-3 3-3-3" stroke="currentColor" stroke-linecap="round"></path>
-                            </svg>
+                        <div>
+                            <SortList />
                         </div>
                         <div className="hash-tag-section">
                             {
                                 recomHashTags && recomHashTags.map((item) => {
                                     return (
-                                        <span className="no-drag">{item}</span>
+                                        <span onClick={() => searchByHashTag(item)} className="no-drag">{item}</span>
                                     )
                                 })
                             }
@@ -261,7 +300,7 @@ export default function Recipe() {
                                     <path d="M4 8H12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
                                     <path d="M6 12H10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
                                 </svg>
-                                <span>상세검색</span>
+                                <span className="no-drag">상세검색</span>
                             </span>
                             {
                                 filterVisible &&
@@ -551,9 +590,6 @@ export default function Recipe() {
                     flex-direction: column;
                     align-items: center;
                 }
-                .no-drag {
-                    user-select: none;
-                }
                 .top-contents-section {
                     display: flex;
                     justify-content: space-between;
@@ -565,6 +601,7 @@ export default function Recipe() {
                 }
                 .sort-button {
                     display: flex;
+                    justify-content: center;
                     margin-top: 20px;
                     margin-left: 12px;
                     padding: 5px 5px 5px 10px;
@@ -811,7 +848,6 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async () =
     const API_KEY = process.env.API_KEY;
 
     const allMenu = store.getState().allMenu;
-
     // 홈 화면을 통해 접근하지 않을 경우, allMenu가 undefined 상태이기 때문에 업데이트
     if (allMenu.length === undefined) {
         const startParam = 1;

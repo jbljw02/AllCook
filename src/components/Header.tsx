@@ -1,9 +1,11 @@
-import { RefObject, useEffect, useRef, useState } from 'react';
+import { RefObject, SetStateAction, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Anek_Tamil } from 'next/font/google';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { setAllMenu, setDisplayedMenu } from '@/redux/features/menuSlice';
+import { searchByMenuIngredient } from '../utils/headerSearch'
+import router, { useRouter } from 'next/router';
 
 const titleFont = Anek_Tamil({
     subsets: ['latin'],
@@ -14,20 +16,34 @@ type Position = 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky';
 
 export default function Header({ position, backgroundColor, color, borderColor, svgFill, lightLogo, inputBackgroundColor }: { position: Position, backgroundColor: string, color: string, borderColor: string, svgFill: string, lightLogo: boolean, inputBackgroundColor: string }) {
     const dispatch = useDispatch();
+    const router = useRouter();
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
-
+    const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
+    
     const [inputValue, setInputValue] = useState<string>();
+    const changeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(event.target.value);
+    }
 
     const pressSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter') {
-            // 메뉴, 재료명으로 검색
-            const searchedMenu = allMenu.filter(item =>
-                (item.RCP_NM).includes(event.currentTarget.value) ||
-                (item.RCP_PARTS_DTLS).includes(event.currentTarget.value));
-            dispatch(setDisplayedMenu(searchedMenu));
-        }
+        if(event.key === 'Enter') {
+            let newDisplayedMenu = searchByMenuIngredient(event, allMenu);
+            dispatch(setDisplayedMenu(newDisplayedMenu));
+            
+            // 현재 위치가 레시피 페이지가 아닌 경우에만 세션 스토리지에 이동 했음을 담고, 페이지를 이동시킴
+            if(router.pathname !== '/recipe') {
+                sessionStorage.setItem('navigated', 'true');
+                router.push('/recipe');
+            }
+            
+            // 검색어가 공란일 경우 초기 상태로 되돌림
+            if(inputValue === '') {
+                dispatch(setDisplayedMenu(allMenu));
+            }
+        } 
     }
+    
 
     return (
         <>
@@ -91,6 +107,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                             <input
                                 onKeyDown={pressSearch}
                                 value={inputValue}
+                                onChange={changeInput}
                                 style={{ backgroundColor: inputBackgroundColor }}
                                 className='search-input'
                                 placeholder='메뉴, 재료로 검색' />

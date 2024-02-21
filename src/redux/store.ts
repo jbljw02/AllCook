@@ -2,6 +2,7 @@ import { combineReducers, configureStore, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE, createWrapper } from "next-redux-wrapper";
 import menuReducers from './features/menuSlice';
 import NutritionReducers from './features/nutritionSlice';
+import SortSliceReducers from './features/sortSlice';
 
 export type RootState = {
     recomMenu: Menu[],
@@ -13,6 +14,7 @@ export type RootState = {
     sliderReset: boolean,
     minValue: number,
     maxValue: number,
+    sortRule: '가나다순' | '추천순' | '저단백질순' | '고단백질순',
 }
 
 export type Menu = {
@@ -50,17 +52,22 @@ const combinedReducer = combineReducers({
     displayedMenu: menuReducers.displayedMenuSlice,
     nutritionInfo: NutritionReducers.nutritionInfo,
     sliderReset: NutritionReducers.sliderReset,
+    sortRule: SortSliceReducers.sortRule,
 });
 
 // 전체 리듀서를 관리
 const masterReducer = (state: any, action: {
     payload: any; type: any;
 }) => {
-    // 서버 사이드에서 생성된 state라면, 클라이언트에 병합
+    // 액션의 타입이 HYDRATE일 경우, 즉 서버 사이드 렌더링이 발생할 때
     if (action.type === HYDRATE) {
         const nextState = {
-            ...state,
-            ...action.payload,
+            ...state,  // 현재 클라이언트의 상태를 그대로 가져옴
+            // ...action.payload,  // 모든 state를 SSR에서 가져와서 클라이언트에 병합(SSR에서 설정해주지 않은 값은 초기값으로 세팅됨)
+            // 각 메뉴를 SSR에서 가져와서 클라이언트에 병합
+            allMenu: action.payload.allMenu,
+            recomMenu: action.payload.recomMenu,
+            dessertMenu: action.payload.dessertMenu,
         };
         return nextState;
     }
