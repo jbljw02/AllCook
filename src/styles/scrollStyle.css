@@ -1,0 +1,30 @@
+@keyframes slideDown {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+@keyframes slideUp {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-100%);
+    }
+}
+.slide-up {
+    animation: slideUp 0.3s forwards;
+}
+.slide-down {
+    animation: slideDown 0.3s forwards;
+}
+.header-container {
+    display: flex;
+    flex-direction: column;
+}
+.contents-ref {
+    position: absolute;
+    top: 50%;
+}

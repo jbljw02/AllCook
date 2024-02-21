@@ -1,13 +1,14 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Anek_Tamil } from 'next/font/google'
 import { searchByMenuIngredient } from '../utils/headerSearch';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { setDisplayedMenu } from '../redux/features/menuSlice';
+import { useRouter } from 'next/router';
 
 export default function Header({ className }: { className: string }) {
     const dispatch = useDispatch();
+    const router = useRouter();
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
@@ -18,10 +19,15 @@ export default function Header({ className }: { className: string }) {
     }
 
     const pressSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        console.log(inputValue);
         if (event.key === 'Enter') {
             let newDisplayedMenu = searchByMenuIngredient(event, allMenu);
             dispatch(setDisplayedMenu(newDisplayedMenu));
+
+            // 현재 위치가 레시피 페이지가 아닌 경우에만 세션 스토리지에 이동 했음을 담고, 페이지를 이동시킴
+            if (router.pathname !== '/recipe') {
+                sessionStorage.setItem('navigated', 'true');
+                router.push('/recipe');
+            }
 
             // 검색어가 공란일 경우 초기 상태로 되돌림
             if (inputValue === '') {
@@ -29,6 +35,7 @@ export default function Header({ className }: { className: string }) {
             }
         }
     }
+
     return (
         <>
             <header className={`${className} header`}>
@@ -89,7 +96,6 @@ export default function Header({ className }: { className: string }) {
                             로그인
                         </span>
                     </div>
-
                 </div>
             </header >
             <style jsx>{`
@@ -115,7 +121,6 @@ export default function Header({ className }: { className: string }) {
                 .slide-down {
                     animation: slideDown 0.3s forwards;
                 }
-
                 .header {
                     position: fixed;
                     width: 100%;

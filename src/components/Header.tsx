@@ -26,9 +26,6 @@ export default function Header({ position, backgroundColor, color, borderColor, 
         setInputValue(event.target.value);
     }
 
-    console.log("올 : " , allMenu);
-    console.log("디스플레이ㄷ : ", displayedMenu);
-    
     const pressSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if(event.key === 'Enter') {
             let newDisplayedMenu = searchByMenuIngredient(event, allMenu);

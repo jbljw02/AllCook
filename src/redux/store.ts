@@ -61,7 +61,10 @@ const masterReducer = (state: any, action: {
         const nextState = {
             ...state,  // 현재 클라이언트의 상태를 그대로 가져옴
             // ...action.payload,  // 모든 state를 SSR에서 가져와서 클라이언트에 병합(SSR에서 설정해주지 않은 값은 초기값으로 세팅됨)
-            allMenu: action.payload.allMenu,  // allMenu를 SSR에서 가져와서 클라이언트에 병합
+            // 각 메뉴를 SSR에서 가져와서 클라이언트에 병합
+            allMenu: action.payload.allMenu,  
+            recomMenu: action.payload.recomMenu,
+            dessertMenu: action.payload.dessertMenu,
         };
         return nextState;
     }

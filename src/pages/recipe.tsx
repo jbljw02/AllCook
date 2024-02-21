@@ -11,10 +11,38 @@ import { setNutritionInfo } from "../redux/features/nutritionSlice";
 import { NutritionKey } from "../redux/features/nutritionSlice";
 import { searchByKey, searchByRange } from "../utils/filterMenu";
 import SortList from "../components/SortList";
-import { useRouter } from "next/router";
+import HeaderOnContents from '../components/HeaderOnContents';
 
 export default function Recipe() {
     const dispatch = useDispatch();
+
+    const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
+    const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
+    const contentsRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
+        const checkScrollLocation = () => {
+            const margin = 50;
+            if (contentsRef.current !== null) {
+                if (!scrollPassContent && window.scrollY > contentsRef.current.offsetTop + margin) {
+                    setScrollPassContent(true);
+                    setHeaderSlide(false)
+                }
+                else if (scrollPassContent && window.scrollY <= contentsRef.current.offsetTop - margin) {
+                    setHeaderSlide(true)
+                    setTimeout(() => {
+                        setScrollPassContent(false);
+                    }, 300);
+                }
+            }
+        };
+
+        window.addEventListener('scroll', checkScrollLocation);
+        return () => {
+            window.removeEventListener('scroll', checkScrollLocation);
+        };
+    }, [scrollPassContent]);
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
@@ -22,10 +50,10 @@ export default function Recipe() {
     // 화면이 첫 렌더링 될 때 보일 메뉴를 allMenu와 동일하게 업데이트
     useEffect(() => {
         // 페이지를 이동하지 않은 경우에만 업데이트(검색을 통해 이동하지 않은 경우에만)
-        if(!sessionStorage.getItem('navigated')) {
+        if (!sessionStorage.getItem('navigated')) {
             dispatch(setDisplayedMenu(allMenu));
         }
-        sessionStorage.removeItem('navigated'); 
+        sessionStorage.removeItem('navigated');
     }, [allMenu])
 
     const [sliderKey, setSliderKey] = useState(0);
@@ -223,31 +251,32 @@ export default function Recipe() {
     const naInfoChange = infoChange('na');
     const proInfoChange = infoChange('pro');
 
-    console.log("디스플레이 : ", displayedMenu);
-
-    allMenu.map((item: Menu) => {
-        // console.log("탄수화물 : ", item.INFO_CAR);
-        // console.log("열량 : ", item.INFO_ENG);
-        // console.log("지방 : ", item.INFO_FAT);
-        // console.log("나트륨 : ", item.INFO_NA);
-        // console.log("단백질 : ", item.INFO_PRO);
-        return (
-            undefined
-        )
-    })
-
     return (
         <>
+            <div ref={contentsRef} className="contents-ref" />
             <Seo title="레시피" />
             <div className="container">
-                <Header
-                    position="relative"
-                    backgroundColor="#ffffff"
-                    color="#111111"
-                    borderColor="#e8e8e8"
-                    svgFill="#000000"
-                    lightLogo={false}
-                    inputBackgroundColor="#f2f2f2" />
+                <div className="header-container">
+                    {
+                        // 스크롤이 contents-container 영역을 지나치면 헤더가 사라지도록 설정
+                        !scrollPassContent ?
+                            <Header
+                                position="relative"
+                                backgroundColor="#ffffff"
+                                color="#111111"
+                                borderColor="#e8e8e8"
+                                svgFill="#000000"
+                                lightLogo={false}
+                                inputBackgroundColor="#f2f2f2" /> :
+                            <HeaderOnContents
+                                className={
+                                    !headerSlide ?
+                                        'slide-down' :
+                                        'slide-up'
+                                }
+                            />
+                    }
+                </div>
                 {/* 헤더와 풋터를 제외한 영역 */}
                 <div className="contents-container">
                     {/* 정렬, 해시태그, 상세검색 등을 보여주는 영역 */}
