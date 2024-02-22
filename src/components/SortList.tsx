@@ -1,15 +1,59 @@
 import { setSortRule } from "@/redux/features/sortSlice";
 import { RootState } from "../redux/store";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { setDisplayedMenu } from "@/redux/features/menuSlice";
 
-export default function SortList() {
+interface SortListProps {
+    currentPage: number,
+    setCurrentPage: Dispatch<SetStateAction<number>>;
+}
+
+export default function SortList({ currentPage, setCurrentPage }: SortListProps) {
     const dispatch = useDispatch();
 
     const [isSortClicked, setIsSortClicked] = useState<boolean>();
 
-    const [sortArray, setSortArray] = useState<string[]>(['가나다순', '추천순', '저칼로리순', '고단백질순']);
+    const [sortArray, setSortArray] = useState<string[]>(['가나다순', '추천순', '저열량순', '저지방순', '저나트륨순', '고단백질순']);
     const sortRule = useSelector((state: RootState) => state.sortRule);
+
+    const allMenu = useSelector((state: RootState) => state.allMenu);
+    const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
+    console.log("디 : ", displayedMenu);
+
+    useEffect(() => {
+        if (sortRule === '가나다순') {
+            // localeCompare = 사전 순서에 따라 정렬
+            let newDisplayedMenu = [...displayedMenu].sort((a, b) => a.RCP_NM.localeCompare(b.RCP_NM));
+            dispatch(setDisplayedMenu(newDisplayedMenu));
+            setCurrentPage(1);
+        }
+        else if (sortRule === '추천순') {
+            dispatch(setDisplayedMenu(allMenu));
+            setCurrentPage(1);
+        }
+        else if (sortRule === '저열량순') {
+            // 비교함수의 반환 값이 0보다 작으면 a가 앞, 0보다 크면 b가 앞, 0이면 위치를 변경하지 않음
+            let newDisplayedMEnu = [...displayedMenu].sort((a, b) => a.INFO_ENG - b.INFO_ENG);
+            dispatch(setDisplayedMenu(newDisplayedMEnu));
+            setCurrentPage(1);
+        }
+        else if (sortRule === '저지방순') {
+            let newDisplayedMenu = [...displayedMenu].sort((a, b) => a.INFO_FAT - b.INFO_FAT);
+            dispatch(setDisplayedMenu(newDisplayedMenu));
+            setCurrentPage(1);
+        }
+        else if (sortRule === '저나트륨순') {
+            let newDisplayedMenu = [...displayedMenu].sort((a, b) => a.INFO_NA - b.INFO_NA);
+            dispatch(setDisplayedMenu(newDisplayedMenu));
+            setCurrentPage(1);
+        }
+        else if (sortRule === '고단백질순') {
+            let newDisplayedMenu = [...displayedMenu].sort((a, b) => b.INFO_PRO - a.INFO_PRO);
+            dispatch(setDisplayedMenu(newDisplayedMenu));
+            setCurrentPage(1);
+        }
+    }, [sortRule])
 
     return (
         <>
@@ -25,11 +69,12 @@ export default function SortList() {
                         {
                             sortArray.map(item => {
                                 return (
-                                    <div onClick={() => {
-                                        dispatch(setSortRule(item));
-                                        setIsSortClicked(false);
-                                    }}
-                                        className="dropdown-item">{item}</div>
+                                    <div
+                                        onClick={() => {
+                                            dispatch(setSortRule(item));
+                                            setIsSortClicked(false);
+                                        }}
+                                        className={`${sortRule === item ? 'selectedRule' : ''} dropdown-item`}>{item}</div>
                                 )
                             })
                         }
@@ -58,6 +103,9 @@ export default function SortList() {
                 .dropdown-hover:hover {
                     border-color: rgb(130, 130, 130);
                 }
+                .selectedRule {
+                    background-color: #f2f2f2;
+                }
                 .dropdown div, .dropdown-hover div {
                     padding: 6px 5px 6px 10px;
                     cursor: pointer;
@@ -75,7 +123,7 @@ export default function SortList() {
                     position: relative;
                     width: 18px;
                     top: 1px;
-                    transition: transform 0.1s ease-in-out;
+                    transition: transform 0.15s ease-in-out;
                 }
                 .counter-clockwise {
                     transform: rotate(-90deg);

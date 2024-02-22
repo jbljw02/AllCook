@@ -14,7 +14,7 @@ export type RootState = {
     sliderReset: boolean,
     minValue: number,
     maxValue: number,
-    sortRule: '가나다순' | '추천순' | '저단백질순' | '고단백질순',
+    sortRule: '가나다순' | '추천순' | '저열량순' | '저지방순' | '저나트륨순' | '고단백질순',
 }
 
 export type Menu = {
