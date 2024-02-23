@@ -183,7 +183,6 @@ export default function Home() {
 
                 {/* 헤더,풋터 및 배너 컨테이너를 제외한 컨텐츠의 영역 */}
                 <div ref={contentsRef} className='contents-container'>
-
                     {/* 서비스에 대해 설명하는 영역을 차지하는 컨테이너 */}
                     <div className='explain-container'>
                         <span className='explain-img'>
@@ -337,9 +336,11 @@ export default function Home() {
             </div >
             <style jsx> {`
                 .banner-container {
+                    display: flex;
+                    flex-direction: column;
                     position: absolute;
-                    top: 35%;
-                    left: 10%;
+                    margin-top: 340px;
+                    margin-right: 675px;
                 }
                 {/* 서서히 나타나는 애니메이션 */}
                 @keyframes fade-in {
@@ -371,11 +372,16 @@ export default function Home() {
                 .banner-button span {
                     padding: 20px 40px;
                     margin-right: 20px;
+                    border: 1px solid transparent;
                     border-radius: 12px;
                     font-size: 17px;
                     background-color: #ffffff;
                     color: #111111;
                     cursor: pointer;
+                    transition: background-color 0.2s ease;
+                }
+                .banner-button span:hover {
+                    background-color: #e1e1e1;
                 }
                 .input-container {
                     display: flex;
@@ -405,14 +411,11 @@ export default function Home() {
                     margin-left: calc(50% - 50vw);
                     margin-right: calc(50% - 50vw);
                 }
-
                 {/* 헤더 및 배너 컨테이너를 제외한 컨텐츠의 영역 */}
                 .contents-container {
                     {/* margin-left: 15%;
                     margin-right: 15%; */}
                 }
-
-                {/* explain 영역을 차지하는 컨테이너 */}
                 .explain-container {
                     display: flex;
                     flex-direction: column;
@@ -422,8 +425,6 @@ export default function Home() {
                     padding-bottom: 50px;
                     color: #002312;
                     background-color: #f9f7f5;
-                    {/* margin-top: 150px; */}
-                    {/* background-color: #fcfcfa; */}
                 }
                 .explain-svg {
                     width: 115px;
@@ -472,8 +473,6 @@ export default function Home() {
                     border-radius: 5px;
                     cursor: pointer;
                 }
-
-                {/* About 컨테이너 */}
                 .about-container {
                     display: flex;
                     justify-content: center;
@@ -495,8 +494,6 @@ export default function Home() {
                 .about-img {
                     opacity: 0.1;
                 }
-                
-                {/* 추천 메뉴에 대한 컨테이너 */}
                 .recommend-container {
                     display: flex;
                     justify-content: center;

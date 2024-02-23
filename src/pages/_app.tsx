@@ -4,6 +4,7 @@ import { wrapper } from '@/redux/store';
 import '../styles/global.css'
 import '../styles/menuTable.css'
 import '../styles/scrollStyle.css'
+import '../styles/header.css'
 
 const noto = Noto_Sans_KR({
     subsets: ['latin'],

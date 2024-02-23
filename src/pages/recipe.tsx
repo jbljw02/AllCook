@@ -281,9 +281,9 @@ export default function Recipe() {
                 <div className="contents-container">
                     {/* 정렬, 해시태그, 상세검색 등을 보여주는 영역 */}
                     <div className="top-contents-section">
-                        <div>
+                        <div className="sortList-section">
                             {/* 레시피의 정렬 기준을 결정하는 영역 */}
-                            <SortList currentPage={currentPage} setCurrentPage={setCurrentPage} /> 
+                            <SortList currentPage={currentPage} setCurrentPage={setCurrentPage} />
                         </div>
                         <div className="hash-tag-section">
                             {
@@ -590,6 +590,7 @@ export default function Recipe() {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
+                    height: 100%;
                 }
                 .top-contents-section {
                     display: flex;
@@ -623,6 +624,9 @@ export default function Recipe() {
                     width: 18px;
                     top: 1px;
                     margin-left: 20px;
+                }
+                .sortList-section {
+                    margin-right: 115px;
                 }
                 .hash-tag-section {
                     display: flex;
