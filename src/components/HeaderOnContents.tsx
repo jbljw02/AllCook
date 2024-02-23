@@ -102,28 +102,6 @@ export default function Header({ className }: { className: string }) {
                 </div>
             </header >
             <style jsx>{`
-                @keyframes slideDown {
-                    0% {
-                        transform: translateY(-100%);
-                    }
-                    100% {
-                        transform: translateY(0);
-                    }
-                }
-                @keyframes slideUp {
-                    0% {
-                        transform: translateY(0);
-                    }
-                    100% {
-                        transform: translateY(-100%);
-                    }
-                }
-                .slide-up {
-                    animation: slideUp 0.3s forwards;
-                }
-                .slide-down {
-                    animation: slideDown 0.3s forwards;
-                }
                 .header {
                     position: fixed;
                     width: 100%;
@@ -134,20 +112,11 @@ export default function Header({ className }: { className: string }) {
                     padding-top: 15px;
                     padding-bottom: 15px;
                 }
-                .header-div {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    width: 100%;
-                    justify-content: center;
-                    {/* justify-content: space-between; */}
-                }
                 .left-nav {
                     display: flex;
                     flex-direction: row;
                     font-size: 15.5px;
                     font-weight: 300;
-                    {/* padding-left: 10%; */}
                 }
                 .left-nav span {
                     margin-right: 22px;
@@ -158,8 +127,8 @@ export default function Header({ className }: { className: string }) {
                 }
                 .title-logo-div {
                     margin: 0 auto;
-                    margin-left: 430px;
-                    margin-right: 302px;
+                    margin-left: 446px;
+                    margin-right: 325px;
                 }
                 .title-logo {
                     width: 24px;
@@ -171,49 +140,9 @@ export default function Header({ className }: { className: string }) {
                     flex-direction: row;
                     align-items: center;
                     margin-top: -6px;
-                    {/* padding-right: 10%; */}
-                }
-                .input-container {
-                    display: flex;
-                    border: none;
-                    margin-top: 6px;
-                    margin-right: 25px;
                 }
                 .search-input {
-                    outline: none;
-                    width: 220px;
-                    height: 30px;
-                    font-size: 14px;
-                    padding-left: 12px;
-                    padding-top: 3px;
-                    padding-bottom: 3px;
-                    border-radius: 10px;
-                    border: none;
                     background-color: #f2f2f2;
-                }
-                .img-search {
-                    position: absolute;
-                    margin-top: 7px;
-                    margin-left: 203px;
-                    color: #111111;
-                    cursor: pointer;
-                }
-                .user-conatiner {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                }
-                .user-img-span {
-                    position: absolute;
-                }
-                .user-img {
-                    margin-right: 20px;
-                    width: 24px;
-                }
-                .logIn {
-                    font-size: 15.5px;
-                    font-weight: 300;
-                    margin-left: 32px;
                 }
         `}</style>
         </>

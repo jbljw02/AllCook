@@ -136,15 +136,6 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                     padding-bottom: 10px;
                     top: 0;
                     border-bottom: 0.8px solid;
-                    {/* z-index: 1000; */}
-                }
-                .header-div {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    width: 100%;
-                    justify-content: center;
-                    {/* justify-content: space-between; */}
                 }
                 .left-nav {
                     display: flex;
@@ -152,7 +143,6 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                     font-size: 17px;
                     font-weight: 300;
                     margin-top: -10px;
-                    {/* padding-left: 10%; */}
                 }
                 .left-nav span {
                     margin-right: 22px;
@@ -174,49 +164,8 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                     flex-direction: row;
                     align-items: center;
                     margin-top: -11px;
-                    {/* padding-right: 10%; */}
                 }
-                .input-container {
-                    display: flex;
-                    border: none;
-                    margin-top: 6px;
-                    margin-right: 25px;
-                }
-                .search-input {
-                    outline: none;
-                    width: 220px;
-                    height: 30px;
-                    font-size: 14px;
-                    padding-left: 12px;
-                    padding-top: 3px;
-                    padding-bottom: 3px;
-                    border-radius: 10px;
-                    border: none;
-                }
-                .img-search {
-                    position: absolute;
-                    margin-top: 7px;
-                    margin-left: 203px;
-                    color: #111111;
-                    cursor: pointer;
-                } 
-                .user-conatiner {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                }
-                .user-img-span {
-                    position: absolute;
-                }
-                .user-img {
-                    margin-right: 20px;
-                    width: 24px;
-                }
-                .logIn {
-                    font-size: 15.5px;
-                    font-weight: 300;
-                    margin-left: 32px;
-                }
+                
         `}</style>
         </>
     )

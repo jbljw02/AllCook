@@ -12,7 +12,7 @@ export default function Footer() {
         <>
             <footer className='footer-container'>
                 {/* 왼쪽 영역 */}
-                <span className='footer-left'>
+                <div className='footer-left'>
                     <div className='footer-title'>
                         All Cook
                         <span>세상의 모든 레시피</span>
@@ -21,9 +21,9 @@ export default function Footer() {
                         All Cook에서 제공하는 모든 레시피는 식품의약품안전처에서 제공하는 '조리식품의 레시피 DB'를 따릅니다. <br />
                         본 서비스는 상업적인 이익을 추구하지 않습니다.
                     </div>
-                </span>
+                </div>
                 {/* 오른쪽 영역 */}
-                <span className='footer-right'>
+                <div className='footer-right'>
                     <div className='footer-menu'>
                         <div className='footer-menu-detail'>
                             <Link
@@ -57,26 +57,23 @@ export default function Footer() {
                     <div className='copyright-content'>
                         ©2023 by All Cook. All Rights Reserved.
                     </div>
-                </span>
+                </div>
             </footer>
             <style jsx>{`
                 {/* footer 영역의 컨테이너 */}
                 .footer-container { 
                     display: flex;
-                    justify-content: space-between;
+                    justify-content: center;
                     font-size: 14px;
                     color: #212529;
                     margin-top: auto;
                     background-color: #f9f7f5;
-                    {/* background-color: #6E4938; */}
-                    {/* background-color: #36755a; */}
-                    {/* background-color: #e7e59b; */}
-                    {/* color: #403f2b; */}
                 }
                 {/* footer 왼쪽 영역 */}
                 .footer-left {
                     margin-left: 45px;
                     margin-top: 15px;
+                    margin-right: 790px;
                 }
                 .footer-title {
                     margin-top: 10px;
@@ -93,7 +90,6 @@ export default function Footer() {
                 .recipe-source {
                     font-size: 13px;
                     margin-top: 15px;
-                    {/* font-weight: 300; */}
                 }
                 {/* footer 오른쪽 영역 */}
                 .footer-right {

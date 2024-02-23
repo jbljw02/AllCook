@@ -20,10 +20,6 @@
 .slide-down {
     animation: slideDown 0.3s forwards;
 }
-.header-container {
-    display: flex;
-    flex-direction: column;
-}
 .contents-ref {
     position: absolute;
     top: 50%;

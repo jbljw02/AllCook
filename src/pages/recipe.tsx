@@ -283,7 +283,7 @@ export default function Recipe() {
                     <div className="top-contents-section">
                         <div>
                             {/* 레시피의 정렬 기준을 결정하는 영역 */}
-                            <SortList currentPage={currentPage} setCurrentPage={setCurrentPage} /> 
+                            <SortList currentPage={currentPage} setCurrentPage={setCurrentPage} />
                         </div>
                         <div className="hash-tag-section">
                             {
@@ -590,6 +590,7 @@ export default function Recipe() {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
+                    height: 100%;
                 }
                 .top-contents-section {
                     display: flex;
