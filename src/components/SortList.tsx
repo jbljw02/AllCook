@@ -19,7 +19,6 @@ export default function SortList({ currentPage, setCurrentPage }: SortListProps)
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
-    console.log("디 : ", displayedMenu);
 
     useEffect(() => {
         if (sortRule === '가나다순') {
