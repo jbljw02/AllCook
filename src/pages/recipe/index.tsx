@@ -1,17 +1,19 @@
-import Header from "../components/Header"
-import Footer from "../components/Footer"
+import Header from "../../components/Header"
+import Footer from "../../components/Footer"
 import { useDispatch, useSelector } from "react-redux"
-import { Menu, RootState, wrapper } from "../redux/store";
-import { setAllMenu, setDisplayedMenu } from "../redux/features/menuSlice";
+import { Menu, RootState, wrapper } from "../../redux/store";
+import { setAllMenu, setDisplayedMenu } from "../../redux/features/menuSlice";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import Seo from "../components/Seo";
-import MultiRangeSlider from "../components/multiRangeSlider";
-import { setNutritionInfo } from "../redux/features/nutritionSlice";
-import { NutritionKey } from "../redux/features/nutritionSlice";
-import { searchByKey, searchByRange } from "../utils/filterMenu";
-import SortList from "../components/SortList";
-import HeaderOnContents from '../components/HeaderOnContents';
+import Seo from "../../components/Seo";
+import MultiRangeSlider from "../../components/multiRangeSlider";
+import { setNutritionInfo } from "../../redux/features/nutritionSlice";
+import { NutritionKey } from "../../redux/features/nutritionSlice";
+import { searchByKey, searchByRange } from "../../utils/filterMenu";
+import SortList from "../../components/SortList";
+import HeaderOnContents from '../../components/HeaderOnContents';
+import { useRouter } from "next/router";
+import { setRecipe } from "@/redux/features/recipeSlice";
 
 export default function Recipe() {
     const dispatch = useDispatch();
@@ -251,10 +253,40 @@ export default function Recipe() {
     const naInfoChange = infoChange('na');
     const proInfoChange = infoChange('pro');
 
+    const router = useRouter();
+
+    // 특정 메뉴를 클릭하면 해당 메뉴의 레시피 페이지로 이동
+    const moveToDetail = (name: string, seq: string) => {
+        let selectedMenu = displayedMenu.find(item => item.RCP_SEQ === String(seq));
+        dispatch(setRecipe(selectedMenu));  // 선택된 메뉴로 dispatch
+        console.log("재료(가공 전) : ", selectedMenu?.RCP_PARTS_DTLS);
+
+        router.push({
+            pathname: `/recipe/${seq}`,
+            query: {name: name, seq: seq},
+        })
+    }
+
+    // console.log("displayedMenu : ", displayedMenu.length);
+
+    // let arr = [];
+
+    // allMenu.map((item, index) => {
+    //     console.log(typeof (item.RCP_SEQ));
+    // })
+
+    let temp = [];
+
+    allMenu.map((item, index) => {
+        // console.log(item.RCP_PARTS_DTLS);
+    })
+
+
+
     return (
         <>
+            <Seo title="메뉴" />
             <div ref={contentsRef} className="contents-ref" />
-            <Seo title="레시피" />
             <div className="container">
                 <div className="header-container">
                     {
@@ -485,7 +517,7 @@ export default function Recipe() {
                                                         return (
                                                             <td>
                                                                 <div>
-                                                                    <div className="td-content">
+                                                                    <div onClick={() => moveToDetail(item.RCP_NM, item.RCP_SEQ)} className="td-content">
                                                                         <Image
                                                                             src={`${item.ATT_FILE_NO_MK}`}
                                                                             style={{

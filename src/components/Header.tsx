@@ -165,7 +165,6 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                     align-items: center;
                     margin-top: -11px;
                 }
-                
         `}</style>
         </>
     )

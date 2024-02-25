@@ -33,8 +33,8 @@ export default function SortList({ currentPage, setCurrentPage }: SortListProps)
         }
         else if (sortRule === '저열량순') {
             // 비교함수의 반환 값이 0보다 작으면 a가 앞, 0보다 크면 b가 앞, 0이면 위치를 변경하지 않음
-            let newDisplayedMEnu = [...displayedMenu].sort((a, b) => a.INFO_ENG - b.INFO_ENG);
-            dispatch(setDisplayedMenu(newDisplayedMEnu));
+            let newDisplayedMenu = [...displayedMenu].sort((a, b) => a.INFO_ENG - b.INFO_ENG);
+            dispatch(setDisplayedMenu(newDisplayedMenu));
             setCurrentPage(1);
         }
         else if (sortRule === '저지방순') {

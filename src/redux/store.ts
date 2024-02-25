@@ -2,7 +2,8 @@ import { combineReducers, configureStore, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE, createWrapper } from "next-redux-wrapper";
 import menuReducers from './features/menuSlice';
 import NutritionReducers from './features/nutritionSlice';
-import SortSliceReducers from './features/sortSlice';
+import SortReducers from './features/sortSlice';
+import RecipeReducers from './features/recipeSlice';
 
 export type RootState = {
     recomMenu: Menu[],
@@ -15,13 +16,14 @@ export type RootState = {
     minValue: number,
     maxValue: number,
     sortRule: '가나다순' | '추천순' | '저열량순' | '저지방순' | '저나트륨순' | '고단백질순',
+    recipe: Menu,
 }
 
 export type Menu = {
     RCP_NM: string,
     RCP_WAY2: string,
     ATT_FILE_NO_MK: string,
-    ATT_FILE_NO_MAIN?: string,
+    ATT_FILE_NO_MAIN: string,
     INFO_CAR: number,  // 탄수화물
     INFO_ENG: number, // 열량
     INFO_FAT: number,  // 지방
@@ -30,10 +32,15 @@ export type Menu = {
     MANUAL01: string,
     MANUAL02: string,
     MANUAL03: string,
+    MANUAL04: string,
+    MANUAL05: string,
+    MANUAL06: string,
     RCP_NA_TIP: string,
     RCP_PARTS_DTLS: string,
     RCP_PAT2: string,
     HASH_TAG: string,
+    RCP_SEQ: string,
+    MANUAL_IMG02: string
 }
 
 export type Nutrition = {
@@ -52,7 +59,8 @@ const combinedReducer = combineReducers({
     displayedMenu: menuReducers.displayedMenuSlice,
     nutritionInfo: NutritionReducers.nutritionInfo,
     sliderReset: NutritionReducers.sliderReset,
-    sortRule: SortSliceReducers.sortRule,
+    sortRule: SortReducers.sortRule,
+    recipe: RecipeReducers.recipe,
 });
 
 // 전체 리듀서를 관리
