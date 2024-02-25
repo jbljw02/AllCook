@@ -14,6 +14,7 @@ const initialState = {
     RCP_NA_TIP: '',
     RCP_PARTS_DTLS: '',
     RCP_PAT2: '',
+    RCP_SEQ: '',
 }
 
 // 홈 화면의 추천 메뉴에 대한 Slice
