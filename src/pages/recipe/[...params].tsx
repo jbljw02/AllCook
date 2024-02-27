@@ -68,21 +68,7 @@ export default function RecipeDetail() {
                         />
                         <div className="recipe-intro">
                             <div className="recipe-title">{recipe.RCP_NM}</div>
-                            <div className="recipe-ingredients">
-    {
-        recipeIngredients
-    }
-</div>
-
-
-
-
-
-
-
-
-
-
+                            <div className="recipe-ingredients">{recipeIngredients}</div>
                         </div>
                     </div>
                     {/* <div>
