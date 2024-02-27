@@ -257,9 +257,9 @@ export default function Recipe() {
 
     // 특정 메뉴를 클릭하면 해당 메뉴의 레시피 페이지로 이동
     const moveToDetail = (name: string, seq: string) => {
-        let selectedMenu = displayedMenu.find(item => item.RCP_SEQ === String(seq));
+        let selectedMenu = displayedMenu.find(item => item.RCP_SEQ === seq);
         dispatch(setRecipe(selectedMenu));  // 선택된 메뉴로 dispatch
-        console.log("재료(가공 전) : ", selectedMenu?.RCP_PARTS_DTLS);
+        // console.log("재료(가공 전) : ", selectedMenu?.RCP_PARTS_DTLS);
 
         router.push({
             pathname: `/recipe/${seq}`,
@@ -272,16 +272,8 @@ export default function Recipe() {
     // let arr = [];
 
     // allMenu.map((item, index) => {
-    //     console.log(typeof (item.RCP_SEQ));
+    //     console.log(item.RCP_SEQ)
     // })
-
-    let temp = [];
-
-    allMenu.map((item, index) => {
-        // console.log(item.RCP_PARTS_DTLS);
-    })
-
-
 
     return (
         <>
@@ -901,9 +893,11 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async () =
         // 미완된 음식의 이미지나, 워터마크가 있는 이미지를 필터링하기 위함
         const regex = /(uploadimg\/(2014|2015|2019|2020|2021|2023)|common\/ecmFileView\.do\?)/;
 
+        const excludeSeqs = ['2981', '886', '3217', '977', '745', '760'];
+
         const menuData = result.filter((item: Menu) => {
             const match = (item.ATT_FILE_NO_MK).match(regex);
-            return match === null;
+            return match === null && !excludeSeqs.includes(item.RCP_SEQ);
         });
 
         store.dispatch(setAllMenu(menuData));

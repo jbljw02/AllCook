@@ -575,7 +575,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
         const response = await fetch(
             `http://openapi.foodsafetykorea.go.kr/api/
-    ${API_KEY}/COOKRCP01/json/${startParam}/${endParam}`,
+            ${API_KEY}/COOKRCP01/json/${startParam}/${endParam}`,
             {
                 method: "GET",
             }
@@ -587,6 +587,8 @@ export const getServerSideProps = wrapper.getServerSideProps(
         // 미완된 음식의 이미지나, 워터마크가 있는 이미지를 필터링하기 위함
         const regex =
             /(uploadimg\/(2014|2015|2019|2020|2021|2023)|common\/ecmFileView\.do\?)/;
+
+        const excludeSeqs = ['2981', '886', '3217', '977', '745', '760'];
 
         // const menuData = result.map((item: Menu) => {
         //     // 구조 분해 할당 - 각 item에서 필요한 필드들을 추출 선언
@@ -607,7 +609,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
             const match = item.ATT_FILE_NO_MK.match(regex);
             // match가 null인 경우에만 item 반환
             // ** filter 함수가 true일 때 item을 반환하고, false일 땐 반환하지 않는 것을 이용 **
-            return match === null;
+            return match === null && !excludeSeqs.includes(item.RCP_SEQ);
         });
 
         store.dispatch(setAllMenu(menuData));
