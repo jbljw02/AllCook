@@ -14,6 +14,8 @@ import SortList from "../../components/SortList";
 import HeaderOnContents from '../../components/HeaderOnContents';
 import { useRouter } from "next/router";
 import { setRecipe } from "@/redux/features/recipeSlice";
+import { adjustForServings } from "@/utils/adjustForServings";
+import { filterIngredString } from "@/utils/filterIngredString";
 
 export default function Recipe() {
     const dispatch = useDispatch();
@@ -261,18 +263,24 @@ export default function Recipe() {
         dispatch(setRecipe(selectedMenu));  // 선택된 메뉴로 dispatch
         // console.log("재료(가공 전) : ", selectedMenu?.RCP_PARTS_DTLS);
 
+        // if(selectedMenu !== undefined) {
+
+        //     console.log("결과 : ", adjustForServings(selectedMenu?.RCP_PARTS_DTLS, 2));
+        // }
+
         router.push({
             pathname: `/recipe/${seq}`,
             query: {name: name, seq: seq},
         })
     }
 
-    // console.log("displayedMenu : ", displayedMenu.length);
-
-    // let arr = [];
-
     // allMenu.map((item, index) => {
-    //     console.log(item.RCP_SEQ)
+    //     // let temp = adjustForServings(item.RCP_PARTS_DTLS, 2);
+    //     let abc = filterIngredString(item);
+    //     let result = adjustForServings(abc, 2);
+
+    //     console.log("가공 전 : ", abc);
+    //     console.log("가공 후 : ", result);
     // })
 
     return (

@@ -40,7 +40,8 @@ export type Menu = {
     RCP_PAT2: string,
     HASH_TAG: string,
     RCP_SEQ: string,
-    MANUAL_IMG02: string
+    MANUAL_IMG02: string,
+    INFO_WGT: string
 }
 
 export type Nutrition = {
