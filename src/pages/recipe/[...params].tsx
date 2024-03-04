@@ -15,24 +15,22 @@ export default function RecipeDetail() {
     const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
     const contentsRef = useRef<HTMLDivElement>(null);
 
-    const [inputHover, setInputHover] = useState<boolean>(false);
-
-    const router = useRouter();
-    const { name, seq } = router.query;
-
-    const [recipeIngredients, setRecipeIngredients] = useState('');
+    const [inputHover, setInputHover] = useState<boolean>(false);  // input 안에 마우스가 들어갔는지
 
     const recipe = useSelector((state: RootState) => state.recipe);  // 레시피의 상세 정보를 담고있는 state
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
+    
+    const [servings, setServings] = useState<number>(1);  // 레시피의 인분 수
+    const [recipeIngredients, setRecipeIngredients] = useState('');  // 레시피의 재료
 
-    const [servings, setServings] = useState<number>(1);
-
-    // 레시피의 재료 문자열을 가공함
     useEffect(() => {
+        // 레시피의 재료 문자열을 가공함
         let filteredString = filterIngredString(recipe);
-        setRecipeIngredients(filteredString);
-    }, [recipe]);
-
+        // 가공한 문자열을 바탕으로 인분 수만큼 값을 조정함
+        let newRecipeIngredients = adjustForServings(filteredString, servings);
+        setRecipeIngredients(newRecipeIngredients);
+    }, [recipe, servings]);
+    
     // 인분 수의 덧셈, 뺄셈
     const calculateServings = (param : string) => {
         if(param === 'plus') {
@@ -101,42 +99,39 @@ export default function RecipeDetail() {
                             <div className="recipe-title">{recipe.RCP_NM}</div>
                             <div className="recipe-subtitle">{recipe.RCP_PAT2}</div>
                             </div>
-
                             <div className="recipe-middle-section">
-
-                            <div className="per-person-div">
-                                <div>인분</div>
-                                <div 
-                                    onMouseEnter={() => setInputHover(!inputHover)}
-                                    onMouseLeave={() => setInputHover(!inputHover)}
-                                    className="per-person-box">
-                                    <input value={servings}></input>
-                                    <span className={`${!inputHover ? "" : 'visible'} cal-svg`}>
-                                        <svg onClick={() => {calculateServings('plus')}} className="minus" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
-                                            <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">        
-                                            <g id="Desktop-1920-/-1080" stroke="#111111">            
-                                            <g id="qty" transform="translate(3.000000, 5.000000)">
-                                            <polyline id="Rectangle-3-Copy" transform="translate(5.000000, 5.000000) rotate(-225.000000) translate(-5.000000, -5.000000) " points="8 8 2 8 2 2"/></g>
-                                            </g></g>
-                                        </svg>
-                                        <svg onClick={() => {calculateServings('minus')}} className="plus" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">       
-                                            <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">        
-                                            <g id="Desktop-1920-/-1080" stroke={`${servings === 1 ? '#c3c3c3' : '#111111'}`}>            
-                                            <g id="qty" transform="translate(8.000000, 6.000000) rotate(-180.000000) translate(-8.000000, -6.000000) translate(3.000000, 1.000000)">                
-                                            <polyline id="Rectangle-3-Copy" transform="translate(5.000000, 5.000000) rotate(-225.000000) translate(-5.000000, -5.000000) " points="8 8 2 8 2 2"/>            
-                                            </g></g></g>
-                                         </svg>
-                                    </span>
+                                <div className="per-person-div">
+                                    <div>인분</div>
+                                    <div 
+                                        onMouseEnter={() => setInputHover(!inputHover)}
+                                        onMouseLeave={() => setInputHover(!inputHover)}
+                                        className="per-person-box">
+                                        <input value={servings}></input>
+                                        <span className={`${!inputHover ? "" : 'visible'} cal-svg`}>
+                                            <svg onClick={() => {calculateServings('plus')}} className="minus" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+                                                <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">        
+                                                <g id="Desktop-1920-/-1080" stroke="#111111">            
+                                                <g id="qty" transform="translate(3.000000, 5.000000)">
+                                                <polyline id="Rectangle-3-Copy" transform="translate(5.000000, 5.000000) rotate(-225.000000) translate(-5.000000, -5.000000) " points="8 8 2 8 2 2"/></g>
+                                                </g></g>
+                                            </svg>
+                                            <svg onClick={() => {calculateServings('minus')}} className="plus" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">       
+                                                <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">        
+                                                <g id="Desktop-1920-/-1080" stroke={`${servings === 1 ? '#c3c3c3' : '#111111'}`}>            
+                                                <g id="qty" transform="translate(8.000000, 6.000000) rotate(-180.000000) translate(-8.000000, -6.000000) translate(3.000000, 1.000000)">                
+                                                <polyline id="Rectangle-3-Copy" transform="translate(5.000000, 5.000000) rotate(-225.000000) translate(-5.000000, -5.000000) " points="8 8 2 8 2 2"/>            
+                                                </g></g></g>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="nutrition-check-button no-drag">
+                                    <svg className="nutrition-check-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11 19c4.4183 0 8-3.5817 8-8 0-4.41828-3.5817-8-8-8-4.41828 0-8 3.58172-8 8 0 4.4183 3.58172 8 8 8ZM20.9984 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <span>영양성분</span>
                                 </div>
                             </div>
-                            <div className="nutrition-check-button">
-                                <svg className="nutrition-check-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M11 19c4.4183 0 8-3.5817 8-8 0-4.41828-3.5817-8-8-8-4.41828 0-8 3.58172-8 8 0 4.4183 3.58172 8 8 8ZM20.9984 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                                <span>영양성분</span>
-                            </div>
-                            </div>
-
                             <div className="recipe-ingredients">{recipeIngredients}</div>
 
                             <div className="">
