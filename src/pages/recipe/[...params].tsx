@@ -15,25 +15,31 @@ export default function RecipeDetail() {
     const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
     const contentsRef = useRef<HTMLDivElement>(null);
 
-    const router = useRouter();
-    const { name, seq } = router.query;
-
-    const [recipeIngredients, setRecipeIngredients] = useState('');
+    const [inputHover, setInputHover] = useState<boolean>(false);  // input 안에 마우스가 들어갔는지
 
     const recipe = useSelector((state: RootState) => state.recipe);  // 레시피의 상세 정보를 담고있는 state
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
+    
+    const [servings, setServings] = useState<number>(1);  // 레시피의 인분 수
+    const [recipeIngredients, setRecipeIngredients] = useState('');  // 레시피의 재료
 
-    const [perPerson, setPerPerson] = useState<number>(1);
-
-    // 레시피의 재료 문자열을 가공함
     useEffect(() => {
+        // 레시피의 재료 문자열을 가공함
         let filteredString = filterIngredString(recipe);
-        setRecipeIngredients(filteredString);
-
-        let temp = adjustForServings(filteredString, 2);
-        console.log("결과 : ", temp);
-    }, [recipe]);
-
+        // 가공한 문자열을 바탕으로 인분 수만큼 값을 조정함
+        let newRecipeIngredients = adjustForServings(filteredString, servings);
+        setRecipeIngredients(newRecipeIngredients);
+    }, [recipe, servings]);
+    
+    // 인분 수의 덧셈, 뺄셈
+    const calculateServings = (param : string) => {
+        if(param === 'plus') {
+            setServings(servings + 1);
+        }
+        if(param === 'minus' && servings > 1) {
+            setServings(servings - 1);
+        }
+    }
     
     return (
         <>
@@ -93,37 +99,44 @@ export default function RecipeDetail() {
                             <div className="recipe-title">{recipe.RCP_NM}</div>
                             <div className="recipe-subtitle">{recipe.RCP_PAT2}</div>
                             </div>
-
                             <div className="recipe-middle-section">
-
-                            <div className="per-person-div">
-                                <div>인분</div>
-                                <div className="per-person-box">
-                                    <svg className="minus" viewBox="0 0 24 24" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M20,12 L20,13 L5,13 L5,12 L20,12 Z"></path>
+                                <div className="per-person-div">
+                                    <div>인분</div>
+                                    <div 
+                                        onMouseEnter={() => setInputHover(!inputHover)}
+                                        onMouseLeave={() => setInputHover(!inputHover)}
+                                        className="per-person-box">
+                                        <input value={servings}></input>
+                                        <span className={`${!inputHover ? "" : 'visible'} cal-svg`}>
+                                            <svg onClick={() => {calculateServings('plus')}} className="minus" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+                                                <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">        
+                                                <g id="Desktop-1920-/-1080" stroke="#111111">            
+                                                <g id="qty" transform="translate(3.000000, 5.000000)">
+                                                <polyline id="Rectangle-3-Copy" transform="translate(5.000000, 5.000000) rotate(-225.000000) translate(-5.000000, -5.000000) " points="8 8 2 8 2 2"/></g>
+                                                </g></g>
+                                            </svg>
+                                            <svg onClick={() => {calculateServings('minus')}} className="plus" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">       
+                                                <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">        
+                                                <g id="Desktop-1920-/-1080" stroke={`${servings === 1 ? '#c3c3c3' : '#111111'}`}>            
+                                                <g id="qty" transform="translate(8.000000, 6.000000) rotate(-180.000000) translate(-8.000000, -6.000000) translate(3.000000, 1.000000)">                
+                                                <polyline id="Rectangle-3-Copy" transform="translate(5.000000, 5.000000) rotate(-225.000000) translate(-5.000000, -5.000000) " points="8 8 2 8 2 2"/>            
+                                                </g></g></g>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="nutrition-check-button no-drag">
+                                    <svg className="nutrition-check-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11 19c4.4183 0 8-3.5817 8-8 0-4.41828-3.5817-8-8-8-4.41828 0-8 3.58172-8 8 0 4.4183 3.58172 8 8 8ZM20.9984 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
-                                    <input value={perPerson}></input>
-                                    <svg className="plus" viewBox="0 0 24 24" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M13,5 L13,12 L20,12 L20,13 L13,13 L13,20 L12,20 L11.999,13 L5,13 L5,12 L12,12 L12,5 L13,5 Z"></path>
-                                    </svg>
+                                    <span>영양성분</span>
                                 </div>
                             </div>
-                            <div className="nutrition-check-button">
-                                <svg className="nutrition-check-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M11 19c4.4183 0 8-3.5817 8-8 0-4.41828-3.5817-8-8-8-4.41828 0-8 3.58172-8 8 0 4.4183 3.58172 8 8 8ZM20.9984 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                                <span>영양성분</span>
-                            </div>
-                            </div>
-
                             <div className="recipe-ingredients">{recipeIngredients}</div>
 
                             <div className="">
                                 
                             </div>
-
-
-
                             {/* <div className="nutrition-title">레시피 영양정보</div>
                             <table className="nutrition-table">
                                 <tr>
@@ -247,10 +260,17 @@ export default function RecipeDetail() {
                     position: relative;
                     display: flex;
                     flex-direction: row;
-                    justify-content: center;
+                    justify-content: space-between;
                     align-items: center;
                     border: none;
                     margin-top: 7px;
+                }
+                .cal-svg {
+                    opacity: 0;
+                    transition: opacity 0.2s ease-in-out;   
+                }
+                .visible {
+                    opacity: 1;
                 }
                 .plus, .minus {
                     position: absolute;
@@ -258,25 +278,28 @@ export default function RecipeDetail() {
                     cursor: pointer;
                 }
                 .minus {
-                    left: 0;
-                    margin-left: 6px;
-                    fill: #c3c3c3;
+                    top: 0;
+                    right: 0;
+                    margin-right: 1px;
+                    margin-top: 6px;
                 }
                 .plus {
+                    bottom: 0;
                     right: 0;
-                    margin-right: 6px;
+                    margin-right: 1px;
+                    margin-bottom: 3px;
+                    fill: #575757;
                 }
                 .per-person-box input {
                     outline: none;
-                    width: 120px;
-                    height: 25px;
+                    width: 60px;
+                    height: 27px;
                     font-size: 14px;
-                    text-align: center;
+                    text-align: left;
                     margin-top: 3px;
-                    padding-top: 5px;
-                    padding-bottom: 5px;
-                    border-radius: 2px;
-                    border: 1px solid #acacac;
+                    padding: 5px 0 5px 12px;
+                    border-radius: 1px;
+                    border: 1px solid #cecece;
                     font-weight: 300;
                     color: #5C5C5C;
                 }

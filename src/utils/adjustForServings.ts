@@ -15,10 +15,9 @@ export const adjustForServings = (ingredients: string, servings: number) => {
     adjustedIngredients = adjustedIngredients.replace(regex, match => {
         // 분수(fraction)를 찾고, 분자(numerator)와 분모(denominator) 두 개의 인자를 사용하기 위해 ()를 사용
         return match.replace(fractionRegex, (fraction, numerator, denominator) => {
-
             // 분자에만 인분 수만큼 곱셈
             let result = parseInt(numerator) * servings / parseInt(denominator);
-    
+            
             if (Number.isInteger(result)) {
                 // 결과가 정수인 경우 문자열로 즉시 변환
                 return result.toString();
