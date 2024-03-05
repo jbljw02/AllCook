@@ -23,12 +23,16 @@ export default function RecipeDetail() {
     const [servings, setServings] = useState<number>(1);  // 레시피의 인분 수
     const [recipeIngredients, setRecipeIngredients] = useState('');  // 레시피의 재료
 
+    const [recipeManual, setRecipeManual] = useState<string[]>([]);
+
     useEffect(() => {
         // 레시피의 재료 문자열을 가공함
         let filteredString = filterIngredString(recipe);
         // 가공한 문자열을 바탕으로 인분 수만큼 값을 조정함
         let newRecipeIngredients = adjustForServings(filteredString, servings);
         setRecipeIngredients(newRecipeIngredients);
+
+        pushManual(recipe)
     }, [recipe, servings]);
     
     // 인분 수의 덧셈, 뺄셈
@@ -39,6 +43,34 @@ export default function RecipeDetail() {
         if(param === 'minus' && servings > 1) {
             setServings(servings - 1);
         }
+    }
+
+    console.log("레시피 : ", recipe);
+    console.log("길이 : ", recipeManual.length);
+    
+    // 레시피의 메뉴얼을 가공하여 state에 할당
+    const pushManual = (recipe : Menu) => {
+        let manuals : string[] = [];
+
+        // 메뉴얼의 순서를 정렬하여 반복
+        Object.keys(recipe)
+            .sort()
+            .forEach(key => {
+                // 메뉴얼의 요소이면서, 비어있지 않아야 함
+                if(key.startsWith("MANUAL") && recipe[key] !== '' && !key.startsWith("MANUAL_IMG")) {
+                    manuals.push(recipe[key] as string);
+                }
+            })
+        
+        manuals = manuals.map(item => item.replace(/^\d+\. /, ''));
+        console.log("메뉴얼 : ", manuals);
+
+        // for(let key in recipe) {
+        //     if(key.startsWith("MANUAL") && recipe[key] !== '' && !key.startsWith("MANUAL_IMG")) {
+        //         manuals.push(recipe[key] as string);
+        //     }
+        // }
+        setRecipeManual(manuals)
     }
     
     return (
@@ -96,10 +128,10 @@ export default function RecipeDetail() {
                             <div className="recipe-ingredients">{recipeIngredients}</div> */}
                         <div className="recipe-intro">
                             <div className="recipe-title-div">
-                            <div className="recipe-title">{recipe.RCP_NM}</div>
-                            <div className="recipe-subtitle">{recipe.RCP_PAT2}</div>
+                                <div className="recipe-title">{recipe.RCP_NM}</div>
+                                <div className="recipe-subtitle">{recipe.RCP_PAT2}</div>
                             </div>
-                            <div className="recipe-middle-section">
+                            <div className="recipe-serv-ingred-div">
                                 <div className="per-person-div">
                                     <div>인분</div>
                                     <div 
@@ -133,33 +165,6 @@ export default function RecipeDetail() {
                                 </div>
                             </div>
                             <div className="recipe-ingredients">{recipeIngredients}</div>
-
-                            <div className="">
-                                
-                            </div>
-                            {/* <div className="nutrition-title">레시피 영양정보</div>
-                            <table className="nutrition-table">
-                                <tr>
-                                    <td>탄수화물</td>
-                                    <td>{recipe.INFO_CAR} kcal</td>
-                                </tr>
-                                <tr>
-                                    <td>열량</td>
-                                    <td>{recipe.INFO_ENG} g</td>
-                                </tr>
-                                <tr>
-                                    <td>지방</td>
-                                    <td>{recipe.INFO_FAT} g</td>
-                                </tr>
-                                <tr>
-                                    <td>나트륨</td>
-                                    <td>{recipe.INFO_NA} mg</td>
-                                </tr>
-                                <tr>
-                                    <td>단백질</td>
-                                    <td>{recipe.INFO_PRO} g</td>
-                                </tr>
-                            </table> */}
                         </div>
                     </div>
                     {/* <div>
@@ -168,7 +173,28 @@ export default function RecipeDetail() {
                     <div>
                         {recipe.MANUAL02.replace(/[a-zA-Z]/g, '')}
                     </div> */}
-                    <div className="temp"></div>
+                    {/* 요리 방법, 관련 레시피를 보여주는 영역 */}
+                    <div className="recipe-middle-section">
+                        {/* 요리 방법을 알려주는 영역 */}
+                        <div className="manual-section">
+                            <div className="manual-title">요리 방법</div>
+                            <>
+                                {
+                                    recipeManual.map((item, index) => {
+                                        return (
+                                            <div className="manual-main">
+                                                <div className="manual-index">0{index + 1}/0{recipeManual.length}</div>
+                                                <div className="manual-detail">{item}</div>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </>
+                        </div>
+                        {/* 관련 레시피를 보여주는 영역 */}
+                        <div className="related-recipe-section">
+                        </div>
+                    </div>
                 </div>
                 <Footer />
             </div>
@@ -180,6 +206,8 @@ export default function RecipeDetail() {
                     align-items: center;
                     margin-top: 60px;
                     color: #111111;
+                    margin-left: auto;
+                    margin-right: auto;
                 }
                 .recipe-top-section {
                     display: flex;
@@ -219,26 +247,24 @@ export default function RecipeDetail() {
                 .recipe-intro {
                     display: flex;
                     flex-direction: column;
-                    justify-content: center;
-                    margin-left: 40px;
                     align-self: flex-start;
-                    margin-top: 7px;
+                    margin-left: 35px;
                 }
                 .recipe-title-div {
                     display: flex;
                     flex-direction: row;
                 }
                 .recipe-title {
-                    font-size: 23px;
+                    font-size: 28px;
                     font-weight: 400;
                 }
                 .recipe-subtitle {
-                    margin-top: 10px;
+                    margin-top: 13.5px;
                     margin-left: 4px;
-                    font-size: 14px;
+                    font-size: 15px;
                     color: #5C5C5C;
                 }
-                .recipe-middle-section {
+                .recipe-serv-ingred-div {
                     display: flex;
                     flex-direction: row;
                     justify-content: space-between;
@@ -323,37 +349,45 @@ export default function RecipeDetail() {
                     margin-right: 5px;
                 }
                 .recipe-ingredients {
-                    font-size: 15px;
+                    font-size: 16px;
                     margin-top: 30px;
-                    max-width: 500px;
+                    width: 600px;
                     border-radius: 5px;
                     padding: 10px;
                     color: #2d2d2d;
                     background-color: #f2f2f2;
                 }
-                .recipe-intro {
+                .recipe-middle-section {
+                    display: flex;
+                    flex-direction: row;
+                    width: 100%;
+                    margin-top: 80px;
+                    margin-bottom: 80px;
+                }
+                .manual-section {
                     display: flex;
                     flex-direction: column;
-                    align-self: flex-start;
-                    margin-top: 8px;
-                    margin-left: 35px;
+                    justify-content: flex-start;
                 }
-                .nutrition-title {
-                    font-size: 18px;
-                    margin-bottom: 7px;
+                .manual-title {
+                    font-size: 23px;
+                    font-weight: 400;
+                    margin-bottom: 5px;
                 }
-                .nutrition-table {
-                    width: 300px;
+                .manual-main {
+                    margin-top: 15px;
+                    padding: 20px 30px 20px 15px;
+                    border: 1px solid #e8e8e8;
+                    border-radius: 5px;
+                    width: 650px;
                 }
-                .nutrition-table tr {
-                    border-bottom: 1px solid #5C5C5C;
-                }
-                .nutrition-table tr td:first-child {
+                .manual-index {
                     color: #5C5C5C;
-                    font-size: 15px;
+                    font-size: 13px;
+                    margin-bottom: 5px;
                 }
-                 .nutrition-table tr td:last-child {
-                    font-size: 15px;
+                .manual-detail {
+                    font-size: 16px;
                 }
             `}</style>
         </>

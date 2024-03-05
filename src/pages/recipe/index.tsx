@@ -14,8 +14,6 @@ import SortList from "../../components/SortList";
 import HeaderOnContents from '../../components/HeaderOnContents';
 import { useRouter } from "next/router";
 import { setRecipe } from "@/redux/features/recipeSlice";
-import { adjustForServings } from "@/utils/adjustForServings";
-import { filterIngredString } from "@/utils/filterIngredString";
 
 export default function Recipe() {
     const dispatch = useDispatch();
@@ -276,11 +274,16 @@ export default function Recipe() {
 
     // allMenu.map((item, index) => {
     //     // let temp = adjustForServings(item.RCP_PARTS_DTLS, 2);
-    //     let abc = filterIngredString(item);
-    //     let result = adjustForServings(abc, 2);
+    //     // let abc = filterIngredString(item);
+    //     // let result = adjustForServings(abc, 2);
 
-    //     console.log("가공 전 : ", abc);
-    //     console.log("가공 후 : ", result);
+    //     // console.log("가공 전 : ", abc);
+    //     // console.log("가공 후 : ", result);
+    //     // console.log("메뉴 : ", item.MANUAL04);
+    //     // if(item.MANUAL10 !== '') {
+    //     //     console.log(index ,"번째 있음");
+
+    //     // }
     // })
 
     return (

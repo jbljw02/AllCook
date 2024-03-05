@@ -29,19 +29,24 @@ export type Menu = {
     INFO_FAT: number,  // 지방
     INFO_NA: number,  // 나트륨
     INFO_PRO: number,  // 단백질
-    MANUAL01: string,
-    MANUAL02: string,
-    MANUAL03: string,
-    MANUAL04: string,
-    MANUAL05: string,
-    MANUAL06: string,
+    MANUAL01?: string,
+    MANUAL02?: string,
+    MANUAL03?: string,
+    MANUAL04?: string,
+    MANUAL05?: string,
+    MANUAL06?: string,
+    MANUAL07?: string,
+    MANUAL08?: string,
+    MANUAL09?: string,
+    MANUAL10?: string,
     RCP_NA_TIP: string,
     RCP_PARTS_DTLS: string,
     RCP_PAT2: string,
     HASH_TAG: string,
     RCP_SEQ: string,
     MANUAL_IMG02: string,
-    INFO_WGT: string
+    INFO_WGT: string,
+    [key : string] : string | number | undefined,
 }
 
 export type Nutrition = {
