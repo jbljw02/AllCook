@@ -11,6 +11,8 @@ import { filterIngredString } from "@/utils/filterIngredString";
 import { adjustForServings } from "@/utils/adjustForServings";
 
 export default function RecipeDetail() {
+    const allMenu = useSelector((state: RootState) => state.allMenu);
+
     const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
     const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
     const contentsRef = useRef<HTMLDivElement>(null);
@@ -23,14 +25,71 @@ export default function RecipeDetail() {
     const [servings, setServings] = useState<number>(1);  // 레시피의 인분 수
     const [recipeIngredients, setRecipeIngredients] = useState('');  // 레시피의 재료
 
+    const [recipeManual, setRecipeManual] = useState<string[]>([]);
+
+    const [relatedRecipe, setRelatedRecipe] = useState<Menu[]>([]);
+
     useEffect(() => {
+        console.log("레 : ", recipe);
         // 레시피의 재료 문자열을 가공함
         let filteredString = filterIngredString(recipe);
         // 가공한 문자열을 바탕으로 인분 수만큼 값을 조정함
         let newRecipeIngredients = adjustForServings(filteredString, servings);
         setRecipeIngredients(newRecipeIngredients);
+
+        // 유사한 재료를 사용하는 레시피 찾기
+        let ingredArray = newRecipeIngredients.split(', ')
+        let ingredNames = exportIngredientsName(ingredArray);
+        findRelatedRecipe(ingredNames);
+
+        pushManual(recipe)
     }, [recipe, servings]);
-    
+
+    // 재료 정보에서 재료량을 제외하고 재료명만 추출
+    const exportIngredientsName = (ingredArray : string[]) => {
+        /* 괄호('(')가 나오면 그 전까지만 추출
+        띄어쓰기(' ') 이후 괄호 혹은 숫자('0'~'9')가 나오면 그 전까지만 추출(' '는 제외하고 추출)
+        문자열이 나오면 추출하지 않고 계속 진행 */
+        let regex = /[^(\d]*/;
+
+        // 재료의 양은 제외하고, 재료명만 추출
+        let ingredNames : string[] = ingredArray.map(item => {
+            let matched = item.match(regex);
+            if(matched) {
+                return matched[0].trim();
+            }
+            else {
+                return '';
+            }
+        })
+        return ingredNames;
+    }
+
+    // 추출한 재료명을 이용해 유사한 재료를 사용한 레시피를 찾음
+    const findRelatedRecipe = (ingredNames : string[]) => {
+        let recipeWithCount : {recipe: Menu, count: number }[] = [];
+        let newRelatedRecipe : Menu[] = [];
+
+        allMenu.forEach(recipeItem => {
+            // 형식을 통일하기 위해 재료 정보를 가공
+            let filteredString = filterIngredString(recipeItem);
+            let ingredArray = filteredString.split(', ');
+            let ingredString = exportIngredientsName(ingredArray);
+
+            // 공통된 재료를 사용하는 레시피를 찾고, 공통분모가 되는 재료가 몇 개인지 카운트
+            let commonIngred = ingredString.filter(item => ingredNames.includes(item));
+            // 현재 선택된 레시피와 동일한 레시피는 제외
+            if(recipe.RCP_SEQ !== recipeItem.RCP_SEQ) {
+                recipeWithCount.push({recipe: recipeItem, count: commonIngred.length});
+            }
+        })
+        // 겹치는 재료가 많은 순으로 내림차순 정렬
+        recipeWithCount.sort((a, b) => b.count - a.count);
+        // 상위 4개의 레시피만 추출하여 state 업데이트
+        newRelatedRecipe = recipeWithCount.slice(0, 4).map(item => item.recipe);
+        setRelatedRecipe(newRelatedRecipe);
+    }
+
     // 인분 수의 덧셈, 뺄셈
     const calculateServings = (param : string) => {
         if(param === 'plus') {
@@ -40,6 +99,43 @@ export default function RecipeDetail() {
             setServings(servings - 1);
         }
     }
+    
+    // 레시피의 메뉴얼을 가공하여 state에 할당
+    const pushManual = (recipe : Menu) => {
+        let manuals : string[] = [];
+
+        // 메뉴얼의 순서를 정렬하여 반복
+        Object.keys(recipe)
+            .sort()
+            .forEach(key => {
+                // 메뉴얼의 요소이면서, 비어있지 않아야 함
+                if(key.startsWith("MANUAL") && recipe[key] !== '' && !key.startsWith("MANUAL_IMG")) {
+                    manuals.push(recipe[key] as string);
+                }
+            })
+        // '1.', '2.'와 같은 문자열들을 제거
+        manuals = manuals.map(item => item.replace(/^\d+\. /, ''));
+        setRecipeManual(manuals)
+    }
+
+    const [isHovered, setIsHovered] = useState(new Array(displayedMenu.length).fill(false));  // 페이지 전체에 있는 이미지의 hover 여부를 관리
+
+    const imgMouseEnter = (globalIndex: number) => {
+        setIsHovered(prev => {
+            // state의 이전 상태를 그대로 가져와서, 마우스가 들어온 인덱스만 true로 변경
+            const newHoverState = [...prev];
+            newHoverState[globalIndex] = true;
+            return newHoverState;
+        });
+    }
+    const imgMouseOut = (globalIndex: number) => {
+        setIsHovered(prev => {
+            const newHoverState = [...prev];
+            // state의 이전 상태를 그대로 가져와서, 마우스가 나간 인덱스만 false로 변경
+            newHoverState[globalIndex] = false;
+            return newHoverState;
+        });
+    };
     
     return (
         <>
@@ -96,10 +192,10 @@ export default function RecipeDetail() {
                             <div className="recipe-ingredients">{recipeIngredients}</div> */}
                         <div className="recipe-intro">
                             <div className="recipe-title-div">
-                            <div className="recipe-title">{recipe.RCP_NM}</div>
-                            <div className="recipe-subtitle">{recipe.RCP_PAT2}</div>
+                                <div className="recipe-title">{recipe.RCP_NM}</div>
+                                <div className="recipe-subtitle">{recipe.RCP_PAT2}</div>
                             </div>
-                            <div className="recipe-middle-section">
+                            <div className="recipe-serv-ingred-div">
                                 <div className="per-person-div">
                                     <div>인분</div>
                                     <div 
@@ -133,33 +229,6 @@ export default function RecipeDetail() {
                                 </div>
                             </div>
                             <div className="recipe-ingredients">{recipeIngredients}</div>
-
-                            <div className="">
-                                
-                            </div>
-                            {/* <div className="nutrition-title">레시피 영양정보</div>
-                            <table className="nutrition-table">
-                                <tr>
-                                    <td>탄수화물</td>
-                                    <td>{recipe.INFO_CAR} kcal</td>
-                                </tr>
-                                <tr>
-                                    <td>열량</td>
-                                    <td>{recipe.INFO_ENG} g</td>
-                                </tr>
-                                <tr>
-                                    <td>지방</td>
-                                    <td>{recipe.INFO_FAT} g</td>
-                                </tr>
-                                <tr>
-                                    <td>나트륨</td>
-                                    <td>{recipe.INFO_NA} mg</td>
-                                </tr>
-                                <tr>
-                                    <td>단백질</td>
-                                    <td>{recipe.INFO_PRO} g</td>
-                                </tr>
-                            </table> */}
                         </div>
                     </div>
                     {/* <div>
@@ -168,7 +237,65 @@ export default function RecipeDetail() {
                     <div>
                         {recipe.MANUAL02.replace(/[a-zA-Z]/g, '')}
                     </div> */}
-                    <div className="temp"></div>
+                    {/* 요리 방법, 관련 레시피를 보여주는 영역 */}
+                    <div className="recipe-middle-section">
+                        {/* 요리 방법을 알려주는 영역 */}
+                        <div className="manual-section">
+                            <div className="manual-title">요리 방법</div>
+                            <>
+                                {
+                                    recipeManual.map((item, index) => {
+                                        return (
+                                            <div className="manual-main">
+                                                <div className="manual-index">0{index + 1}/0{recipeManual.length}</div>
+                                                <div className="manual-detail">{item.replace(/[a-zA-Z]/g, '')}</div>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </>
+                        </div>
+                        {/* 관련 레시피를 보여주는 영역 */}
+                        <div className="related-recipe-section">
+                            <div className="related-title">유사한 재료를 사용한 레시피</div>
+                            <table className="menu-table">
+                                <tbody>
+                                    <tr>
+                                        {
+                                            relatedRecipe.map((item, index) => {
+                                                return (
+                                                    <td>
+                                                        <div>
+                                                            <div className="td-content">
+                                                                <Image
+                                                                    src={`${item.ATT_FILE_NO_MK}`}
+                                                                    style={{
+                                                                        borderRadius: 8,
+                                                                        cursor: "pointer",
+                                                                        transition: "transform 0.3s ease",
+                                                                        transform: isHovered[index]
+                                                                            ? "scale(1.05)"
+                                                                            : "scale(1)",
+                                                                    }}
+                                                                    width={250}
+                                                                    height={250}
+                                                                    alt={""}
+                                                                    onMouseEnter={() => imgMouseEnter(index)}
+                                                                    onMouseLeave={() => imgMouseOut(index)}
+                                                                />
+                                                            </div>
+                                                            <div className="RCP_NM">{item.RCP_NM}</div>
+                                                            <div className="RCP_PAT2">{item.RCP_PAT2}</div>
+                                                        </div>
+                                                    </td>
+                                                )
+                                            })
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 <Footer />
             </div>
@@ -180,6 +307,8 @@ export default function RecipeDetail() {
                     align-items: center;
                     margin-top: 60px;
                     color: #111111;
+                    margin-left: auto;
+                    margin-right: auto;
                 }
                 .recipe-top-section {
                     display: flex;
@@ -219,26 +348,24 @@ export default function RecipeDetail() {
                 .recipe-intro {
                     display: flex;
                     flex-direction: column;
-                    justify-content: center;
-                    margin-left: 40px;
                     align-self: flex-start;
-                    margin-top: 7px;
+                    margin-left: 35px;
                 }
                 .recipe-title-div {
                     display: flex;
                     flex-direction: row;
                 }
                 .recipe-title {
-                    font-size: 23px;
+                    font-size: 28px;
                     font-weight: 400;
                 }
                 .recipe-subtitle {
-                    margin-top: 10px;
+                    margin-top: 13.5px;
                     margin-left: 4px;
-                    font-size: 14px;
+                    font-size: 15px;
                     color: #5C5C5C;
                 }
-                .recipe-middle-section {
+                .recipe-serv-ingred-div {
                     display: flex;
                     flex-direction: row;
                     justify-content: space-between;
@@ -323,37 +450,56 @@ export default function RecipeDetail() {
                     margin-right: 5px;
                 }
                 .recipe-ingredients {
-                    font-size: 15px;
+                    font-size: 16px;
                     margin-top: 30px;
-                    max-width: 500px;
+                    width: 700px;
                     border-radius: 5px;
                     padding: 10px;
                     color: #2d2d2d;
                     background-color: #f2f2f2;
                 }
-                .recipe-intro {
+                .recipe-middle-section {
                     display: flex;
                     flex-direction: column;
-                    align-self: flex-start;
-                    margin-top: 8px;
-                    margin-left: 35px;
+                    width: 100%;
+                    margin-top: 80px;
+                    margin-bottom: 80px;
                 }
-                .nutrition-title {
-                    font-size: 18px;
-                    margin-bottom: 7px;
+                .manual-section {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
                 }
-                .nutrition-table {
-                    width: 300px;
+                .manual-title {
+                    font-size: 23px;
+                    font-weight: 400;
+                    margin-bottom: 5px;
                 }
-                .nutrition-table tr {
-                    border-bottom: 1px solid #5C5C5C;
+                .manual-main {
+                    margin-top: 15px;
+                    padding: 20px 30px 20px 15px;
+                    border: 1px solid #e8e8e8;
+                    border-radius: 5px;
+                    width: 650px;
                 }
-                .nutrition-table tr td:first-child {
+                .manual-index {
                     color: #5C5C5C;
-                    font-size: 15px;
+                    font-size: 13px;
+                    margin-bottom: 5px;
                 }
-                 .nutrition-table tr td:last-child {
-                    font-size: 15px;
+                .manual-detail {
+                    font-size: 16px;
+                }
+                .related-recipe-section {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    margin-top: 80px;
+                }
+                .related-title {
+                    font-size: 23px;
+                    font-weight: 400;
+                    margin-bottom: 28px;
                 }
             `}</style>
         </>

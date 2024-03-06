@@ -270,17 +270,22 @@ export default function Recipe() {
 
         router.push({
             pathname: `/recipe/${seq}`,
-            query: {name: name, seq: seq},
+            query: { name: name, seq: seq },
         })
     }
 
     // allMenu.map((item, index) => {
-    //     // let temp = adjustForServings(item.RCP_PARTS_DTLS, 2);
+    //     let temp = adjustForServings(item.RCP_PARTS_DTLS, 2);
     //     let abc = filterIngredString(item);
     //     let result = adjustForServings(abc, 2);
 
-    //     console.log("가공 전 : ", abc);
-    //     console.log("가공 후 : ", result);
+    //     // console.log("가공 전 : ", abc);
+    //     // console.log("가공 후 : ", result);
+    //     // console.log("메뉴 : ", item.MANUAL04);
+    //     // if(item.MANUAL10 !== '') {
+    //     //     console.log(index ,"번째 있음");
+
+    //     // }
     // })
 
     return (
@@ -524,7 +529,9 @@ export default function Recipe() {
                                                                                 borderRadius: 8,
                                                                                 cursor: 'pointer',
                                                                                 transition: 'transform 0.3s ease',
-                                                                                transform: hoverState[globalIndex] ? 'scale(1.05)' : 'scale(1)'
+                                                                                transform: hoverState[globalIndex] ?
+                                                                                    'scale(1.05)' :
+                                                                                    'scale(1)'
                                                                             }}
                                                                             width={250}
                                                                             height={250}

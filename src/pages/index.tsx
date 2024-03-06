@@ -322,7 +322,8 @@ export default function Home() {
                         <table className="menu-table">
                             <tbody>
                                 <tr>
-                                    {dessertMenu.length !== undefined &&
+                                    {
+                                        dessertMenu.length !== undefined &&
                                         dessertMenu.slice(0, 4).map((item, index) => {
                                             const isHovered = dessertHovered;
                                             return (
@@ -337,17 +338,13 @@ export default function Home() {
                                                                     transition: "transform 0.3s ease",
                                                                     transform: isHovered[index]
                                                                         ? "scale(1.05)"
-                                                                        : "scale(1)",
+                                                                        : "scale(1)"
                                                                 }}
                                                                 width={250}
                                                                 height={250}
                                                                 alt={""}
-                                                                onMouseEnter={() =>
-                                                                    imgMouseEnter(index, "dessert")
-                                                                }
-                                                                onMouseLeave={() =>
-                                                                    imgMouseOut(index, "dessert")
-                                                                }
+                                                                onMouseEnter={() => imgMouseEnter(index, "dessert")}
+                                                                onMouseLeave={() => imgMouseOut(index, "dessert")}
                                                             />
                                                         </div>
                                                         <div className="RCP_NM">{item.RCP_NM}</div>
