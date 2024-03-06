@@ -39,22 +39,22 @@ export const dessertMenuSlice = createSlice({
     }
 })
 
+export const allMenuSlice = createSlice({
+    name: 'allMenu',
+    initialState: initialState,
+    reducers: {
+        setAllMenu: (state, action) => {
+            return action.payload;
+        }
+    }
+})
+
 // 화면에 보여지는 메뉴에 대한 Slice(모든 메뉴, 검색된 메뉴)
 export const displayedMenuSlice = createSlice({
     name: 'displayedMenuSlice',
     initialState: initialState,
     reducers: {
         setDisplayedMenu: (state, action) => {
-            return action.payload;
-        }
-    }
-})
-
-export const allMenuSlice = createSlice({
-    name: 'allMenu',
-    initialState: initialState,
-    reducers: {
-        setAllMenu: (state, action) => {
             return action.payload;
         }
     }

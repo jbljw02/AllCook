@@ -14,6 +14,8 @@ import SortList from "../../components/SortList";
 import HeaderOnContents from '../../components/HeaderOnContents';
 import { useRouter } from "next/router";
 import { setRecipe } from "@/redux/features/recipeSlice";
+import { adjustForServings } from "@/utils/adjustForServings";
+import { filterIngredString } from "@/utils/filterIngredString";
 
 export default function Recipe() {
     const dispatch = useDispatch();
@@ -268,14 +270,14 @@ export default function Recipe() {
 
         router.push({
             pathname: `/recipe/${seq}`,
-            query: {name: name, seq: seq},
+            query: { name: name, seq: seq },
         })
     }
 
     // allMenu.map((item, index) => {
-    //     // let temp = adjustForServings(item.RCP_PARTS_DTLS, 2);
-    //     // let abc = filterIngredString(item);
-    //     // let result = adjustForServings(abc, 2);
+    //     let temp = adjustForServings(item.RCP_PARTS_DTLS, 2);
+    //     let abc = filterIngredString(item);
+    //     let result = adjustForServings(abc, 2);
 
     //     // console.log("가공 전 : ", abc);
     //     // console.log("가공 후 : ", result);
@@ -527,7 +529,9 @@ export default function Recipe() {
                                                                                 borderRadius: 8,
                                                                                 cursor: 'pointer',
                                                                                 transition: 'transform 0.3s ease',
-                                                                                transform: hoverState[globalIndex] ? 'scale(1.05)' : 'scale(1)'
+                                                                                transform: hoverState[globalIndex] ?
+                                                                                    'scale(1.05)' :
+                                                                                    'scale(1)'
                                                                             }}
                                                                             width={250}
                                                                             height={250}
