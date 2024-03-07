@@ -5,13 +5,17 @@ import Seo from "../../components/Seo";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { RootState, wrapper, Menu } from "../../redux/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { filterIngredString } from "@/utils/filterIngredString";
 import { adjustForServings } from "@/utils/adjustForServings";
 import { nutritionInfoSlice } from "@/redux/features/nutritionSlice";
+import moveToDetail from "@/utils/moveToDetail";
+import { setRecipe } from "@/redux/features/recipeSlice";
 
 export default function RecipeDetail() {
+    const dispatch = useDispatch();
+
     const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
 
@@ -178,8 +182,12 @@ export default function RecipeDetail() {
         }
     }, [nutritionRef]);
 
-    // const temp = Number(recipe.INFO_ㅊCAR);
-    console.log("타입 : ", typeof recipe.INFO_CAR);
+
+    // 특정 메뉴를 클릭하면 해당 메뉴의 레시피 페이지로 이동
+    const menuClick = (name: string, seq: string) => {
+        const selectedMenu = moveToDetail(name, seq, displayedMenu);
+        dispatch(setRecipe(selectedMenu));
+    }
 
     return (
         <>
@@ -372,7 +380,7 @@ export default function RecipeDetail() {
                                                 return (
                                                     <td>
                                                         <div>
-                                                            <div className="td-content">
+                                                            <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)}className="td-content">
                                                                 <Image
                                                                     src={`${item.ATT_FILE_NO_MK}`}
                                                                     style={{

@@ -15,11 +15,17 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import HeaderOnContents from "../components/HeaderOnContents";
 import Seo from "../components/Seo";
+import moveToDetail from "@/utils/moveToDetail";
+import { setRecipe } from "@/redux/features/recipeSlice";
 
 export default function Home() {
+    const dispatch = useDispatch();
+
     const [scrollPassContent, setScrollPassContent] = useState(false); // 스크롤이 컨텐츠 영역을 지났는지
     const [headerSlide, setHeaderSlide] = useState(false); // 헤더의 슬라이드를 처리하기 위함
     const contentsRef = useRef<HTMLDivElement>(null);
+
+    const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
 
     useEffect(() => {
         // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
@@ -122,6 +128,12 @@ export default function Home() {
             });
         }
     };
+
+    // 특정 메뉴를 클릭하면 해당 메뉴의 레시피 페이지로 이동
+    const menuClick = (name: string, seq: string) => {
+        const selectedMenu = moveToDetail(name, seq, displayedMenu);
+        dispatch(setRecipe(selectedMenu));
+    }
 
     return (
         <>
@@ -280,7 +292,7 @@ export default function Home() {
                                             return (
                                                 <td>
                                                     <div>
-                                                        <div className="td-content">
+                                                        <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)} className="td-content">
                                                             <Image
                                                                 src={`${item.ATT_FILE_NO_MK}`}
                                                                 style={{
@@ -329,7 +341,7 @@ export default function Home() {
                                             return (
                                                 <td>
                                                     <div>
-                                                        <div className="td-content">
+                                                        <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)} className="td-content">
                                                             <Image
                                                                 src={`${item.ATT_FILE_NO_MK}`}
                                                                 style={{
