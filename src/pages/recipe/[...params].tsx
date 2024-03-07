@@ -164,7 +164,9 @@ export default function RecipeDetail() {
     // nutrition-detail 외부를 클릭하면 창을 닫음
     useEffect(() => {
         const nutritionOutsideClick = (event: MouseEvent) => {
-            if(nutritionRef.current && !nutritionRef.current.contains(event.target as Node)) {
+            if(nutritionRef.current && 
+                !nutritionRef.current.contains(event.target as Node)) {
+                console.log("DD");
                 setNutritionVisible(false);
             }
         }
@@ -175,7 +177,10 @@ export default function RecipeDetail() {
             document.removeEventListener("mousedown", nutritionOutsideClick);
         }
     }, [nutritionRef]);
-    
+
+    // const temp = Number(recipe.INFO_ㅊCAR);
+    console.log("타입 : ", typeof recipe.INFO_CAR);
+
     return (
         <>
             <Seo title="레시피" />
@@ -270,9 +275,9 @@ export default function RecipeDetail() {
                                         </span>
                                     </div>
                                 </div>
-                                <div className="nutrition-button-div">
+                                <div ref={nutritionRef} className="nutrition-button-div">
                                     <div 
-                                        onClick={() => setNutritionVisible(true)}
+                                        onClick={() => setNutritionVisible(!nutritionVisible)}
                                         className="nutrition-check-button no-drag"
                                         style={{backgroundColor: nutritionVisible ? '#f2f2f2' : ''}}>
                                         <svg className="nutrition-check-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -282,40 +287,50 @@ export default function RecipeDetail() {
                                     </div>
                                     {
                                         nutritionVisible &&
-                                            <div ref={nutritionRef} className="nutrition-detail">
+                                            <div className="nutrition-detail">
                                                 <div className="nutrition-detail-nav">
                                                     <div className="nutrition-detail-title">레시피 영양정보</div>
-                                                    {/* <svg className="close-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 -0.5 21 21" version="1.1">
-                                                        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                            <g id="Dribbble-Light-Preview" transform="translate(-419.000000, -240.000000)" fill="#9b9b9b">
-                                                                <g id="icons" transform="translate(56.000000, 160.000000)">
-                                                                    <polygon id="close-[#1511]" points="375.0183 90 384 98.554 382.48065 100 373.5 91.446 364.5183 100 363 98.554 371.98065 90 363 81.446 364.5183 80 373.5 88.554 382.48065 80 384 81.446">
-                                                                    </polygon>
-                                                                </g>
-                                                            </g>
-                                                        </g>
-                                                    </svg> */}
                                                 </div>
                                                 <div className="nutrition-detail-contents-div">
                                                     <div className="nutrition-detail-content">
                                                         <div className="nutrition-name">탄수화물</div>
-                                                        <div className="nutrition-amount">{(recipe.INFO_CAR * servings).toFixed(1)} g</div>
+                                                        <div className="nutrition-amount">
+                                                            {Number.isInteger(recipe.INFO_CAR * servings)
+                                                                ? (recipe.INFO_CAR * servings).toFixed(0)
+                                                                : (recipe.INFO_CAR * servings).toFixed(1)} g
+                                                        </div>
                                                     </div>
                                                     <div className="nutrition-detail-content">
                                                         <div className="nutrition-name">열량</div>
-                                                        <div className="nutrition-amount">{(recipe.INFO_ENG * servings).toFixed(1)} kcal</div>
+                                                        <div className="nutrition-amount">
+                                                            {Number.isInteger(recipe.INFO_ENG * servings)
+                                                                ? (recipe.INFO_ENG * servings).toFixed(0)
+                                                                : (recipe.INFO_ENG * servings).toFixed(1)} kcal
+                                                        </div>
                                                     </div>
                                                     <div className="nutrition-detail-content">
                                                         <div className="nutrition-name">지방</div>
-                                                        <div className="nutrition-amount">{(recipe.INFO_FAT * servings).toFixed(1)} g</div>
+                                                        <div className="nutrition-amount">
+                                                            {Number.isInteger(recipe.INFO_FAT * servings)
+                                                                ? (recipe.INFO_FAT * servings).toFixed(0)
+                                                                : (recipe.INFO_FAT * servings).toFixed(1)} g
+                                                        </div>
                                                     </div>
                                                     <div className="nutrition-detail-content">
                                                         <div className="nutrition-name">나트륨</div>
-                                                        <div className="nutrition-amount">{(recipe.INFO_NA * servings).toFixed(1)} mg</div>
+                                                        <div className="nutrition-amount">
+                                                            {Number.isInteger(recipe.INFO_NA * servings)
+                                                                ? (recipe.INFO_NA * servings).toFixed(0)
+                                                                : (recipe.INFO_NA * servings).toFixed(1)} g
+                                                        </div>
                                                     </div>
                                                     <div className="nutrition-detail-content">
                                                         <div className="nutrition-name">단백질</div>
-                                                        <div className="nutrition-amount">{(recipe.INFO_PRO * servings).toFixed(1)} g</div>
+                                                        <div className="nutrition-amount">
+                                                            {Number.isInteger(recipe.INFO_PRO * servings)
+                                                                ? (recipe.INFO_PRO * servings).toFixed(0)
+                                                                : (recipe.INFO_PRO * servings).toFixed(1)} g
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <p className="nutrition-detail-footer">
