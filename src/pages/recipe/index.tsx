@@ -241,7 +241,7 @@ export default function Recipe() {
         return () => {
             document.removeEventListener("mousedown", filterOutsideClick);
         }
-    }, [filterRef])
+    }, [filterRef]);
 
     // RangeSlider의 파라미터를 받아와서 dispatch
     // 고차함수 - 다른 함수를 인자로 받거나 함수를 결과로 반환
@@ -305,13 +305,23 @@ export default function Recipe() {
                                 svgFill="#000000"
                                 lightLogo={false}
                                 inputBackgroundColor="#f2f2f2" /> :
-                            <HeaderOnContents
-                                className={
-                                    !headerSlide ?
+                            <>
+                                <Header
+                                    position="relative"
+                                    backgroundColor="#ffffff"
+                                    color="#111111"
+                                    borderColor="#e8e8e8"
+                                    svgFill="#000000"
+                                    lightLogo={false}
+                                    inputBackgroundColor="#f2f2f2" />
+                                <HeaderOnContents
+                                    className={
+                                        !headerSlide ?
                                         'slide-down' :
                                         'slide-up'
-                                }
-                            />
+                                    }
+                                />
+                            </>
                     }
                 </div>
                 {/* 헤더와 풋터를 제외한 영역 */}
