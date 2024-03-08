@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import { setRecipe } from "@/redux/features/recipeSlice";
 import { adjustForServings } from "@/utils/adjustForServings";
 import { filterIngredString } from "@/utils/filterIngredString";
+import moveToDetail from "@/utils/moveToDetail";
 
 export default function Recipe() {
     const dispatch = useDispatch();
@@ -255,23 +256,10 @@ export default function Recipe() {
     const naInfoChange = infoChange('na');
     const proInfoChange = infoChange('pro');
 
-    const router = useRouter();
-
     // 특정 메뉴를 클릭하면 해당 메뉴의 레시피 페이지로 이동
-    const moveToDetail = (name: string, seq: string) => {
-        let selectedMenu = displayedMenu.find(item => item.RCP_SEQ === seq);
-        dispatch(setRecipe(selectedMenu));  // 선택된 메뉴로 dispatch
-        // console.log("재료(가공 전) : ", selectedMenu?.RCP_PARTS_DTLS);
-
-        // if(selectedMenu !== undefined) {
-
-        //     console.log("결과 : ", adjustForServings(selectedMenu?.RCP_PARTS_DTLS, 2));
-        // }
-
-        router.push({
-            pathname: `/recipe/${seq}`,
-            query: { name: name, seq: seq },
-        })
+    const menuClick = (name: string, seq: string) => {
+        const selectedMenu = moveToDetail(name, seq, displayedMenu);
+        dispatch(setRecipe(selectedMenu));
     }
 
     // allMenu.map((item, index) => {
@@ -532,7 +520,7 @@ export default function Recipe() {
                                                         return (
                                                             <td>
                                                                 <div>
-                                                                    <div onClick={() => moveToDetail(item.RCP_NM, item.RCP_SEQ)} className="td-content">
+                                                                    <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)} className="td-content">
                                                                         <Image
                                                                             src={`${item.ATT_FILE_NO_MK}`}
                                                                             style={{

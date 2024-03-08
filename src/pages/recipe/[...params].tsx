@@ -5,13 +5,17 @@ import Seo from "../../components/Seo";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { RootState, wrapper, Menu } from "../../redux/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { filterIngredString } from "@/utils/filterIngredString";
 import { adjustForServings } from "@/utils/adjustForServings";
 import { nutritionInfoSlice } from "@/redux/features/nutritionSlice";
+import moveToDetail from "@/utils/moveToDetail";
+import { setRecipe } from "@/redux/features/recipeSlice";
 
 export default function RecipeDetail() {
+    const dispatch = useDispatch();
+
     const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
 
@@ -178,8 +182,12 @@ export default function RecipeDetail() {
         }
     }, [nutritionRef]);
 
-    // const temp = Number(recipe.INFO_ㅊCAR);
-    console.log("타입 : ", typeof recipe.INFO_CAR);
+
+    // 특정 메뉴를 클릭하면 해당 메뉴의 레시피 페이지로 이동
+    const menuClick = (name: string, seq: string) => {
+        const selectedMenu = moveToDetail(name, seq, displayedMenu);
+        dispatch(setRecipe(selectedMenu));
+    }
 
     return (
         <>
@@ -223,7 +231,7 @@ export default function RecipeDetail() {
                         <div className="recipe-img-section">
                             <div className="recipe-button-div">
                                 <div className="recipe-button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20" className="bookmark-svg">
+                                    <svg className="bookmark-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                         <path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="m15 16-5-3.333L5 16V5.333c0-.353.15-.692.418-.942S6.05 4 6.428 4h7.143c.38 0 .743.14 1.01.39.269.25.419.59.419.943V16z"/>
                                     </svg>
                                     <span>저장</span>
@@ -372,7 +380,7 @@ export default function RecipeDetail() {
                                                 return (
                                                     <td>
                                                         <div>
-                                                            <div className="td-content">
+                                                            <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)}className="td-content">
                                                                 <Image
                                                                     src={`${item.ATT_FILE_NO_MK}`}
                                                                     style={{
@@ -436,12 +444,16 @@ export default function RecipeDetail() {
                     padding: 5px 12px 5px 9px;
                     border: 1px solid transparent;
                     border-radius: 8px;
+                    cursor: pointer;
+                }
+                {/* recipe-button-div에 커서를 올리면, bookmark-svg의 css를 수정 */}
+                .recipe-button-div:hover .bookmark-svg {
+                    fill: #000000;
                 }
                 .recipe-button {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    cursor: pointer;
                 }
                 .recipe-button-div span {
                     font-size: 12px;
@@ -450,6 +462,8 @@ export default function RecipeDetail() {
                     width: 17px;
                     margin-top: 0.6px;
                     margin-right: 2px;
+                    fill: #ffffff;
+                    transition: fill 0.2s ease;
                 }
                 .recipe-intro {
                     display: flex;
