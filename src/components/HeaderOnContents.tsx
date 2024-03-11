@@ -95,7 +95,7 @@ export default function Header({ className }: { className: string }) {
                     </div>
                     {/* 검색창 및 로그인 네비게이션 바 */}
                     <div className='right-nav'>
-                        <div className='input-container'>
+                        <div className='input-div'>
                             {/* onKeyDown = 키가 눌렸을 때 발생 */}
                             <input
                                 onKeyDown={searchRecipe}

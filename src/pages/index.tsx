@@ -3,11 +3,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { RootState } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import {
-    setRecomMenu,
-    setDessertMenu,
-    setAllMenu,
-} from "@/redux/features/menuSlice";
+import { setRecomMenu, setDessertMenu, setAllMenu, setDisplayedMenu } from "@/redux/features/menuSlice";
 import { wrapper } from "../redux/store";
 import { Menu } from "../redux/store";
 import Link from "next/link";
@@ -25,7 +21,12 @@ export default function Home() {
     const [headerSlide, setHeaderSlide] = useState(false); // 헤더의 슬라이드를 처리하기 위함
     const contentsRef = useRef<HTMLDivElement>(null);
 
+    const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
+
+    useEffect(() => {
+        dispatch(setDisplayedMenu(allMenu))
+    }, [])
 
     useEffect(() => {
         // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
@@ -445,7 +446,8 @@ export default function Home() {
                     position: relative;
                     top: 7px;
                     right: 33px;
-                    color: rgb(76, 75, 75);
+                    color: r
+                    gb(76, 75, 75);
                     cursor: pointer;
                 }
                 .banner-img {

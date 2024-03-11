@@ -55,7 +55,7 @@ export default function Footer() {
                         </div>
                     </div>
                     <div className='copyright-content'>
-                        ©2023 by All Cook. All Rights Reserved.
+                        ©2024 by All Cook. All Rights Reserved.
                     </div>
                 </div>
             </footer>
@@ -66,8 +66,8 @@ export default function Footer() {
                     justify-content: center;
                     font-size: 14px;
                     color: #212529;
-                    margin-top: auto;
                     background-color: #f9f7f5;
+                    {/* margin-top: auto; */}
                 }
                 {/* footer 왼쪽 영역 */}
                 .footer-left {
