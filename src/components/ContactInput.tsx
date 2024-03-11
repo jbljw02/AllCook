@@ -14,7 +14,7 @@ export default function ContactInput({ height, placeholder, msgWhether }: { heig
                 }
                 .input-div-background {
                     border-radius: 5px;
-                    border: 1px solid #adadad;
+                    border: 1px solid #787878;
                 }
                 .search-input {
                     background-color: transparent;
