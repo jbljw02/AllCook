@@ -6,6 +6,16 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import contactImage from "/public/images/contact-img.jpg";
 import ContactInput from "@/components/ContactInput";
+import { fetchForm } from "@/utils/nodemailer/fetchForm";
+// import sendMail from "@/api/sendMail";
+
+export type Form = {
+    id: string,
+    name: string,
+    mail: string,
+    tel: string,
+    content: string,
+}
 
 export default function Contact() {
     const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
@@ -35,6 +45,29 @@ export default function Contact() {
             window.removeEventListener('scroll', checkScrollLocation);
         };
     }, [scrollPassContent]);
+
+
+    // 회원의 문의 내용을 담는 state
+    const [formData, setFormData] = useState<Form>({
+        id: '',
+        name: '',
+        mail: '',
+        tel: '',
+        content: '',
+    });
+
+    const formChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        })
+    }
+
+    const formSubmit = () => {
+        fetchForm(formData)
+    };
+
+    console.log("폼데이터 : ", formData);
 
     return (
         <>
@@ -73,10 +106,6 @@ export default function Contact() {
                                 />
                             </>
                     }
-                    {/* <div className="contact-introduce">
-                        <div className="intro-title">문의하기</div>
-                        <div className="intro-subtitle"></div>
-                    </div> */}
                     <div className="contact-img">
                         <Image src={contactImage} alt="" layout="responsive" />
                     </div>
@@ -85,6 +114,7 @@ export default function Contact() {
                     {/* 문의 내용에 대한 영역 */}
                     <div className="contact-section">
                         <div className="contact-contents">
+                            {/* 좌측 영역 */}
                             <div className="contact-left">
                                 <div className="contact-header">
                                     <div className="contact-title">메시지를 남겨주세요</div>
@@ -92,14 +122,32 @@ export default function Contact() {
                                 </div>
                                 <div className="personal-info">
                                     <div className="name-div">
-                                        <ContactInput height="35px" placeholder="이름" msgWhether={false} />
+                                        <ContactInput
+                                            name="name"
+                                            height="25px"
+                                            placeholder="이름"
+                                            msgWhether={false}
+                                            onChange={formChange}
+                                        />
                                     </div>
                                     <div className="personal-div">
                                         <div className="email">
-                                            <ContactInput height="35px" placeholder="메일" msgWhether={false} />
+                                            <ContactInput
+                                                name="mail"
+                                                height="25px"
+                                                placeholder="메일"
+                                                msgWhether={false}
+                                                onChange={formChange}
+                                            />
                                         </div>
                                         <div className="tel">
-                                            <ContactInput height="35px" placeholder="연락처" msgWhether={false} />
+                                            <ContactInput
+                                                name="tel"
+                                                height="25px"
+                                                placeholder="연락처"
+                                                msgWhether={false}
+                                                onChange={formChange}
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -109,30 +157,37 @@ export default function Contact() {
                                         <span>개인정보 처리 방침</span>에 동의합니다.
                                     </div>
                                 </div>
+                                {/* 좌측 하단 연락처, 이메일 영역 */}
                                 <div className="contact-footer">
                                     <div className="tel-section">
                                         <svg className="tel-svg" xmlns="http://www.w3.org/2000/svg" width="19px" height="19px" viewBox="0 0 24 24" fill="none">
-                                            <path d="M18.7881 14.7644C17.4497 13.4433 15.9296 15.1939 14.9258 16.1847C11.8965 16.7827 6.44379 11.4006 7.6555 9.00853C8.65932 8.01771 10.4328 6.51729 9.09441 5.1962C7.75599 3.87511 5.85724 3.60737 4.85342 4.59819C4.02037 5.42046 3.41451 7.21449 4.92915 11.1016C6.44379 14.9887 8.86722 17.3807 13.0072 19.0751C17.1473 20.7694 18.5609 19.7728 19.394 18.9505C20.3978 17.9597 20.1265 16.0855 18.7881 14.7644Z" stroke="#5c5c5c" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M18.7881 14.7644C17.4497 13.4433 15.9296 15.1939 14.9258 16.1847C11.8965 16.7827 6.44379 11.4006 7.6555 9.00853C8.65932 8.01771 10.4328 6.51729 9.09441 5.1962C7.75599 3.87511 5.85724 3.60737 4.85342 4.59819C4.02037 5.42046 3.41451 7.21449 4.92915 11.1016C6.44379 14.9887 8.86722 17.3807 13.0072 19.0751C17.1473 20.7694 18.5609 19.7728 19.394 18.9505C20.3978 17.9597 20.1265 16.0855 18.7881 14.7644Z" stroke="#111111" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
                                         <div>010-8511-3589</div>
                                     </div>
                                     <div className="mail-section">
-                                        <svg className="mail-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 29" width="24px" height="24px">
-                                            <path fill="#5c5c5c" fill-rule="evenodd" d="M7 7a2.5 2.5 0 0 0-2.5 2.5v9A2.5 2.5 0 0 0 7 21h15a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 22 7H7ZM5.5 9.5C5.5 8.67 6.17 8 7 8h15c.83 0 1.5.67 1.5 1.5v.17l-9 3.79-9-3.8V9.5Zm0 1.25v7.75c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-7.75l-8.8 3.71-.2.08-.2-.08-8.8-3.7Z"></path>
+                                        <svg className="mail-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 29" width="23px" height="23px">
+                                            <path fill="#111111" fill-rule="evenodd" d="M7 7a2.5 2.5 0 0 0-2.5 2.5v9A2.5 2.5 0 0 0 7 21h15a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 22 7H7ZM5.5 9.5C5.5 8.67 6.17 8 7 8h15c.83 0 1.5.67 1.5 1.5v.17l-9 3.79-9-3.8V9.5Zm0 1.25v7.75c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-7.75l-8.8 3.71-.2.08-.2-.08-8.8-3.7Z"></path>
                                         </svg>
                                         <div>jbljw02@naver.com</div>
                                     </div>
                                 </div>
                             </div>
+                            {/* 우측 영역 */}
                             <div className="contact-right">
                                 <div className="msg-div">
                                     <div className="msg-title">문의내용</div>
-                                    <ContactInput height="190px" placeholder="" msgWhether={true} />
+                                    <ContactInput
+                                        name="content"
+                                        height="190px"
+                                        placeholder=""
+                                        msgWhether={true}
+                                        onChange={formChange}
+                                    />
                                 </div>
-                                <div className="contact-submit">전송</div>
+                                <div onClick={formSubmit} className="contact-submit">전송</div>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <Footer />
@@ -187,7 +242,7 @@ export default function Contact() {
                     display: flex;
                     flex-direction: column;
                     justify-content: flex-start;
-                    margin-bottom: 15px;
+                    margin-bottom: 20px;
                 }
                 .contact-title {
                     font-size: 22px;
@@ -219,7 +274,7 @@ export default function Contact() {
                 .checkbox-div {
                     display: flex;
                     flex-direction: row;
-                    margin-top: 12px;
+                    margin-top: 13px;
                 }
                 .checkbox-div input {
                     margin-top: 5.5px;
@@ -263,15 +318,15 @@ export default function Contact() {
                     display: flex;
                     flex-direction: row;
                     justify-content: flex-start;
-                    margin-top: 55px;
-                    color: #5c5c5c;
+                    margin-top: 76px;
+                    color: #111111;
                 }
                 .tel-section {
                     display: flex;
                     flex-direction: row;
                     margin-right: 30px;
                     margin-top: 2.5px;
-                    font-size: 13.5px;
+                    font-size: 13px;
                     font-weight: 300;
                 }
                 .tel-svg {
@@ -284,56 +339,15 @@ export default function Contact() {
                 .mail-section {
                     display: flex;
                     flex-direction: row;
-                    font-size: 14px;
+                    font-size: 13px;
                     font-weight: 300;
                 }
                 .mail-svg {
                     position: relative;
-                    top: 0.3px;
+                    top: 0.7px;
                 }
                 .mail-section div {
                     margin-left: 4px;
-                }
-                .contact-info-section {
-                    display: flex;
-                    padding: 35px 35px 40px 0;
-                    background-color: #ffffff;
-                    border-top-right-radius: 5px;
-                    border-bottom-right-radius: 5px;
-                    color: #111111;
-                }
-                .contact-info-div {
-                    display: flex;
-                    flex-direction: column;
-                    padding-left: 30px;
-                    {/* border-left: 1px solid #787878; */}
-                }
-                .contact-info-title {
-                    font-size: 20px;
-                    margin-top: 3px;
-                    margin-bottom: 20px;
-                }
-               
-                .tel-detail {
-                    display: flex;
-                    flex-direction: column;
-                    margin-left: 15px;
-                }
-                .tel-detail div:first-child, .mail-detail div:first-child {
-                    font-size: 16px;
-                }
-                .tel-detail div:last-child, .mail-detail div:last-child {
-                    font-size: 13.5px;
-                    color: #5c5c5c;
-                }
-                {/* .tel-detail div {
-                    font-size: 16px;
-                } */}
-         
-                .mail-detail {
-                    display: flex;
-                    flex-direction: column;
-                    margin-left: 19px;
                 }
             `}</style>
         </>
