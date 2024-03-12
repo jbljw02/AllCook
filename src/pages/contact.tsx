@@ -6,6 +6,16 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import contactImage from "/public/images/contact-img.jpg";
 import ContactInput from "@/components/ContactInput";
+import { fetchForm } from "@/utils/nodemailer/fetchForm";
+// import sendMail from "@/api/sendMail";
+
+export type Form = {
+    id: string,
+    name: string,
+    mail: string,
+    tel: string,
+    content: string,
+}
 
 export default function Contact() {
     const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
@@ -36,13 +46,6 @@ export default function Contact() {
         };
     }, [scrollPassContent]);
 
-    type Form = {
-        id: string,
-        name: string,
-        mail: string,
-        tel: string,
-        content: string,
-    }
 
     // 회원의 문의 내용을 담는 state
     const [formData, setFormData] = useState<Form>({
@@ -60,9 +63,9 @@ export default function Contact() {
         })
     }
 
-    const formSumbit = () => {
-        
-    }
+    const formSubmit = () => {
+        fetchForm(formData)
+    };
 
     console.log("폼데이터 : ", formData);
 
@@ -182,10 +185,9 @@ export default function Contact() {
                                         onChange={formChange}
                                     />
                                 </div>
-                                <div className="contact-submit">전송</div>
+                                <div onClick={formSubmit} className="contact-submit">전송</div>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <Footer />
