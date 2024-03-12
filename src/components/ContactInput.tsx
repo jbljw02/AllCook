@@ -1,10 +1,28 @@
-export default function ContactInput({ height, placeholder, msgWhether }: { height: string, placeholder: string, msgWhether: boolean }) {
+import { useState } from "react";
 
+export default function ContactInput({ name, height, placeholder, msgWhether, onChange }: { name: string, height: string, placeholder: string, msgWhether: boolean, onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void }) {
+
+    type Form = {
+        id: string,
+        name: string,
+        mail: string,
+        tel: string,
+        content: string,
+    }
+
+    // 회원의 문의 내용을 담는 state
+    const [formData, setFormData] = useState<Form>({
+        id: '',
+        name: '',
+        mail: '',
+        tel: '',
+        content: '',
+    });
 
     return (
         <>
             <div className={`${msgWhether ? 'input-div-background' : 'input-div'}`}>
-                <input className="search-input" style={{ height: height }} placeholder={placeholder} />
+                <textarea name={name} className="search-input" style={{ height: height }} placeholder={placeholder} onChange={onChange} />
             </div>
             <style jsx>{`
                 .input-div {
@@ -19,8 +37,9 @@ export default function ContactInput({ height, placeholder, msgWhether }: { heig
                 .search-input {
                     background-color: transparent;
                     padding-left: 6px;
-                    font-size: 14.5px;
-                    width: 97%;
+                    font-size: 14px;
+                    width: 98%;
+                    resize: none;
                 }
             `}</style>
         </>
