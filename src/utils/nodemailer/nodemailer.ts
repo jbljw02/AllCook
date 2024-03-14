@@ -7,7 +7,7 @@ console.log("이메일 : ", email);
 console.log("비번 : ", password);
 
 export const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: 'naver',
     auth: {
         user: email,
         pass: password,
