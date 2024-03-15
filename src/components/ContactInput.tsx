@@ -33,6 +33,7 @@ export default function ContactInput({ name, height, placeholder, msgWhether, on
                 .input-div-background {
                     border-radius: 5px;
                     border: 1px solid #787878;
+                    margin-top: 10px;
                 }
                 .search-input {
                     background-color: transparent;
