@@ -140,16 +140,18 @@ export default function Contact() {
                                 position: 'absolute',
                                 left: '50%',
                                 top: '45%',
-                                width: 470,
-                                height: 190,
+                                width: 500,
+                                height: 185,
                                 transform: 'translate(-50%, -50%)',
                             }
                         }}
                     >
                         <div className="pop-up-container">
                             <div className="pop-up-title-section">
-                                문의를 접수하기 전에 개인정보 처리방침에 대한 동의가 필요합니다.
-                                서비스 이용을 위해 개인정보 처리방침을 확인하시고, 동의해 주시기 바랍니다.
+                                <span>개인정보 처리방침</span>에 대한 동의가 필요합니다.
+                            </div>
+                            <div className="pop-up-subtitle-section">
+                                원할한 문의 처리를 위해 개인정보 처리방침을 확인하시고, 동의해 주시기 바랍니다.
                             </div>
                             <div className="pop-up-btn-section">
                                 <div
@@ -176,15 +178,19 @@ export default function Contact() {
                                 position: 'absolute',
                                 left: '50%',
                                 top: '45%',
-                                width: 470,
-                                height: 190,
+                                width: 500,
+                                height: 185,
                                 transform: 'translate(-50%, -50%)',
                             }
                         }}
                     >
                         <div className="pop-up-container">
-                            <div className="pop-up-title-section">문의사항이 전송 완료되었습니다! <br />
-                                소중한 의견 감사드리며, 작성하신 이메일을 통해 문의사항에 대한 답변을 드릴테니 조금만 기다려 주세요.</div>
+                            <div className="pop-up-title-section">
+                                문의사항이 전송 완료되었습니다!
+                            </div>
+                            <div className="pop-up-subtitle-section">
+                                귀하의 소중한 의견 감사드리며, 작성하신 이메일을 통해 문의사항에 대한 답변을 드릴테니 조금만 기다려 주세요.
+                            </div>
                             <div className="pop-up-btn-section">
                                 <div
                                     className="read-btn"
@@ -207,7 +213,7 @@ export default function Contact() {
                                         <ContactInput
                                             name="name"
                                             height="25px"
-                                            placeholder="이름"
+                                            placeholder="이름(필수)"
                                             msgWhether={false}
                                             onChange={formChange}
                                         />
@@ -217,7 +223,7 @@ export default function Contact() {
                                             <ContactInput
                                                 name="mail"
                                                 height="25px"
-                                                placeholder="메일"
+                                                placeholder="메일(필수)"
                                                 msgWhether={false}
                                                 onChange={formChange}
                                             />
@@ -226,7 +232,7 @@ export default function Contact() {
                                             <ContactInput
                                                 name="tel"
                                                 height="25px"
-                                                placeholder="연락처"
+                                                placeholder="연락처(선택)"
                                                 msgWhether={false}
                                                 onChange={formChange}
                                             />
@@ -474,22 +480,31 @@ export default function Contact() {
                     flex-direction: column;
                     justify-content: center;
                     text-align: center;
-                    margin: 20px;
+                    margin: 20px 15px;
                 }
                 .pop-up-title-section {
                     font-size: 17px;
+                }
+                .pop-up-subtitle-section {
+                    font-size: 15px;
+                    font-weight: 300;
+                    color: #5c5c5c;
+                    margin-top: 6px;
+                }
+                .pop-up-title-section span {
+                    text-decoration: underline;
                 }
                 .pop-up-btn-section {
                     display: flex;
                     flex-direction: row;
                     justify-content: center;
-                    margin-top: 40px;
+                    margin-top: 33px;
                     font-size: 14px;
                 }
                 .pop-up-btn-section div {
                     border: 1px solid transparent;
                     border-radius: 5px;
-                    padding: 12px 85px;
+                    padding: 12px 90px;
                     cursor: pointer;
                 }
                 .read-btn {
