@@ -16,6 +16,7 @@ export type Form = {
     mail: string,
     tel: string,
     content: string,
+    submitted: boolean,
 }
 
 export default function Contact() {
@@ -55,24 +56,66 @@ export default function Contact() {
         mail: '',
         tel: '',
         content: '',
+        submitted: false,
     });
 
+    // 이메일 유효성 검증을 위한 state와 정규식
+    const [emailValid, setEmailValid] = useState<boolean>(true); 
+    let emailRegex = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z]{2,}$/;
+
+    // textarea의 바뀌는 값을 감지
     const formChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value,
         })
+
+        // 전송이 한 번 클릭된 후에 이메일 유효성을 검사
+        if (formData.submitted && e.target.name === 'mail') {
+            if (emailRegex.test(e.target.value)) {
+                setEmailValid(true)
+            }
+            else {
+                setEmailValid(false);
+            }
+        }
     }
 
     // 작성이 완료된 폼을 전송
     const formSubmit = () => {
-        // 개인정보 처리 방침에 동의했을 경우
-        if (isChecked === true) {
+        setFormData({
+            ...formData,
+            submitted: true,
+        })
+
+        // 최초 전송시에 이메일 유효성 검사
+        if (emailRegex.test(formData.mail)) {
+            setEmailValid(true)
+        }
+        else {
+            setEmailValid(false);
+        }
+
+        // 모든 필수 항목이 공란이 아니며, 개인정보 처리 방침에 동의했을 경우
+        if ((formData.name !== '' &&
+            formData.mail !== '' &&
+            formData.content !== '') &&
+            emailValid &&
+            isChecked === true) {
             fetchForm(formData);
             setIsSubmitted(true);
         }
-        // 동의하지 않았을 경우는 모달을 띄움
-        else {
+        // else if (formData.name === '' ||
+        //     formData.mail === '' ||
+        //     formData.content === '') {
+
+        // }
+        // 모든 필수 항목이 공란이 아니지만, 개인정보 처리 방침에 동의하지 않았을 경우
+        else if ((formData.name !== '' &&
+            formData.mail !== '' &&
+            formData.content !== '') &&
+            emailValid &&
+            isChecked === false) {
             setIsCheckedModalOpen(true);
         }
     };
@@ -211,25 +254,44 @@ export default function Contact() {
                                 <div className="personal-info">
                                     <div className="name-div">
                                         <ContactInput
+                                            form={formData}
                                             name="name"
                                             height="25px"
                                             placeholder="이름(필수)"
                                             msgWhether={false}
                                             onChange={formChange}
                                         />
+                                        {
+                                            formData.submitted && formData.name === '' ?
+                                                <div className="input-warning">이름을 입력해주세요</div> :
+                                                null
+                                        }
                                     </div>
                                     <div className="personal-div">
                                         <div className="email">
                                             <ContactInput
+                                                form={formData}
                                                 name="mail"
                                                 height="25px"
-                                                placeholder="메일(필수)"
+                                                placeholder="이메일(필수)"
                                                 msgWhether={false}
                                                 onChange={formChange}
+                                                emailValid={emailValid}
                                             />
+                                            {
+                                                formData.submitted && formData.mail === '' ?
+                                                    <div className="input-warning">이메일을 입력해주세요</div> :
+                                                    null
+                                            }
+                                            {
+                                                formData.submitted && formData.mail !== '' && !emailValid ?
+                                                    <div className="input-warning">유효한 이메일을 입력해주세요</div> :
+                                                    null
+                                            }
                                         </div>
                                         <div className="tel">
                                             <ContactInput
+                                                form={formData}
                                                 name="tel"
                                                 height="25px"
                                                 placeholder="연락처(선택)"
@@ -332,12 +394,18 @@ export default function Contact() {
                                 <div className="msg-div">
                                     <label className="msg-title">문의내용</label>
                                     <ContactInput
+                                        form={formData}
                                         name="content"
                                         height="190px"
                                         placeholder=""
                                         msgWhether={true}
                                         onChange={formChange}
                                     />
+                                    {
+                                        formData.submitted && formData.content === '' ?
+                                            <div className="input-warning">문의내용을 입력해주세요</div> :
+                                            null
+                                    }
                                 </div>
                                 <div onClick={formSubmit} className="contact-submit">전송</div>
                             </div>
@@ -421,6 +489,12 @@ export default function Contact() {
                     flex-direction: row;
                     justify-content: space-between;
                     margin-bottom: 20px;
+                }
+                .input-warning {
+                    margin-top: 4px;
+                    margin-left: 1px;
+                    font-size: 11.5px;
+                    color: #FF0000;
                 }
                 .email, .tel {
                     width: 185px;
@@ -545,8 +619,10 @@ export default function Contact() {
                     display: flex;
                     flex-direction: row;
                     justify-content: flex-start;
-                    margin-top: 76px;
                     color: #111111;
+                    margin-top: auto;
+                    margin-bottom: 11px;
+                    {/* margin-top: 76px; */}
                 }
                 .tel-section {
                     display: flex;

@@ -1,27 +1,29 @@
 import { useState } from "react";
+import { Form } from "@/pages/contact";
 
-export default function ContactInput({ name, height, placeholder, msgWhether, onChange }: { name: string, height: string, placeholder: string, msgWhether: boolean, onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void }) {
+export default function ContactInput({ form, name, height, placeholder, msgWhether, onChange, emailValid }: { form: Form, name: keyof Form, height: string, placeholder: string, msgWhether: boolean, onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void, emailValid?: boolean, }) {
 
-    type Form = {
-        id: string,
-        name: string,
-        mail: string,
-        tel: string,
-        content: string,
+    // 전송 버튼이 눌렀는데 필드가 비어있는지 확인
+    const checkSubmittedAndEmpty = (fieldName: keyof Form) => {
+        // submitted를 사용하는 이유는, 필드가 비어있는지만 확인하면 초기 상태부터 input에 빨간줄을 긋게 되기 때문
+        return form.submitted && form[fieldName] === '';
     }
 
-    // 회원의 문의 내용을 담는 state
-    const [formData, setFormData] = useState<Form>({
-        id: '',
-        name: '',
-        mail: '',
-        tel: '',
-        content: '',
-    });
+    // input-div의 클래스를 결정
+    const inputClass = (fieldName: keyof Form) => {
+        let baseClass = msgWhether ? 'input-div-background' : 'input-div';
+        if (checkSubmittedAndEmpty(fieldName) && fieldName !== 'tel') {
+            return `${baseClass} input-warning`
+        }
+        if(fieldName === 'mail' && !emailValid) {
+            return `${baseClass} input-warning`
+        }
+        return baseClass;
+    }
 
     return (
         <>
-            <div className={`${msgWhether ? 'input-div-background' : 'input-div'}`}>
+            <div className={inputClass(name)}>
                 <textarea name={name} className="search-input" style={{ height: height }} placeholder={placeholder} onChange={onChange} />
             </div>
             <style jsx>{`
@@ -42,6 +44,12 @@ export default function ContactInput({ name, height, placeholder, msgWhether, on
                     width: 98%;
                     resize: none;
                 }
+                .input-warning {
+                    border-color: #FF0000;
+                }
+                {/* textarea::placeholder {
+                    color: #FF0000;
+                } */}
             `}</style>
         </>
     )
