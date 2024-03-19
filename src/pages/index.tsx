@@ -13,6 +13,11 @@ import HeaderOnContents from "../components/HeaderOnContents";
 import Seo from "../components/Seo";
 import moveToDetail from "@/utils/moveToDetail";
 import { setRecipe } from "@/redux/features/recipeSlice";
+import axios from "axios";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+import { RecomMenu } from "@/components/RecomMenu";
+import SkeletonUI from "../components/Skeleton";
 
 export default function Home() {
     const dispatch = useDispatch();
@@ -24,9 +29,18 @@ export default function Home() {
     const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
 
+
     useEffect(() => {
-        dispatch(setDisplayedMenu(allMenu))
-    }, [])
+        (async () => {
+            try {
+                const response = await fetch('/api/fetchRecomMenu');
+                const jsonData = await response.json();
+                dispatch(setDessertMenu(jsonData.data));
+            } catch (error) {
+                console.error("API 호출 도중 에러 발생 : ", error);
+            }
+        })();
+    }, []);
 
     useEffect(() => {
         // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
@@ -47,7 +61,7 @@ export default function Home() {
                     window.scrollY <= contentsRef.current.offsetTop - margin
                 ) {
                     /* scrollPassContent가 바로 false로 변경되면 unmount animation을 적용할 수 없음(애니메이션이 적용되기도 전에 컴포넌트가 사라지기 때문). 
-                              그렇기 때문에 headerSlide를 통해 애니메이션을 미리 제어하고, 0.5초 뒤에 상태를 변경 */
+                    그렇기 때문에 headerSlide를 통해 애니메이션을 미리 제어하고, 0.5초 뒤에 상태를 변경 */
                     setHeaderSlide(true);
                     setTimeout(() => {
                         setScrollPassContent(false);
@@ -65,9 +79,24 @@ export default function Home() {
         };
     }, [scrollPassContent]);
 
+    const arr: any[] = []
+
+    // allMenu.map((item, index) => {
+    //     if (item.RCP_PAT2 === '후식') {
+    //         // arr.push(index + 1);
+    //         // console.log(index, "번째 : ", item.RCP_PAT2);
+    //         // console.log(item);
+    //     }
+    //     console.log("종류 : ", item.RCP_PAT2);
+    // })
+    // console.log("배열 : ", arr);
+    // console.log("모든 메뉴 : ", allMenu);
+
     // 서버로부터 받아온 메뉴를 저장
     const recomMenu = useSelector((state: RootState) => state.recomMenu);
     const dessertMenu = useSelector((state: RootState) => state.dessertMenu);
+
+    console.log("디저트 : ", dessertMenu);
 
     // 홈 화면에 글자에 split 효과를 주기 위함
     const titleText1 = "환영합니다! 우리는 All Cook,";
@@ -284,10 +313,11 @@ export default function Home() {
                         <div className="recommend-subtitle">
                             All Cook이 추천드리는 메뉴입니다. 오늘은 이 레시피 어떠신가요?
                         </div>
-                        <table className="menu-table">
+                        {/* <table className="menu-table">
                             <tbody>
                                 <tr>
-                                    {recomMenu.length !== undefined &&
+                                    {
+                                        recomMenu.length !== undefined &&
                                         recomMenu.slice(0, 4).map((item, index) => {
                                             const isHovered = recomHovered;
                                             return (
@@ -307,9 +337,7 @@ export default function Home() {
                                                                 width={250}
                                                                 height={250}
                                                                 alt={""}
-                                                                onMouseEnter={() =>
-                                                                    imgMouseEnter(index, "recom")
-                                                                }
+                                                                onMouseEnter={() => imgMouseEnter(index, "recom")}
                                                                 onMouseLeave={() => imgMouseOut(index, "recom")}
                                                             />
                                                         </div>
@@ -319,9 +347,20 @@ export default function Home() {
                                                 </td>
                                             );
                                         })}
+
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> */}
+                        {
+                            <RecomMenu
+                                menu={recomMenu}
+                                menuHovered={recomHovered}
+                                menuClick={menuClick}
+                                imgMouseEnter={imgMouseEnter}
+                                imgMouseOut={imgMouseOut}
+                            /> ||
+                            <SkeletonUI />
+                        }
                     </div>
 
                     {/* 추천 후식 영역을 차지하는 컨테이너 */}
@@ -332,7 +371,7 @@ export default function Home() {
                         <div className="recommend-subtitle">
                             식사 후엔 후식도 잊지 마세요!
                         </div>
-                        <table className="menu-table">
+                        {/* <table className="menu-table">
                             <tbody>
                                 <tr>
                                     {
@@ -368,7 +407,16 @@ export default function Home() {
                                         })}
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> */}
+                        {
+                            <RecomMenu
+                                menu={dessertMenu}
+                                menuHovered={dessertHovered}
+                                menuClick={menuClick}
+                                imgMouseEnter={imgMouseEnter}
+                                imgMouseOut={imgMouseOut}
+                            />
+                        }
                     </div>
                 </div>
                 <Footer />
@@ -573,104 +621,108 @@ export default function Home() {
     );
 }
 
-export const getServerSideProps = wrapper.getServerSideProps(
-    (store) => async () => {
-        const API_KEY = process.env.API_KEY;
+// export const getServerSideProps = wrapper.getServerSideProps(
+//     (store) => async () => {
+//         const API_KEY = process.env.API_KEY;
 
-        // api 요청을 보낼 첫번째 파라미터와 두번째 파라미터를 1~1124 사이의 랜덤 정수로 생성
-        // const startParam = Math.floor(Math.random() * 1121) + 1;
-        // const endParam = startParam + 20;
+//         // api 요청을 보낼 첫번째 파라미터와 두번째 파라미터를 1~1124 사이의 랜덤 정수로 생성
+//         // const startParam = Math.floor(Math.random() * 1121) + 1;
+//         // const endParam = startParam + 20;
 
-        const startParam = 1;
-        const endParam = 1000;
+//         const startParam = 1;
+//         const endParam = 1000;
 
-        const response = await fetch(
-            `http://openapi.foodsafetykorea.go.kr/api/
-            ${API_KEY}/COOKRCP01/json/${startParam}/${endParam}`,
-            {
-                method: "GET",
-            }
-        );
-        const jsonResult = await response.json();
-        const result = jsonResult.COOKRCP01.row;
+// const response = await fetch(`http://openapi.foodsafetykorea.go.kr/api/
+// ${API_KEY}/COOKRCP01/json/${startParam}/${endParam}`, {
+//     method: "GET",
+// });
+// const jsonResult = await response.json();
+// const result = jsonResult.COOKRCP01.row;
 
-        // 포함하지 않을 문자열을 필터링하는 정규식
-        // 미완된 음식의 이미지나, 워터마크가 있는 이미지를 필터링하기 위함
-        const regex =
-            /(uploadimg\/(2014|2015|2019|2020|2021|2023)|common\/ecmFileView\.do\?)/;
+//         // 포함하지 않을 문자열을 필터링하는 정규식
+//         // 미완된 음식의 이미지나, 워터마크가 있는 이미지를 필터링하기 위함
+//         const regex =
+//             /(uploadimg\/(2014|2015|2019|2020|2021|2023)|common\/ecmFileView\.do\?)/;
 
-        const excludeSeqs = ['2981', '886', '3217', '977', '745', '760'];
+//         const excludeSeqs = ['2981', '886', '3217', '977', '745', '760'];
 
-        // const menuData = result.map((item: Menu) => {
-        //     // 구조 분해 할당 - 각 item에서 필요한 필드들을 추출 선언
-        //     const { RCP_NM, ATT_FILE_NO_MK, INFO_CAR,
-        //         INFO_ENG, INFO_FAT, INFO_NA, INFO_PRO,
-        //         MANUAL01, MANUAL02, MANUAL03, RCP_NA_TIP,
-        //         RCP_PARTS_DTLS, RCP_PAT2 } = item;
-        //     return {
-        //         RCP_NM, ATT_FILE_NO_MK, INFO_CAR,
-        //         INFO_ENG, INFO_FAT, INFO_NA, INFO_PRO,
-        //         MANUAL01, MANUAL02, MANUAL03, RCP_NA_TIP,
-        //         RCP_PARTS_DTLS, RCP_PAT2
-        //     };
+//         // const menuData = result.map((item: Menu) => {
+//         //     // 구조 분해 할당 - 각 item에서 필요한 필드들을 추출 선언
+//         //     const { RCP_NM, ATT_FILE_NO_MK, INFO_CAR,
+//         //         INFO_ENG, INFO_FAT, INFO_NA, INFO_PRO,
+//         //         MANUAL01, MANUAL02, MANUAL03, RCP_NA_TIP,
+//         //         RCP_PARTS_DTLS, RCP_PAT2 } = item;
+//         //     return {
+//         //         RCP_NM, ATT_FILE_NO_MK, INFO_CAR,
+//         //         INFO_ENG, INFO_FAT, INFO_NA, INFO_PRO,
+//         //         MANUAL01, MANUAL02, MANUAL03, RCP_NA_TIP,
+//         //         RCP_PARTS_DTLS, RCP_PAT2
+//         //     };
 
-        const menuData = result.filter((item: Menu) => {
-            // ATT_FILE_NO_MK 값에서 정규식과 일치하는 부분을 찾음
-            // match 함수를 이용해 정규식과 일치한다면 배열로 반환하고, 일치하지 않는다면 null
-            const match = item.ATT_FILE_NO_MK.match(regex);
-            // match가 null인 경우에만 item 반환
-            // ** filter 함수가 true일 때 item을 반환하고, false일 땐 반환하지 않는 것을 이용 **
-            return match === null && !excludeSeqs.includes(item.RCP_SEQ);
-        });
+//         const menuData = result.filter((item: Menu) => {
+//             // ATT_FILE_NO_MK 값에서 정규식과 일치하는 부분을 찾음
+//             // match 함수를 이용해 정규식과 일치한다면 배열로 반환하고, 일치하지 않는다면 null
+//             const match = item.ATT_FILE_NO_MK.match(regex);
+//             // match가 null인 경우에만 item 반환
+//             // ** filter 함수가 true일 때 item을 반환하고, false일 땐 반환하지 않는 것을 이용 **
+//             return match === null && !excludeSeqs.includes(item.RCP_SEQ);
+//         });
 
-        store.dispatch(setAllMenu(menuData));
+//         store.dispatch(setAllMenu(menuData));
 
-        // '후식'을 제외한 카테고리만 받아와서 배열로 생성
-        const categories = ["반찬", "국&찌개", "일품"];
-        const foodData = menuData.filter((menuData: Menu) =>
-            categories.includes(menuData.RCP_PAT2)
-        );
-        // '후식'만 받아와서 배열로 생성
-        const dessertData = menuData.filter(
-            (menuData: Menu) => menuData.RCP_PAT2 === "후식"
-        );
+//         // '후식'을 제외한 카테고리만 받아와서 배열로 생성
+//         const categories = ["반찬", "국&찌개", "일품"];
+//         const foodData = menuData.filter((menuData: Menu) =>
+//             categories.includes(menuData.RCP_PAT2)
+//         );
+//         // '후식'만 받아와서 배열로 생성
+//         const dessertData = menuData.filter(
+//             (menuData: Menu) => menuData.RCP_PAT2 === "후식"
+//         );
 
-        // 배열의 길이 안에서 랜덤 인덱스를 받아옴
-        const getRandomIndex = (length: number) => {
-            return Math.floor(Math.random() * length);
-        };
+//         // 배열의 길이 안에서 랜덤 인덱스를 받아옴
+//         const getRandomIndex = (length: number) => {
+//             return Math.floor(Math.random() * length);
+//         };
 
-        // 랜덤 인덱스를 저장하는 변수
-        let foodRandomIndicies: number[] = [];
-        let dessertRandomIndicies: number[] = [];
+//         // 랜덤 인덱스를 저장하는 변수
+//         let foodRandomIndicies: number[] = [];
+//         let dessertRandomIndicies: number[] = [];
 
-        // 4개의 요소만 사용할 것이기 때문에, 랜덤 인덱스 배열의 길이가 4미만일 때까지 반복
-        while (foodRandomIndicies.length < 4) {
-            let foodIndex = getRandomIndex(foodData.length);
-            // 배열에 이미 인덱스가 존재하지 않는 경우에만 요소 추가
-            if (!foodRandomIndicies.includes(foodIndex)) {
-                foodRandomIndicies.push(foodIndex);
-            }
-        }
+//         // 4개의 요소만 사용할 것이기 때문에, 랜덤 인덱스 배열의 길이가 4미만일 때까지 반복
+//         while (foodRandomIndicies.length < 4) {
+//             let foodIndex = getRandomIndex(foodData.length);
+//             // 배열에 이미 인덱스가 존재하지 않는 경우에만 요소 추가
+//             if (!foodRandomIndicies.includes(foodIndex)) {
+//                 foodRandomIndicies.push(foodIndex);
+//             }
+//         }
 
-        while (dessertRandomIndicies.length < 4) {
-            let dessertIndex = getRandomIndex(dessertData.length);
-            if (!dessertRandomIndicies.includes(dessertIndex)) {
-                dessertRandomIndicies.push(dessertIndex);
-            }
-        }
+//         while (dessertRandomIndicies.length < 4) {
+//             let dessertIndex = getRandomIndex(dessertData.length);
+//             if (!dessertRandomIndicies.includes(dessertIndex)) {
+//                 dessertRandomIndicies.push(dessertIndex);
+//             }
+//         }
 
-        // 랜덤 인덱스의 길이만큼 배열의 요소를 추출해서 새 배열 생성
-        const randomFoodData = foodRandomIndicies.map((index) => foodData[index]);
-        const randomDessertData = dessertRandomIndicies.map(
-            (index) => dessertData[index]
-        );
+//         // 랜덤 인덱스의 길이만큼 배열의 요소를 추출해서 새 배열 생성
+//         const randomFoodData = foodRandomIndicies.map((index) => foodData[index]);
+//         const randomDessertData = dessertRandomIndicies.map(
+//             (index) => dessertData[index]
+//         );
 
-        store.dispatch(setRecomMenu(randomFoodData));
-        store.dispatch(setDessertMenu(randomDessertData));
+//         store.dispatch(setRecomMenu(randomFoodData));
+//         store.dispatch(setDessertMenu(randomDessertData));
 
-        return {
-            props: {},
-        };
+//         return {
+//             props: {},
+//         };
+//     }
+// )
+
+
+export async function getStaticProps() {
+    return {
+        props: {}
     }
-);
+}

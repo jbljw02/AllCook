@@ -1,9 +1,9 @@
 import { mailOptions, transporter } from '@/utils/nodemailer/nodemailer';
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-const sendForm = async (request: NextApiRequest, response: NextApiResponse) => {
-    if (request.method === 'POST') {
-        const data = request.body;
+const sendForm = async (req: NextApiRequest, res: NextApiResponse) => {
+    if (req.method === 'POST') {
+        const data = req.body;
 
         try {
             await transporter.sendMail({
@@ -86,15 +86,13 @@ const sendForm = async (request: NextApiRequest, response: NextApiResponse) => {
                 `,
             });
 
-            // return res.status(200).json({ success: "성공했어요" });
-            return response.status(200).send("이메일 전송 성공")
+            return res.status(200).json({ success: "이메일 전송 성공" });
         } catch (error) {
-            console.log("error : ", error);
-            return response.status(400).send("이메일 전송에 실패");
+            return res.status(400).json({ error: "이메일 전송 실패" });
         }
     }
     else {
-        return response.status(405).send("허용되지 않는 요청 방법");
+        return res.status(405).json({error: "허용되지 않은 요청 방법"})
     }
 }
 

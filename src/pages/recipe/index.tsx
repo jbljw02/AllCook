@@ -179,6 +179,18 @@ export default function Recipe() {
         setSliderKey(sliderKey + 1);
     }
 
+
+    let arr: any[] = [];
+    allMenu.map((item, index) => {
+        if (item.RCP_PAT2 === '후식') {
+            console.log(item.RCP_NM);
+            console.log(item.RCP_SEQ);
+            // arr.push(index);
+        }
+    })
+    
+    // console.log("배열: ", arr);
+
     const [currentPage, setCurrentPage] = useState(1);  // 현재 페이지 번호
     const trPerPage = 6;  // 한 페이지에 출력할 tr의 개수
     const tdPerPage = 24;  // 한 페이지에 출력할 td의 개수
@@ -305,8 +317,8 @@ export default function Recipe() {
                                 <HeaderOnContents
                                     className={
                                         !headerSlide ?
-                                        'slide-down' :
-                                        'slide-up'
+                                            'slide-down' :
+                                            'slide-up'
                                     }
                                 />
                             </>
@@ -886,7 +898,7 @@ export default function Recipe() {
     )
 }
 
-export const getServerSideProps = wrapper.getServerSideProps(store => async () => {
+export const getStaticProps = wrapper.getStaticProps(store => async () => {
     const API_KEY = process.env.API_KEY;
 
     const allMenu = store.getState().allMenu;

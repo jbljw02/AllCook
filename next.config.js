@@ -13,18 +13,19 @@ const nextConfig = {
     //     ]
     // },   
 
-    async rewrites() {
-        return [
-            {
-                source: "/home/api/recipe",
-                destination: `http://openapi.foodsafetykorea.go.kr/api/${API_KEY}/COOKRCP01/json/1/4/RCP_NM=샐러드`
-            },
-        ]
+    images: {
+        domains: ['www.foodsafetykorea.go.kr'],
     },
 
-    images: {
-        domains: ['www.foodsafetykorea.go.kr']
-    }
+    // async rewrites() {
+    //     return [
+    //         {
+    //             source: `/api/recomMenu`,
+    //             destination: `http://openapi.foodsafetykorea.go.kr/api/${API_KEY}/COOKRCP01/json/1/1000`
+    //         },
+    //     ]
+    // },
+
 }
 
 module.exports = nextConfig
