@@ -18,6 +18,7 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { RecomMenu } from "@/components/RecomMenu";
 import SkeletonUI from "../components/Skeleton";
+import shuffleArray from "@/utils/shuffleArray";
 
 export default function Home() {
     const dispatch = useDispatch();
@@ -29,19 +30,59 @@ export default function Home() {
     const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
 
+    const recomMenu = useSelector((state: RootState) => state.recomMenu);
+    const dessertMenu = useSelector((state: RootState) => state.dessertMenu);
 
     useEffect(() => {
         (async () => {
+            const categories = ['일품', '반찬', '국&찌개'];
+            const randomIndex = Math.floor(Math.random() * categories.length);
+            const selectedCategory = categories[randomIndex];
+
+            // 포함하지 않을 문자열을 필터링하는 정규식
+            // 미완된 음식의 이미지나, 워터마크가 있는 이미지를 필터링하기 위함
+            const regex =
+                /(uploadimg\/(2014|2015|2019|2020|2021|2023)|common\/ecmFileView\.do\?)/;
+
+            const excludeSeqs = ['2981', '886', '3217', '977', '745', '760'];
             try {
-                const response = await fetch('/api/fetchRecomMenu');
-                const jsonData = await response.json();
-                dispatch(setDessertMenu(jsonData.data));
+                const response = await fetch(`/api/fetchRecomMenu?RCP_PAT2_1=후식&RCP_PAT2_2=${selectedCategory}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                const jsonResponse = await response.json()
+
+                let dessertResponse: Menu[] = shuffleArray(jsonResponse.RCP_PAT2_1);
+                dessertResponse = dessertResponse.filter((item: Menu) => {
+                    // ATT_FILE_NO_MK 값에서 정규식과 일치하는 부분을 찾음
+                    // match 함수를 이용해 정규식과 일치한다면 배열로 반환하고, 일치하지 않는다면 null
+                    const match = item.ATT_FILE_NO_MK.match(regex);
+                    // match가 null인 경우에만 item 반환
+                    // ** filter 함수가 true일 때 item을 반환하고, false일 땐 반환하지 않는 것을 이용 **
+                    return match === null && !excludeSeqs.includes(item.RCP_SEQ);
+                })
+
+                let recomResponse: Menu[] = shuffleArray(jsonResponse.RCP_PAT2_2);
+                recomResponse = recomResponse.filter((item: Menu) => {
+                    // ATT_FILE_NO_MK 값에서 정규식과 일치하는 부분을 찾음
+                    // match 함수를 이용해 정규식과 일치한다면 배열로 반환하고, 일치하지 않는다면 null
+                    const match = item.ATT_FILE_NO_MK.match(regex);
+                    // match가 null인 경우에만 item 반환
+                    // ** filter 함수가 true일 때 item을 반환하고, false일 땐 반환하지 않는 것을 이용 **
+                    return match === null && !excludeSeqs.includes(item.RCP_SEQ);
+                })
+
+                dispatch(setDessertMenu(dessertResponse));
+                dispatch(setRecomMenu(recomResponse));
             } catch (error) {
                 console.error("API 호출 도중 에러 발생 : ", error);
             }
         })();
     }, []);
 
+    console.log("디스 : ", displayedMenu);
     useEffect(() => {
         // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
         const checkScrollLocation = () => {
@@ -92,11 +133,7 @@ export default function Home() {
     // console.log("배열 : ", arr);
     // console.log("모든 메뉴 : ", allMenu);
 
-    // 서버로부터 받아온 메뉴를 저장
-    const recomMenu = useSelector((state: RootState) => state.recomMenu);
-    const dessertMenu = useSelector((state: RootState) => state.dessertMenu);
 
-    console.log("디저트 : ", dessertMenu);
 
     // 홈 화면에 글자에 split 효과를 주기 위함
     const titleText1 = "환영합니다! 우리는 All Cook,";
@@ -158,6 +195,8 @@ export default function Home() {
             });
         }
     };
+
+    
 
     // 특정 메뉴를 클릭하면 해당 메뉴의 레시피 페이지로 이동
     const menuClick = (name: string, seq: string) => {
@@ -355,6 +394,7 @@ export default function Home() {
                             <RecomMenu
                                 menu={recomMenu}
                                 menuHovered={recomHovered}
+                                category={'recom'}
                                 menuClick={menuClick}
                                 imgMouseEnter={imgMouseEnter}
                                 imgMouseOut={imgMouseOut}
@@ -412,6 +452,7 @@ export default function Home() {
                             <RecomMenu
                                 menu={dessertMenu}
                                 menuHovered={dessertHovered}
+                                category={'dessert'}
                                 menuClick={menuClick}
                                 imgMouseEnter={imgMouseEnter}
                                 imgMouseOut={imgMouseOut}
@@ -659,14 +700,14 @@ export default function Home() {
 //         //         RCP_PARTS_DTLS, RCP_PAT2
 //         //     };
 
-//         const menuData = result.filter((item: Menu) => {
-//             // ATT_FILE_NO_MK 값에서 정규식과 일치하는 부분을 찾음
-//             // match 함수를 이용해 정규식과 일치한다면 배열로 반환하고, 일치하지 않는다면 null
-//             const match = item.ATT_FILE_NO_MK.match(regex);
-//             // match가 null인 경우에만 item 반환
-//             // ** filter 함수가 true일 때 item을 반환하고, false일 땐 반환하지 않는 것을 이용 **
-//             return match === null && !excludeSeqs.includes(item.RCP_SEQ);
-//         });
+// const menuData = result.filter((item: Menu) => {
+//     // ATT_FILE_NO_MK 값에서 정규식과 일치하는 부분을 찾음
+//     // match 함수를 이용해 정규식과 일치한다면 배열로 반환하고, 일치하지 않는다면 null
+//     const match = item.ATT_FILE_NO_MK.match(regex);
+//     // match가 null인 경우에만 item 반환
+//     // ** filter 함수가 true일 때 item을 반환하고, false일 땐 반환하지 않는 것을 이용 **
+//     return match === null && !excludeSeqs.includes(item.RCP_SEQ);
+// });
 
 //         store.dispatch(setAllMenu(menuData));
 

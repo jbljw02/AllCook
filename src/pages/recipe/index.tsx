@@ -17,6 +17,7 @@ import { setRecipe } from "@/redux/features/recipeSlice";
 import { adjustForServings } from "@/utils/adjustForServings";
 import { filterIngredString } from "@/utils/filterIngredString";
 import moveToDetail from "@/utils/moveToDetail";
+import shuffleArray from "@/utils/shuffleArray";
 
 export default function Recipe() {
     const dispatch = useDispatch();
@@ -63,24 +64,12 @@ export default function Recipe() {
 
     const [sliderKey, setSliderKey] = useState(0);
 
-    // 피셔-예이츠 셔플 알고리즘
-    // 배열의 마지막 요소부터 처음 요소까지 반복, 각 반복에서 해당 요소와 그 이전의 무작위 위치의 요소를 교환
-    const shuffle = (array: string[]) => {
-        for (let i = array.length - 1; i > 0; i--) {
-            // 0 이상 i(현재 요소의 인덱스) 이하의 무작위 정수를 얻음
-            const j = Math.floor(Math.random() * (i + 1));
-            // 요소의 위치를 교환
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    }
-
     // allMenu가 업데이트 될 때, 해시태그를 업데이트함
     useEffect(() => {
         const hastTags = allMenu.map((item) => item.HASH_TAG);
         const uniqeHashTags = [...new Set(hastTags)];  // 중복 제거
         const nonEmptyHashTags = uniqeHashTags.filter(item => item.trim() !== '');  // 공백 문자를 제외하여 반환
-        const fixedSideTags = (shuffle(nonEmptyHashTags)).slice(0, 8);
+        const fixedSideTags = (shuffleArray(nonEmptyHashTags)).slice(0, 8);
         setRecomHashTags(fixedSideTags);
     }, [allMenu]);
 
