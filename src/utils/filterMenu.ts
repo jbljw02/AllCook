@@ -4,6 +4,7 @@ import { Nutrition } from "../redux/store";
 
 type Key = 'sideDish' | 'specialDish' | 'stew' | 'dessert' | 'steam' | 'boil' | 'grill' | 'stir' | 'fry' | 'etc';
 const keyToKorean = {
+    rice: '밥',
     sideDish: '반찬',
     specialDish: '일품',
     stew: '국&찌개',

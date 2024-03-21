@@ -13,12 +13,14 @@ import HeaderOnContents from "../components/HeaderOnContents";
 import Seo from "../components/Seo";
 import moveToDetail from "@/utils/moveToDetail";
 import { setRecipe } from "@/redux/features/recipeSlice";
-import axios from "axios";
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { RecomMenu } from "@/components/RecomMenu";
 import SkeletonUI from "../components/Skeleton";
 import shuffleArray from "@/utils/shuffleArray";
+import fetchRecipe from "./api/fetchRecipe";
+import firestore from "@/firebase/firebaseAdmin";
+import filterDessert from "@/utils/filterDessert";
 
 export default function Home() {
     const dispatch = useDispatch();
@@ -33,56 +35,58 @@ export default function Home() {
     const recomMenu = useSelector((state: RootState) => state.recomMenu);
     const dessertMenu = useSelector((state: RootState) => state.dessertMenu);
 
+    // Firebase 스토어에 모든 메뉴를 저장
+    // useEffect(() => {
+    //     (async () => {
+    //         const response = await fetch('/api/fetchRecipe');
+    //         console.log("결과 : ", response);
+    //     })();
+    // }, [])
+
+    // DB에 매번 요청을 보내지 않고, 접속 이력이 있는 사용자는 로컬 스토리지에서 값을 가져오도록 함
     useEffect(() => {
         (async () => {
-            const categories = ['일품', '반찬', '국&찌개'];
-            const randomIndex = Math.floor(Math.random() * categories.length);
-            const selectedCategory = categories[randomIndex];
+            const cachedRecipes = localStorage.getItem('recipes');
+            const recipes = JSON.parse(cachedRecipes as string);
 
-            // 포함하지 않을 문자열을 필터링하는 정규식
-            // 미완된 음식의 이미지나, 워터마크가 있는 이미지를 필터링하기 위함
-            const regex =
-                /(uploadimg\/(2014|2015|2019|2020|2021|2023)|common\/ecmFileView\.do\?)/;
+            // 로컬 스토리지에 이미 레시피가 존재하면 DB에 값을 요청하지 않고 가져옴
+            if (cachedRecipes) {
+                console.log("로컬 스토리지에 메뉴 존재");
+                dispatch(setAllMenu(recipes));
+                dispatch(setDisplayedMenu(recipes))
 
-            const excludeSeqs = ['2981', '886', '3217', '977', '745', '760'];
-            try {
-                const response = await fetch(`/api/fetchRecomMenu?RCP_PAT2_1=후식&RCP_PAT2_2=${selectedCategory}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                })
-                const jsonResponse = await response.json()
-
-                let dessertResponse: Menu[] = shuffleArray(jsonResponse.RCP_PAT2_1);
-                dessertResponse = dessertResponse.filter((item: Menu) => {
-                    // ATT_FILE_NO_MK 값에서 정규식과 일치하는 부분을 찾음
-                    // match 함수를 이용해 정규식과 일치한다면 배열로 반환하고, 일치하지 않는다면 null
-                    const match = item.ATT_FILE_NO_MK.match(regex);
-                    // match가 null인 경우에만 item 반환
-                    // ** filter 함수가 true일 때 item을 반환하고, false일 땐 반환하지 않는 것을 이용 **
-                    return match === null && !excludeSeqs.includes(item.RCP_SEQ);
-                })
-
-                let recomResponse: Menu[] = shuffleArray(jsonResponse.RCP_PAT2_2);
-                recomResponse = recomResponse.filter((item: Menu) => {
-                    // ATT_FILE_NO_MK 값에서 정규식과 일치하는 부분을 찾음
-                    // match 함수를 이용해 정규식과 일치한다면 배열로 반환하고, 일치하지 않는다면 null
-                    const match = item.ATT_FILE_NO_MK.match(regex);
-                    // match가 null인 경우에만 item 반환
-                    // ** filter 함수가 true일 때 item을 반환하고, false일 땐 반환하지 않는 것을 이용 **
-                    return match === null && !excludeSeqs.includes(item.RCP_SEQ);
-                })
-
-                dispatch(setDessertMenu(dessertResponse));
-                dispatch(setRecomMenu(recomResponse));
-            } catch (error) {
-                console.error("API 호출 도중 에러 발생 : ", error);
+                const dessertRecipes = filterDessert(recipes, '후식');
+                if (dessertRecipes !== undefined) {
+                    dispatch(setDessertMenu(shuffleArray(dessertRecipes)));
+                }
+                const recomRecipes = filterDessert(recipes, '');
+                if (recomRecipes !== undefined) {
+                    dispatch(setRecomMenu(shuffleArray(recomRecipes)));
+                }
             }
-        })();
-    }, []);
+            // 로컬 스토리지에 레시피가 없다면 DB에서 데이터를 요청하고, 로컬 스토리지에 담음
+            else {
+                console.log("로컬 스토리지에 메뉴 X");
+                const response = await fetch('/api/reciveRecipes');
+                const jsonResponse = await response.json();
+                const recipes = await jsonResponse.data;
+                dispatch(setAllMenu(jsonResponse.data));
+                dispatch(setDisplayedMenu(recipes))
 
-    console.log("디스 : ", displayedMenu);
+                const dessertRecipes = filterDessert(recipes, '후식');
+                if (dessertRecipes !== undefined) {
+                    dispatch(setDessertMenu(shuffleArray(dessertRecipes)));
+                }
+                const recomRecipes = filterDessert(recipes, '');
+                if (recomRecipes !== undefined) {
+                    dispatch(setRecomMenu(shuffleArray(recomRecipes)))
+                }
+
+                localStorage.setItem('recipes', JSON.stringify(recipes));
+            }
+        })()
+    }, [])
+
     useEffect(() => {
         // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
         const checkScrollLocation = () => {
@@ -119,21 +123,6 @@ export default function Home() {
             window.removeEventListener("scroll", checkScrollLocation);
         };
     }, [scrollPassContent]);
-
-    const arr: any[] = []
-
-    // allMenu.map((item, index) => {
-    //     if (item.RCP_PAT2 === '후식') {
-    //         // arr.push(index + 1);
-    //         // console.log(index, "번째 : ", item.RCP_PAT2);
-    //         // console.log(item);
-    //     }
-    //     console.log("종류 : ", item.RCP_PAT2);
-    // })
-    // console.log("배열 : ", arr);
-    // console.log("모든 메뉴 : ", allMenu);
-
-
 
     // 홈 화면에 글자에 split 효과를 주기 위함
     const titleText1 = "환영합니다! 우리는 All Cook,";
@@ -195,8 +184,6 @@ export default function Home() {
             });
         }
     };
-
-    
 
     // 특정 메뉴를 클릭하면 해당 메뉴의 레시피 페이지로 이동
     const menuClick = (name: string, seq: string) => {
@@ -662,107 +649,7 @@ export default function Home() {
     );
 }
 
-// export const getServerSideProps = wrapper.getServerSideProps(
-//     (store) => async () => {
-//         const API_KEY = process.env.API_KEY;
-
-//         // api 요청을 보낼 첫번째 파라미터와 두번째 파라미터를 1~1124 사이의 랜덤 정수로 생성
-//         // const startParam = Math.floor(Math.random() * 1121) + 1;
-//         // const endParam = startParam + 20;
-
-//         const startParam = 1;
-//         const endParam = 1000;
-
-// const response = await fetch(`http://openapi.foodsafetykorea.go.kr/api/
-// ${API_KEY}/COOKRCP01/json/${startParam}/${endParam}`, {
-//     method: "GET",
-// });
-// const jsonResult = await response.json();
-// const result = jsonResult.COOKRCP01.row;
-
-//         // 포함하지 않을 문자열을 필터링하는 정규식
-//         // 미완된 음식의 이미지나, 워터마크가 있는 이미지를 필터링하기 위함
-//         const regex =
-//             /(uploadimg\/(2014|2015|2019|2020|2021|2023)|common\/ecmFileView\.do\?)/;
-
-//         const excludeSeqs = ['2981', '886', '3217', '977', '745', '760'];
-
-//         // const menuData = result.map((item: Menu) => {
-//         //     // 구조 분해 할당 - 각 item에서 필요한 필드들을 추출 선언
-//         //     const { RCP_NM, ATT_FILE_NO_MK, INFO_CAR,
-//         //         INFO_ENG, INFO_FAT, INFO_NA, INFO_PRO,
-//         //         MANUAL01, MANUAL02, MANUAL03, RCP_NA_TIP,
-//         //         RCP_PARTS_DTLS, RCP_PAT2 } = item;
-//         //     return {
-//         //         RCP_NM, ATT_FILE_NO_MK, INFO_CAR,
-//         //         INFO_ENG, INFO_FAT, INFO_NA, INFO_PRO,
-//         //         MANUAL01, MANUAL02, MANUAL03, RCP_NA_TIP,
-//         //         RCP_PARTS_DTLS, RCP_PAT2
-//         //     };
-
-// const menuData = result.filter((item: Menu) => {
-//     // ATT_FILE_NO_MK 값에서 정규식과 일치하는 부분을 찾음
-//     // match 함수를 이용해 정규식과 일치한다면 배열로 반환하고, 일치하지 않는다면 null
-//     const match = item.ATT_FILE_NO_MK.match(regex);
-//     // match가 null인 경우에만 item 반환
-//     // ** filter 함수가 true일 때 item을 반환하고, false일 땐 반환하지 않는 것을 이용 **
-//     return match === null && !excludeSeqs.includes(item.RCP_SEQ);
-// });
-
-//         store.dispatch(setAllMenu(menuData));
-
-//         // '후식'을 제외한 카테고리만 받아와서 배열로 생성
-//         const categories = ["반찬", "국&찌개", "일품"];
-//         const foodData = menuData.filter((menuData: Menu) =>
-//             categories.includes(menuData.RCP_PAT2)
-//         );
-//         // '후식'만 받아와서 배열로 생성
-//         const dessertData = menuData.filter(
-//             (menuData: Menu) => menuData.RCP_PAT2 === "후식"
-//         );
-
-//         // 배열의 길이 안에서 랜덤 인덱스를 받아옴
-//         const getRandomIndex = (length: number) => {
-//             return Math.floor(Math.random() * length);
-//         };
-
-//         // 랜덤 인덱스를 저장하는 변수
-//         let foodRandomIndicies: number[] = [];
-//         let dessertRandomIndicies: number[] = [];
-
-//         // 4개의 요소만 사용할 것이기 때문에, 랜덤 인덱스 배열의 길이가 4미만일 때까지 반복
-//         while (foodRandomIndicies.length < 4) {
-//             let foodIndex = getRandomIndex(foodData.length);
-//             // 배열에 이미 인덱스가 존재하지 않는 경우에만 요소 추가
-//             if (!foodRandomIndicies.includes(foodIndex)) {
-//                 foodRandomIndicies.push(foodIndex);
-//             }
-//         }
-
-//         while (dessertRandomIndicies.length < 4) {
-//             let dessertIndex = getRandomIndex(dessertData.length);
-//             if (!dessertRandomIndicies.includes(dessertIndex)) {
-//                 dessertRandomIndicies.push(dessertIndex);
-//             }
-//         }
-
-//         // 랜덤 인덱스의 길이만큼 배열의 요소를 추출해서 새 배열 생성
-//         const randomFoodData = foodRandomIndicies.map((index) => foodData[index]);
-//         const randomDessertData = dessertRandomIndicies.map(
-//             (index) => dessertData[index]
-//         );
-
-//         store.dispatch(setRecomMenu(randomFoodData));
-//         store.dispatch(setDessertMenu(randomDessertData));
-
-//         return {
-//             props: {},
-//         };
-//     }
-// )
-
-
-export async function getStaticProps() {
+export const getStaticProps = () => {
     return {
         props: {}
     }

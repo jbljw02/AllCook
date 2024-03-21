@@ -2,7 +2,7 @@ import Header from "../../components/Header"
 import Footer from "../../components/Footer"
 import { useDispatch, useSelector } from "react-redux"
 import { Menu, RootState, wrapper } from "../../redux/store";
-import { setAllMenu, setDisplayedMenu } from "../../redux/features/menuSlice";
+import { setAllMenu, setDessertMenu, setDisplayedMenu, setRecomMenu } from "../../redux/features/menuSlice";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Seo from "../../components/Seo";
@@ -18,9 +18,54 @@ import { adjustForServings } from "@/utils/adjustForServings";
 import { filterIngredString } from "@/utils/filterIngredString";
 import moveToDetail from "@/utils/moveToDetail";
 import shuffleArray from "@/utils/shuffleArray";
+import filterDessert from "@/utils/filterDessert";
 
 export default function Recipe() {
     const dispatch = useDispatch();
+
+    // DB에 매번 요청을 보내지 않고, 접속 이력이 있는 사용자는 로컬 스토리지에서 값을 가져오도록 함
+    useEffect(() => {
+        (async () => {
+            const cachedRecipes = localStorage.getItem('recipes');
+            const recipes = JSON.parse(cachedRecipes as string);
+
+            // 로컬 스토리지에 이미 레시피가 존재하면 DB에 값을 요청하지 않고 가져옴
+            if (cachedRecipes) {
+                console.log("로컬 스토리지에 메뉴 존재");
+                dispatch(setAllMenu(recipes));
+                dispatch(setDisplayedMenu(recipes))
+
+                const dessertRecipes = filterDessert(recipes, '후식');
+                if (dessertRecipes !== undefined) {
+                    dispatch(setDessertMenu(shuffleArray(dessertRecipes)));
+                }
+                const recomRecipes = filterDessert(recipes, '');
+                if (recomRecipes !== undefined) {
+                    dispatch(setRecomMenu(shuffleArray(recomRecipes)));
+                }
+            }
+            // 로컬 스토리지에 레시피가 없다면 DB에서 데이터를 요청하고, 로컬 스토리지에 담음
+            else {
+                console.log("로컬 스토리지에 메뉴 X");
+                const response = await fetch('/api/reciveRecipes');
+                const jsonResponse = await response.json();
+                const recipes = await jsonResponse.data;
+                dispatch(setAllMenu(jsonResponse.data));
+                dispatch(setDisplayedMenu(recipes))
+
+                const dessertRecipes = filterDessert(recipes, '후식');
+                if (dessertRecipes !== undefined) {
+                    dispatch(setDessertMenu(shuffleArray(dessertRecipes)));
+                }
+                const recomRecipes = filterDessert(recipes, '');
+                if (recomRecipes !== undefined) {
+                    dispatch(setRecomMenu(shuffleArray(recomRecipes)))
+                }
+
+                localStorage.setItem('recipes', JSON.stringify(recipes));
+            }
+        })()
+    }, []);
 
     const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
     const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
@@ -66,15 +111,18 @@ export default function Recipe() {
 
     // allMenu가 업데이트 될 때, 해시태그를 업데이트함
     useEffect(() => {
-        const hastTags = allMenu.map((item) => item.HASH_TAG);
-        const uniqeHashTags = [...new Set(hastTags)];  // 중복 제거
-        const nonEmptyHashTags = uniqeHashTags.filter(item => item.trim() !== '');  // 공백 문자를 제외하여 반환
-        const fixedSideTags = (shuffleArray(nonEmptyHashTags)).slice(0, 8);
-        setRecomHashTags(fixedSideTags);
+        if (Array.isArray(allMenu)) {
+            const hashTags = allMenu.map((item) => item.HASH_TAG);
+            const uniqeHashTags = [...new Set(hashTags)];  // 중복 제거
+            const nonEmptyHashTags = uniqeHashTags.filter(item => item.trim() !== '');  // 공백 문자를 제외하여 반환
+            const fixedSideTags = (shuffleArray(nonEmptyHashTags)).slice(0, 8);
+            setRecomHashTags(fixedSideTags);
+        }
     }, [allMenu]);
 
     // 음식의 종류, 요리 방법, 영양성분의 선택 여부 및 범위를 담는 state들 
     const [foodType, setFoodType] = useState({
+        rice: false, // 밥
         sideDish: false,  // 반찬
         specialDish: false,  // 일품
         stew: false,  // 국&찌개
@@ -156,7 +204,7 @@ export default function Recipe() {
         // 각 키에 대해서 false로 만들고, 다음 반복에서 그 값을 유지시키고 다음 키에 대한 값을 또 false로 만듦
         setFoodType(Object.keys(foodType).reduce((prev, key) => {
             return { ...prev, [key]: false };
-        }, { sideDish: false, specialDish: false, stew: false, dessert: false }));
+        }, { sideDish: false, specialDish: false, stew: false, dessert: false, rice: false }));
         setCookWay(Object.keys(cookWay).reduce((prev, key) => {
             return { ...prev, [key]: false };
         }, { steam: false, boil: false, grill: false, stir: false, fry: false, etc: false }));
@@ -167,18 +215,6 @@ export default function Recipe() {
 
         setSliderKey(sliderKey + 1);
     }
-
-
-    let arr: any[] = [];
-    allMenu.map((item, index) => {
-        if (item.RCP_PAT2 === '후식') {
-            console.log(item.RCP_NM);
-            console.log(item.RCP_SEQ);
-            // arr.push(index);
-        }
-    })
-    
-    // console.log("배열: ", arr);
 
     const [currentPage, setCurrentPage] = useState(1);  // 현재 페이지 번호
     const trPerPage = 6;  // 한 페이지에 출력할 tr의 개수
@@ -263,20 +299,6 @@ export default function Recipe() {
         dispatch(setRecipe(selectedMenu));
     }
 
-    // allMenu.map((item, index) => {
-    //     let temp = adjustForServings(item.RCP_PARTS_DTLS, 2);
-    //     let abc = filterIngredString(item);
-    //     let result = adjustForServings(abc, 2);
-
-    //     // console.log("가공 전 : ", abc);
-    //     // console.log("가공 후 : ", result);
-    //     // console.log("메뉴 : ", item.MANUAL04);
-    //     // if(item.MANUAL10 !== '') {
-    //     //     console.log(index ,"번째 있음");
-
-    //     // }
-    // })
-
     return (
         <>
             <Seo title="메뉴" />
@@ -345,6 +367,16 @@ export default function Recipe() {
                                     <div className="filter-checkbox-div">
                                         <div className="filter-detail-category">음식의 종류</div>
                                         <div className="filter-detail-div">
+                                            <span className="filter-detail-span">
+                                                <input
+                                                    id="checkbox-rice"
+                                                    name='rice'
+                                                    checked={foodType.rice}
+                                                    onChange={changefoodCheck}
+                                                    className='checkbox'
+                                                    type="checkbox" />
+                                                <label className="no-drag" htmlFor="checkbox-rice">밥</label>
+                                            </span>
                                             <span className="filter-detail-span">
                                                 <input
                                                     id="checkbox-sideDish"
@@ -887,37 +919,37 @@ export default function Recipe() {
     )
 }
 
-export const getStaticProps = wrapper.getStaticProps(store => async () => {
-    const API_KEY = process.env.API_KEY;
+// export const getStaticProps = wrapper.getStaticProps(store => async () => {
+//     const API_KEY = process.env.API_KEY;
 
-    const allMenu = store.getState().allMenu;
-    // 홈 화면을 통해 접근하지 않을 경우, allMenu가 undefined 상태이기 때문에 업데이트
-    if (allMenu.length === undefined) {
-        const startParam = 1;
-        const endParam = 1000;
+//     const allMenu = store.getState().allMenu;
+//     // 홈 화면을 통해 접근하지 않을 경우, allMenu가 undefined 상태이기 때문에 업데이트
+//     if (allMenu.length === undefined) {
+//         const startParam = 1;
+//         const endParam = 1000;
 
-        const response = await fetch(`http://openapi.foodsafetykorea.go.kr/api/
-        ${API_KEY}/COOKRCP01/json/${startParam}/${endParam}`, {
-            method: "GET",
-        });
-        const jsonResult = await response.json();
-        const result = jsonResult.COOKRCP01.row;
+//         const response = await fetch(`http://openapi.foodsafetykorea.go.kr/api/
+//         ${API_KEY}/COOKRCP01/json/${startParam}/${endParam}`, {
+//             method: "GET",
+//         });
+//         const jsonResult = await response.json();
+//         const result = jsonResult.COOKRCP01.row;
 
-        // 포함하지 않을 문자열을 필터링하는 정규식
-        // 미완된 음식의 이미지나, 워터마크가 있는 이미지를 필터링하기 위함
-        const regex = /(uploadimg\/(2014|2015|2019|2020|2021|2023)|common\/ecmFileView\.do\?)/;
+//         // 포함하지 않을 문자열을 필터링하는 정규식
+//         // 미완된 음식의 이미지나, 워터마크가 있는 이미지를 필터링하기 위함
+//         const regex = /(uploadimg\/(2014|2015|2019|2020|2021|2023)|common\/ecmFileView\.do\?)/;
 
-        const excludeSeqs = ['2981', '886', '3217', '977', '745', '760'];
+//         const excludeSeqs = ['2981', '886', '3217', '977', '745', '760'];
 
-        const menuData = result.filter((item: Menu) => {
-            const match = (item.ATT_FILE_NO_MK).match(regex);
-            return match === null && !excludeSeqs.includes(item.RCP_SEQ);
-        });
+//         const menuData = result.filter((item: Menu) => {
+//             const match = (item.ATT_FILE_NO_MK).match(regex);
+//             return match === null && !excludeSeqs.includes(item.RCP_SEQ);
+//         });
 
-        store.dispatch(setAllMenu(menuData));
-    }
+//         store.dispatch(setAllMenu(menuData));
+//     }
 
-    return {
-        props: {}
-    }
-})
+//     return {
+//         props: {}
+//     }
+// })

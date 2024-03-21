@@ -1,5 +1,7 @@
+import firebasedb from "@/firebase/firebasedb";
 import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { addDoc, collection } from "firebase/firestore";
 
 const fetchRecomMenu = async (req: NextApiRequest, res: NextApiResponse) => {
     const API_KEY = process.env.API_KEY;
@@ -17,8 +19,6 @@ const fetchRecomMenu = async (req: NextApiRequest, res: NextApiResponse) => {
             axios.get(`http://openapi.foodsafetykorea.go.kr/api/${API_KEY2}/COOKRCP01/json/1/1000/RCP_PAT2=${RCP_PAT2_2}`)
         ])
 
-        console.log("디저트 : ", dessertResponse);
-        console.log("메누 : ", recomResponse);
         const dessertResult = dessertResponse.data.COOKRCP01.row;
         const recomResult = recomResponse.data.COOKRCP01.row;
 
