@@ -8,6 +8,8 @@ import contactImage from "/public/images/contact-img.jpg";
 import ContactInput from "@/components/ContactInput";
 import { fetchForm } from "@/utils/nodemailer/fetchForm";
 import Modal from 'react-modal';
+import { addDoc, collection } from "firebase/firestore";
+import fireStore from "@/firebase/firestore";
 // import sendMail from "@/api/sendMail";
 
 export type Form = {
@@ -60,7 +62,7 @@ export default function Contact() {
     });
 
     // 이메일 유효성 검증을 위한 state와 정규식
-    const [emailValid, setEmailValid] = useState<boolean>(true); 
+    const [emailValid, setEmailValid] = useState<boolean>(true);
     let emailRegex = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z]{2,}$/;
 
     // textarea의 바뀌는 값을 감지
@@ -104,6 +106,10 @@ export default function Contact() {
             isChecked === true) {
             fetchForm(formData);
             setIsSubmitted(true);
+            addDoc(collection(fireStore, 'temp'),
+            {
+                formData
+            })
         }
         // else if (formData.name === '' ||
         //     formData.mail === '' ||
