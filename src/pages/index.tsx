@@ -1,11 +1,9 @@
 import bannerImg from "/public/images/banner-img.jpg";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RootState } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setRecomMenu, setDessertMenu, setAllMenu, setDisplayedMenu } from "@/redux/features/menuSlice";
-import { wrapper } from "../redux/store";
-import { Menu } from "../redux/store";
 import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -13,13 +11,10 @@ import HeaderOnContents from "../components/HeaderOnContents";
 import Seo from "../components/Seo";
 import moveToDetail from "@/utils/moveToDetail";
 import { setRecipe } from "@/redux/features/recipeSlice";
-import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { RecomMenu } from "@/components/RecomMenu";
 import SkeletonUI from "../components/Skeleton";
 import shuffleArray from "@/utils/shuffleArray";
-import fetchRecipe from "./api/fetchRecipe";
-import firestore from "@/firebase/firebaseAdmin";
 import filterDessert from "@/utils/filterDessert";
 
 export default function Home() {
@@ -339,57 +334,19 @@ export default function Home() {
                         <div className="recommend-subtitle">
                             All Cook이 추천드리는 메뉴입니다. 오늘은 이 레시피 어떠신가요?
                         </div>
-                        {/* <table className="menu-table">
-                            <tbody>
-                                <tr>
-                                    {
-                                        recomMenu.length !== undefined &&
-                                        recomMenu.slice(0, 4).map((item, index) => {
-                                            const isHovered = recomHovered;
-                                            return (
-                                                <td>
-                                                    <div>
-                                                        <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)} className="td-content">
-                                                            <Image
-                                                                src={`${item.ATT_FILE_NO_MK}`}
-                                                                style={{
-                                                                    borderRadius: 8,
-                                                                    cursor: "pointer",
-                                                                    transition: "transform 0.3s ease",
-                                                                    transform: isHovered[index]
-                                                                        ? "scale(1.05)"
-                                                                        : "scale(1)",
-                                                                }}
-                                                                width={250}
-                                                                height={250}
-                                                                alt={""}
-                                                                onMouseEnter={() => imgMouseEnter(index, "recom")}
-                                                                onMouseLeave={() => imgMouseOut(index, "recom")}
-                                                            />
-                                                        </div>
-                                                        <div className="RCP_NM">{item.RCP_NM}</div>
-                                                        <div className="RCP_PAT2">{item.RCP_PAT2}</div>
-                                                    </div>
-                                                </td>
-                                            );
-                                        })}
-
-                                </tr>
-                            </tbody>
-                        </table> */}
                         {
-                            <RecomMenu
-                                menu={recomMenu}
-                                menuHovered={recomHovered}
-                                category={'recom'}
-                                menuClick={menuClick}
-                                imgMouseEnter={imgMouseEnter}
-                                imgMouseOut={imgMouseOut}
-                            /> ||
-                            <SkeletonUI />
+                            Array.isArray(recomMenu) ?
+                                <RecomMenu
+                                    menu={recomMenu}
+                                    menuHovered={recomHovered}
+                                    category={'recom'}
+                                    menuClick={menuClick}
+                                    imgMouseEnter={imgMouseEnter}
+                                    imgMouseOut={imgMouseOut}
+                                /> :
+                                <SkeletonUI length={4} />
                         }
                     </div>
-
                     {/* 추천 후식 영역을 차지하는 컨테이너 */}
                     <div className="recommend-container">
                         <div className="recommend-title">
@@ -398,52 +355,17 @@ export default function Home() {
                         <div className="recommend-subtitle">
                             식사 후엔 후식도 잊지 마세요!
                         </div>
-                        {/* <table className="menu-table">
-                            <tbody>
-                                <tr>
-                                    {
-                                        dessertMenu.length !== undefined &&
-                                        dessertMenu.slice(0, 4).map((item, index) => {
-                                            const isHovered = dessertHovered;
-                                            return (
-                                                <td>
-                                                    <div>
-                                                        <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)} className="td-content">
-                                                            <Image
-                                                                src={`${item.ATT_FILE_NO_MK}`}
-                                                                style={{
-                                                                    borderRadius: 8,
-                                                                    cursor: "pointer",
-                                                                    transition: "transform 0.3s ease",
-                                                                    transform: isHovered[index]
-                                                                        ? "scale(1.05)"
-                                                                        : "scale(1)"
-                                                                }}
-                                                                width={250}
-                                                                height={250}
-                                                                alt={""}
-                                                                onMouseEnter={() => imgMouseEnter(index, "dessert")}
-                                                                onMouseLeave={() => imgMouseOut(index, "dessert")}
-                                                            />
-                                                        </div>
-                                                        <div className="RCP_NM">{item.RCP_NM}</div>
-                                                        <div className="RCP_PAT2">{item.RCP_PAT2}</div>
-                                                    </div>
-                                                </td>
-                                            );
-                                        })}
-                                </tr>
-                            </tbody>
-                        </table> */}
                         {
-                            <RecomMenu
-                                menu={dessertMenu}
-                                menuHovered={dessertHovered}
-                                category={'dessert'}
-                                menuClick={menuClick}
-                                imgMouseEnter={imgMouseEnter}
-                                imgMouseOut={imgMouseOut}
-                            />
+                            Array.isArray(dessertMenu) ?
+                                <RecomMenu
+                                    menu={dessertMenu}
+                                    menuHovered={dessertHovered}
+                                    category={'dessert'}
+                                    menuClick={menuClick}
+                                    imgMouseEnter={imgMouseEnter}
+                                    imgMouseOut={imgMouseOut}
+                                /> :
+                                <SkeletonUI length={4} />
                         }
                     </div>
                 </div>
@@ -522,8 +444,7 @@ export default function Home() {
                     position: relative;
                     top: 7px;
                     right: 33px;
-                    color: r
-                    gb(76, 75, 75);
+                    color: rgb(76, 75, 75);
                     cursor: pointer;
                 }
                 .banner-img {
@@ -531,14 +452,11 @@ export default function Home() {
                     margin-left: calc(50% - 50vw);
                     margin-right: calc(50% - 50vw);
                 }
-                {
-                    /* 헤더 및 배너 컨테이너를 제외한 컨텐츠의 영역 */
-                }
                 .contents-container {
-                    {
-                    /* margin-left: 15%;
-                            margin-right: 15%; */
-                    }
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    margin-bottom: 150px;
                 }
                 .explain-container {
                     display: flex;
@@ -549,6 +467,7 @@ export default function Home() {
                     padding-bottom: 50px;
                     color: #002312;
                     background-color: #f9f7f5;
+                    width: 100%;
                 }
                 .explain-svg {
                     width: 115px;
@@ -628,9 +547,11 @@ export default function Home() {
                     align-items: center;
                     flex-direction: column;
                     position: relative;
-                    margin-top: 130px;
-                    margin-bottom: 160px;
                     color: #111111;
+                    width: 1080px;
+                    margin-top: 130px;
+                }
+                .recommend-container:nth-child(1) {
                 }
                 .recommend-title {
                     margin-bottom: 8px;
