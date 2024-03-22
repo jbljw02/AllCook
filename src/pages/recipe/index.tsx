@@ -19,6 +19,7 @@ import { filterIngredString } from "@/utils/filterIngredString";
 import moveToDetail from "@/utils/moveToDetail";
 import shuffleArray from "@/utils/shuffleArray";
 import filterDessert from "@/utils/filterDessert";
+import SkeletonUI from "@/components/Skeleton";
 
 export default function Recipe() {
     const dispatch = useDispatch();
@@ -527,63 +528,66 @@ export default function Recipe() {
                     </div>
                     {/* 메뉴를 보여주는 영역 */}
                     <div className="menu-section">
-                        <table className="menu-table">
-                            <tbody>
-                                {
-                                    displayedMenu.length !== undefined &&
-                                    // new Array를 이용하여 새 배열 생성(displayedMenu를 4로 나눈 몫만큼 map을 사용하기 위함)
-                                    // displayedMenu의 길이를 4로 나누고 소수점이 떨어지지 않을 경우를 대비하여 Math.ceil을 이용해 올림
-                                    // Math.min을 통해 tr의 최대 개수를 trPerPage(6개) 만큼으로 제한
-                                    // 그 후에, map은 undefined은 무시하기 때문에 fill을 사용해 모든 요소를 0으로 초기화
-                                    Array(Math.min(Math.ceil(displayedMenu.length / 4), trPerPage)).fill(0).map((_, index) => {
-                                        // 한 페이지에 출력할 메뉴의 개수를 설정
-                                        // 1페이지 = slice(0, 24), 2페이지 = slice(24, 48)...
-                                        const startIndex = (currentPage - 1) * tdPerPage;
-                                        const endIndex = startIndex + tdPerPage;
-                                        const menuPerPage = displayedMenu.slice(startIndex, endIndex);
-                                        // 0번째 tr = slice(0, 4), 2번째 tr = slice(4, 8)... 4개씩 나누어 출력
-                                        const items = menuPerPage.slice(index * 4, index * 4 + 4);
-                                        const hoverState = isHovered;
-                                        return (
-                                            <tr>
-                                                {
-                                                    items.map((item, localIndex) => {
-                                                        // 단순 index를 사용하면 현재 tr 내부로 제한되기 때문에, 페이지 전체의 인덱스를 계산해서 사용
-                                                        const globalIndex = startIndex + index * 4 + localIndex;
-                                                        return (
-                                                            <td>
-                                                                <div>
-                                                                    <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)} className="td-content">
-                                                                        <Image
-                                                                            src={`${item.ATT_FILE_NO_MK}`}
-                                                                            style={{
-                                                                                borderRadius: 8,
-                                                                                cursor: 'pointer',
-                                                                                transition: 'transform 0.3s ease',
-                                                                                transform: hoverState[globalIndex] ?
-                                                                                    'scale(1.05)' :
-                                                                                    'scale(1)'
-                                                                            }}
-                                                                            width={250}
-                                                                            height={250}
-                                                                            alt={''}
-                                                                            onMouseEnter={() => imgMouseEnter(globalIndex)}
-                                                                            onMouseLeave={() => imgMouseOut(globalIndex)}
-                                                                        />
-                                                                    </div>
-                                                                    <div className='RCP_NM'>{item.RCP_NM}</div>
-                                                                    <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
-                                                                </div>
-                                                            </td>
-                                                        )
-                                                    })
-                                                }
-                                            </tr>
-                                        )
-                                    })
-                                }
-                            </tbody>
-                        </table>
+                        {
+                            Array.isArray(displayedMenu) ?
+                                <table className="menu-table">
+                                    <tbody>
+                                        {
+                                            // new Array를 이용하여 새 배열 생성(displayedMenu를 4로 나눈 몫만큼 map을 사용하기 위함)
+                                            // displayedMenu의 길이를 4로 나누고 소수점이 떨어지지 않을 경우를 대비하여 Math.ceil을 이용해 올림
+                                            // Math.min을 통해 tr의 최대 개수를 trPerPage(6개) 만큼으로 제한
+                                            // 그 후에, map은 undefined은 무시하기 때문에 fill을 사용해 모든 요소를 0으로 초기화
+                                            Array(Math.min(Math.ceil(displayedMenu.length / 4), trPerPage)).fill(0).map((_, index) => {
+                                                // 한 페이지에 출력할 메뉴의 개수를 설정
+                                                // 1페이지 = slice(0, 24), 2페이지 = slice(24, 48)...
+                                                const startIndex = (currentPage - 1) * tdPerPage;
+                                                const endIndex = startIndex + tdPerPage;
+                                                const menuPerPage = displayedMenu.slice(startIndex, endIndex);
+                                                // 0번째 tr = slice(0, 4), 2번째 tr = slice(4, 8)... 4개씩 나누어 출력
+                                                const items = menuPerPage.slice(index * 4, index * 4 + 4);
+                                                const hoverState = isHovered;
+                                                return (
+                                                    <tr>
+                                                        {
+                                                            items.map((item, localIndex) => {
+                                                                // 단순 index를 사용하면 현재 tr 내부로 제한되기 때문에, 페이지 전체의 인덱스를 계산해서 사용
+                                                                const globalIndex = startIndex + index * 4 + localIndex;
+                                                                return (
+                                                                    <td>
+                                                                        <div>
+                                                                            <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)} className="td-content">
+                                                                                <Image
+                                                                                    src={`${item.ATT_FILE_NO_MK}`}
+                                                                                    style={{
+                                                                                        borderRadius: 8,
+                                                                                        cursor: 'pointer',
+                                                                                        transition: 'transform 0.3s ease',
+                                                                                        transform: hoverState[globalIndex] ?
+                                                                                            'scale(1.05)' :
+                                                                                            'scale(1)'
+                                                                                    }}
+                                                                                    width={250}
+                                                                                    height={250}
+                                                                                    alt={''}
+                                                                                    onMouseEnter={() => imgMouseEnter(globalIndex)}
+                                                                                    onMouseLeave={() => imgMouseOut(globalIndex)}
+                                                                                />
+                                                                            </div>
+                                                                            <div className='RCP_NM'>{item.RCP_NM}</div>
+                                                                            <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
+                                                                        </div>
+                                                                    </td>
+                                                                )
+                                                            })
+                                                        }
+                                                    </tr>
+                                                )
+                                            })
+                                        }
+                                    </tbody>
+                                </table> :
+                                <SkeletonUI length={24} />
+                        }
                     </div>
                     <div className="pagination-section">
                         {
@@ -953,3 +957,9 @@ export default function Recipe() {
 //         props: {}
 //     }
 // })
+
+export const getStaticProps = () => {
+    return {
+        props: {},
+    }
+}
