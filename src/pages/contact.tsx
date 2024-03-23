@@ -107,9 +107,9 @@ export default function Contact() {
             fetchForm(formData);
             setIsSubmitted(true);
             addDoc(collection(fireStore, 'temp'),
-            {
-                formData
-            })
+                {
+                    formData
+                })
         }
         // else if (formData.name === '' ||
         //     formData.mail === '' ||

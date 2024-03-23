@@ -28,7 +28,6 @@ export default function Header({ position, backgroundColor, color, borderColor, 
 
     const searchRecipe = (event: React.KeyboardEvent<HTMLInputElement> | string) => {
         if (typeof event !== 'string' && event.key === 'Enter') {
-            console.log("이벤트");
             let newDisplayedMenu = searchByMenuIngredient(inputValue, allMenu);
             dispatch(setDisplayedMenu(newDisplayedMenu));
 
@@ -44,7 +43,6 @@ export default function Header({ position, backgroundColor, color, borderColor, 
             }
         }
         else if(typeof event === 'string') {
-            console.log("스트링");
             let newDisplayedMenu = searchByMenuIngredient(event, allMenu);
             dispatch(setDisplayedMenu(newDisplayedMenu));
             

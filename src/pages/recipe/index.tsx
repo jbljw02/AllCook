@@ -12,7 +12,6 @@ import { NutritionKey } from "../../redux/features/nutritionSlice";
 import { searchByKey, searchByRange } from "../../utils/filterMenu";
 import SortList from "../../components/SortList";
 import HeaderOnContents from '../../components/HeaderOnContents';
-import { useRouter } from "next/router";
 import { setRecipe } from "@/redux/features/recipeSlice";
 import { adjustForServings } from "@/utils/adjustForServings";
 import { filterIngredString } from "@/utils/filterIngredString";
@@ -35,15 +34,6 @@ export default function Recipe() {
                 console.log("로컬 스토리지에 메뉴 존재");
                 dispatch(setAllMenu(recipes));
                 dispatch(setDisplayedMenu(recipes))
-
-                const dessertRecipes = filterDessert(recipes, '후식');
-                if (dessertRecipes !== undefined) {
-                    dispatch(setDessertMenu(shuffleArray(dessertRecipes)));
-                }
-                const recomRecipes = filterDessert(recipes, '');
-                if (recomRecipes !== undefined) {
-                    dispatch(setRecomMenu(shuffleArray(recomRecipes)));
-                }
             }
             // 로컬 스토리지에 레시피가 없다면 DB에서 데이터를 요청하고, 로컬 스토리지에 담음
             else {
@@ -53,15 +43,6 @@ export default function Recipe() {
                 const recipes = await jsonResponse.data;
                 dispatch(setAllMenu(jsonResponse.data));
                 dispatch(setDisplayedMenu(recipes))
-
-                const dessertRecipes = filterDessert(recipes, '후식');
-                if (dessertRecipes !== undefined) {
-                    dispatch(setDessertMenu(shuffleArray(dessertRecipes)));
-                }
-                const recomRecipes = filterDessert(recipes, '');
-                if (recomRecipes !== undefined) {
-                    dispatch(setRecomMenu(shuffleArray(recomRecipes)))
-                }
 
                 localStorage.setItem('recipes', JSON.stringify(recipes));
             }
