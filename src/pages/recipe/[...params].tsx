@@ -709,11 +709,3 @@ export default function RecipeDetail() {
         </>
     )
 }
-
-// export const getServerSideProps = wrapper.getServerSideProps(store => async () => {
-    
-//     const displayedMenu = store.getState().recipe;
-//     const recipe = store.getState().recipe;
-
-//     const selectedMenu = displayedMenu.find((item: { item: Menu; }) => item.RCP_SEQ === seq);
-// })

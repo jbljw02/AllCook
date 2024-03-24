@@ -5,6 +5,7 @@ import '../styles/global.css'
 import '../styles/menuTable.css'
 import '../styles/scrollStyle.css'
 import '../styles/header.css'
+import '../styles/svgStyle.css'
 
 const noto = Noto_Sans_KR({
     subsets: ['latin'],

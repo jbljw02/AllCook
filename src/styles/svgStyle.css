@@ -1,0 +1,16 @@
+.google-svg {
+    margin-left: 15px;
+}
+.tel-svg {
+    position: relative;
+    top: 1px;
+}
+.mail-svg {
+    position: relative;
+    top: 0.7px;
+}
+.filter-svg {
+    position: relative;
+    top: 1.4px;
+    margin-right: 5px;
+}

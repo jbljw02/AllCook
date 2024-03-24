@@ -13,12 +13,10 @@ import { searchByKey, searchByRange } from "../../utils/filterMenu";
 import SortList from "../../components/SortList";
 import HeaderOnContents from '../../components/HeaderOnContents';
 import { setRecipe } from "@/redux/features/recipeSlice";
-import { adjustForServings } from "@/utils/adjustForServings";
-import { filterIngredString } from "@/utils/filterIngredString";
 import moveToDetail from "@/utils/moveToDetail";
 import shuffleArray from "@/utils/shuffleArray";
-import filterDessert from "@/utils/filterDessert";
 import SkeletonUI from "@/components/Skeleton";
+import filterSvg from '../../../public/svgs/filter.svg';
 
 export default function Recipe() {
     const dispatch = useDispatch();
@@ -286,19 +284,11 @@ export default function Recipe() {
             <Seo title="메뉴" />
             <div ref={contentsRef} className="contents-ref" />
             <div className="container">
-                <div className="header-container">
-                    {
-                        // 스크롤이 contents-container 영역을 지나치면 헤더가 사라지도록 설정
-                        !scrollPassContent ?
-                            <Header
-                                position="relative"
-                                backgroundColor="#ffffff"
-                                color="#111111"
-                                borderColor="#e8e8e8"
-                                svgFill="#000000"
-                                lightLogo={false}
-                                inputBackgroundColor="#f2f2f2" /> :
-                            <>
+                <div className="container-float-top">
+                    <div className="header-container">
+                        {
+                            // 스크롤이 contents-container 영역을 지나치면 헤더가 사라지도록 설정
+                            !scrollPassContent ?
                                 <Header
                                     position="relative"
                                     backgroundColor="#ffffff"
@@ -306,341 +296,351 @@ export default function Recipe() {
                                     borderColor="#e8e8e8"
                                     svgFill="#000000"
                                     lightLogo={false}
-                                    inputBackgroundColor="#f2f2f2" />
-                                <HeaderOnContents
-                                    className={
-                                        !headerSlide ?
-                                            'slide-down' :
-                                            'slide-up'
-                                    }
-                                />
-                            </>
-                    }
-                </div>
-                {/* 헤더와 풋터를 제외한 영역 */}
-                <div className="contents-container">
-                    {/* 정렬, 해시태그, 상세검색 등을 보여주는 영역 */}
-                    <div className="top-contents-section">
-                        <div className="sortList-section">
-                            {/* 레시피의 정렬 기준을 결정하는 영역 */}
-                            <SortList currentPage={currentPage} setCurrentPage={setCurrentPage} />
-                        </div>
-                        <div className="hash-tag-section">
-                            {
-                                recomHashTags && recomHashTags.map((item) => {
-                                    return (
-                                        <span onClick={() => searchByHashTag(item)} className="no-drag">{item}</span>
-                                    )
-                                })
-                            }
-                        </div>
-                        <div ref={filterRef} className="filter-button-div">
-                            <span className='filter-button' onClick={() => setFilterVisible(!filterVisible)}>
-                                <svg className="filter-svg" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M2 4H14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                                    <path d="M4 8H12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                                    <path d="M6 12H10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                                </svg>
-                                <span className="no-drag">상세검색</span>
-                            </span>
-                            {
-                                filterVisible &&
-                                <div className="filter-detail">
-                                    <div className="filter-checkbox-div">
-                                        <div className="filter-detail-category">음식의 종류</div>
-                                        <div className="filter-detail-div">
-                                            <span className="filter-detail-span">
-                                                <input
-                                                    id="checkbox-rice"
-                                                    name='rice'
-                                                    checked={foodType.rice}
-                                                    onChange={changefoodCheck}
-                                                    className='checkbox'
-                                                    type="checkbox" />
-                                                <label className="no-drag" htmlFor="checkbox-rice">밥</label>
-                                            </span>
-                                            <span className="filter-detail-span">
-                                                <input
-                                                    id="checkbox-sideDish"
-                                                    name='sideDish'
-                                                    checked={foodType.sideDish}
-                                                    onChange={changefoodCheck}
-                                                    className='filter-detail-span checkbox'
-                                                    type="checkbox" />
-                                                <label className="no-drag" htmlFor="checkbox-sideDish">반찬</label>
-                                            </span>
-                                            <span className="filter-detail-span">
-                                                <input
-                                                    id="checkbox-specialDish"
-                                                    name='specialDish'
-                                                    checked={foodType.specialDish}
-                                                    onChange={changefoodCheck}
-                                                    className='checkbox'
-                                                    type="checkbox" />
-                                                <label className="no-drag" htmlFor="checkbox-specialDish">일품</label>
-                                            </span>
-                                            <span className="filter-detail-span">
-                                                <input
-                                                    id="checkbox-stew"
-                                                    name='stew'
-                                                    checked={foodType.stew}
-                                                    onChange={changefoodCheck}
-                                                    className='checkbox'
-                                                    type="checkbox" />
-                                                <label className="no-drag" htmlFor="checkbox-stew">국&찌개</label>
-                                            </span>
-                                            <span className="filter-detail-span">
-                                                <input
-                                                    id="checkbox-dessert"
-                                                    name='dessert'
-                                                    checked={foodType.dessert}
-                                                    onChange={changefoodCheck}
-                                                    className='checkbox'
-                                                    type="checkbox" />
-                                                <label className="no-drag" htmlFor="checkbox-dessert">후식</label>
-                                            </span>
-                                        </div>
-                                        <div className="filter-detail-category">요리 방법</div>
-                                        <div className="filter-detail-div">
-                                            <span className="filter-detail-span">
-                                                <input
-                                                    id="checkbox-steam"
-                                                    name='steam'
-                                                    checked={cookWay.steam}
-                                                    onChange={changeCookCheck}
-                                                    className='checkbox'
-                                                    type="checkbox" />
-                                                <label className="no-drag" htmlFor="checkbox-steam">찌기</label>
-                                            </span>
-                                            <span className="filter-detail-span">
-                                                <input
-                                                    id="checkbox-boil"
-                                                    name="boil"
-                                                    checked={cookWay.boil}
-                                                    onChange={changeCookCheck}
-                                                    className='checkbox'
-                                                    type="checkbox" />
-                                                <label className="no-drag" htmlFor="checkbox-boil">끓이기</label>
-                                            </span>
-                                            <span className="filter-detail-span">
-                                                <input
-                                                    id="checkbox-grill"
-                                                    name="grill"
-                                                    checked={cookWay.grill}
-                                                    onChange={changeCookCheck}
-                                                    className='checkbox'
-                                                    type="checkbox" />
-                                                <label className="no-drag" htmlFor="checkbox-grill">굽기</label>
-                                            </span>
-                                            <span className="filter-detail-span">
-                                                <input
-                                                    id="checkbox-stir"
-                                                    name="stir"
-                                                    checked={cookWay.stir}
-                                                    onChange={changeCookCheck}
-                                                    className='checkbox'
-                                                    type="checkbox" />
-                                                <label className="no-drag" htmlFor="checkbox-stir">볶기</label>
-                                            </span>
-                                            <span className="filter-detail-span">
-                                                <input
-                                                    id="checkbox-fry"
-                                                    name="fry"
-                                                    checked={cookWay.fry}
-                                                    onChange={changeCookCheck}
-                                                    className='checkbox'
-                                                    type="checkbox" />
-                                                <label className="no-drag" htmlFor="checkbox-fry">튀기기</label>
-                                            </span>
-                                            <span className="filter-detail-span">
-                                                <input
-                                                    id="checkbox-etc"
-                                                    name="etc"
-                                                    checked={cookWay.etc}
-                                                    onChange={changeCookCheck}
-                                                    className='checkbox'
-                                                    type="checkbox" />
-                                                <label className="no-drag" htmlFor="checkbox-etc">기타</label>
-                                            </span>
-                                        </div>
-                                        <div className="filter-detail-category">영양성분</div>
-                                        <div className="filter-detail-div">
-                                            <span className="filter-detail-span range-span">
-                                                탄수화물
-                                                <div className="input-slide-container">
-                                                    {/* key를 부여해서 슬라이더 자체를 재렌더링 시킴 */}
-                                                    <MultiRangeSlider key={sliderKey} min={0} max={1000} unit="g" onChange={carInfoChange} />
-                                                </div>
-                                            </span>
-                                            <span className="filter-detail-span range-span">
-                                                열량
-                                                <div className="input-slide-container">
-                                                    <MultiRangeSlider key={sliderKey} min={0} max={1000} unit="kcal" onChange={engInfoChange} />
-                                                </div>
-                                            </span>
-                                            <span className="filter-detail-span range-span">
-                                                지방
-                                                <div className="input-slide-container">
-                                                    <MultiRangeSlider key={sliderKey} min={0} max={1000} unit="g" onChange={fatInfoChange} />
-                                                </div>
-                                            </span>
-                                            <span className="filter-detail-span range-span">
-                                                나트륨
-                                                <div className="input-slide-container">
-                                                    <MultiRangeSlider key={sliderKey} min={0} max={1000} unit="mg" onChange={naInfoChange} />
-                                                </div>
-                                            </span>
-                                            <span className="filter-detail-span range-span">
-                                                단백질
-                                                <div className="input-slide-container">
-                                                    <MultiRangeSlider key={sliderKey} min={0} max={1000} unit="g" onChange={proInfoChange} />
-                                                </div>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="filter-submit">
-                                        {/* filter-button-div 하위에 존재하기 때문에 이벤트 버블링 발생 - 막도록 설정 */}
-                                        <div onClick={(e) => { e.stopPropagation(); searchByFilter(); }}>필터 적용하기</div>
-                                        <div onClick={unCheck}>필터 지우기</div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                    {/* 메뉴를 보여주는 영역 */}
-                    <div className="menu-section">
-                        {
-                            Array.isArray(displayedMenu) ?
-                                <table className="menu-table">
-                                    <tbody>
-                                        {
-                                            // new Array를 이용하여 새 배열 생성(displayedMenu를 4로 나눈 몫만큼 map을 사용하기 위함)
-                                            // displayedMenu의 길이를 4로 나누고 소수점이 떨어지지 않을 경우를 대비하여 Math.ceil을 이용해 올림
-                                            // Math.min을 통해 tr의 최대 개수를 trPerPage(6개) 만큼으로 제한
-                                            // 그 후에, map은 undefined은 무시하기 때문에 fill을 사용해 모든 요소를 0으로 초기화
-                                            Array(Math.min(Math.ceil(displayedMenu.length / 4), trPerPage)).fill(0).map((_, index) => {
-                                                // 한 페이지에 출력할 메뉴의 개수를 설정
-                                                // 1페이지 = slice(0, 24), 2페이지 = slice(24, 48)...
-                                                const startIndex = (currentPage - 1) * tdPerPage;
-                                                const endIndex = startIndex + tdPerPage;
-                                                const menuPerPage = displayedMenu.slice(startIndex, endIndex);
-                                                // 0번째 tr = slice(0, 4), 2번째 tr = slice(4, 8)... 4개씩 나누어 출력
-                                                const items = menuPerPage.slice(index * 4, index * 4 + 4);
-                                                const hoverState = isHovered;
-                                                return (
-                                                    <tr>
-                                                        {
-                                                            items.map((item, localIndex) => {
-                                                                // 단순 index를 사용하면 현재 tr 내부로 제한되기 때문에, 페이지 전체의 인덱스를 계산해서 사용
-                                                                const globalIndex = startIndex + index * 4 + localIndex;
-                                                                return (
-                                                                    <td>
-                                                                        <div>
-                                                                            <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)} className="td-content">
-                                                                                <Image
-                                                                                    src={`${item.ATT_FILE_NO_MK}`}
-                                                                                    style={{
-                                                                                        borderRadius: 8,
-                                                                                        cursor: 'pointer',
-                                                                                        transition: 'transform 0.3s ease',
-                                                                                        transform: hoverState[globalIndex] ?
-                                                                                            'scale(1.05)' :
-                                                                                            'scale(1)'
-                                                                                    }}
-                                                                                    width={250}
-                                                                                    height={250}
-                                                                                    alt={''}
-                                                                                    onMouseEnter={() => imgMouseEnter(globalIndex)}
-                                                                                    onMouseLeave={() => imgMouseOut(globalIndex)}
-                                                                                />
-                                                                            </div>
-                                                                            <div className='RCP_NM'>{item.RCP_NM}</div>
-                                                                            <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
-                                                                        </div>
-                                                                    </td>
-                                                                )
-                                                            })
-                                                        }
-                                                    </tr>
-                                                )
-                                            })
+                                    inputBackgroundColor="#f2f2f2" /> :
+                                <>
+                                    <Header
+                                        position="relative"
+                                        backgroundColor="#ffffff"
+                                        color="#111111"
+                                        borderColor="#e8e8e8"
+                                        svgFill="#000000"
+                                        lightLogo={false}
+                                        inputBackgroundColor="#f2f2f2" />
+                                    <HeaderOnContents
+                                        className={
+                                            !headerSlide ?
+                                                'slide-down' :
+                                                'slide-up'
                                         }
-                                    </tbody>
-                                </table> :
-                                <SkeletonUI length={24} />
+                                    />
+                                </>
                         }
                     </div>
-                    <div className="pagination-section">
-                        {
-                            // 현재 페이지가 첫 페이지라면, 이전 페이지로 이동할 수 없음을 알림
-                            currentPage !== 1 ?
-                                <span
-                                    onClick={() => movePage('down')}>
-                                    <svg className="movePage-svg left" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke={currentPage === 1 ? '#E8EBEE' : 'currentColor'} stroke-linecap="round" stroke-width="1.4" d="m6 12 4-4-4-4"></path>
-                                    </svg>
-                                </span> :
-                                <span
-                                    id="no-movePage-span">
-                                    <svg className="no-movePage-svg left" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke={currentPage === 1 ? '#E8EBEE' : 'currentColor'} stroke-linecap="round" stroke-width="1.4" d="m6 12 4-4-4-4"></path>
-                                    </svg>
+                    {/* 헤더와 풋터를 제외한 영역 */}
+                    <div className="contents-container">
+                        {/* 정렬, 해시태그, 상세검색 등을 보여주는 영역 */}
+                        <div className="top-contents-section">
+                            <div className="sortList-section">
+                                {/* 레시피의 정렬 기준을 결정하는 영역 */}
+                                <SortList currentPage={currentPage} setCurrentPage={setCurrentPage} />
+                            </div>
+                            <div className="hash-tag-section">
+                                {
+                                    recomHashTags && recomHashTags.map((item) => {
+                                        return (
+                                            <span onClick={() => searchByHashTag(item)} className="no-drag">{item}</span>
+                                        )
+                                    })
+                                }
+                            </div>
+                            <div ref={filterRef} className="filter-button-div">
+                                <span className='filter-button' onClick={() => setFilterVisible(!filterVisible)}>
+                                    <Image className="filter-svg" src={filterSvg} alt='' />
+                                    <span className="no-drag">상세검색</span>
                                 </span>
-                        }
-                        {
-                            /* Array는 배열을 생성하여 내부를 undefined로 채움
-                            하지만 Array.from은 반복 가능한 객체를 얕은 복사하여 새 배열 생성(배열의 각 요소를 사용해야 할 때 사용) */
-                            // ex) startPage = 11, endPage = 20
-                            // length = 10, startPage + index = 11 + 0, 11 + 1, ... 11 + 9
-                            // 즉, 11, 12, 13, .. 20으로 이루어진 배열 생성 
-                            Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index)
-                                .map((pageNumber) => {
-                                    return (
-                                        pageNumber === currentPage ?
-                                            <span
-                                                onClick={() => setCurrentPage(pageNumber)}
-                                                style={{ backgroundColor: '#002312', color: '#ffffff' }}
-                                                className="a">
-                                                {pageNumber}
-                                            </span> :
-                                            <span className="pagination-hover" onClick={() => setCurrentPage(pageNumber)}>{pageNumber}</span>
-                                    )
-                                })
-                        }
-                        {
-                            // 현재 페이지가 마지막 페이지라면, 이후 페이지로 이동할 수 없음을 알림
-                            currentPage !== totalPagecount ?
-                                <span
-                                    onClick={() => movePage('up')}
-                                    className="movePage-span">
-                                    <svg className="movePage-svg right"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 16 16">
-                                        <path
-                                            stroke={currentPage === Math.ceil(displayedMenu.length / tdPerPage) ? '#E8EBEE' : 'currentColor'}
-                                            stroke-linecap="round"
-                                            stroke-width="1.4" d="m6 12 4-4-4-4">
-                                        </path>
-                                    </svg>
-                                </span> :
-                                <span
-                                    id="no-movePage-span">
-                                    <svg
-                                        className="no-movePage-svg right"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 16 16">
-                                        <path
-                                            stroke={currentPage === Math.ceil(displayedMenu.length / tdPerPage) ? '#E8EBEE' : 'currentColor'}
-                                            stroke-linecap="round"
-                                            stroke-width="1.4"
-                                            d="m6 12 4-4-4-4">
-                                        </path>
-                                    </svg>
-                                </span>
-                        }
+                                {
+                                    filterVisible &&
+                                    <div className="filter-detail">
+                                        <div className="filter-checkbox-div">
+                                            <div className="filter-detail-category">음식의 종류</div>
+                                            <div className="filter-detail-div">
+                                                <span className="filter-detail-span">
+                                                    <input
+                                                        id="checkbox-rice"
+                                                        name='rice'
+                                                        checked={foodType.rice}
+                                                        onChange={changefoodCheck}
+                                                        className='checkbox'
+                                                        type="checkbox" />
+                                                    <label className="no-drag" htmlFor="checkbox-rice">밥</label>
+                                                </span>
+                                                <span className="filter-detail-span">
+                                                    <input
+                                                        id="checkbox-sideDish"
+                                                        name='sideDish'
+                                                        checked={foodType.sideDish}
+                                                        onChange={changefoodCheck}
+                                                        className='filter-detail-span checkbox'
+                                                        type="checkbox" />
+                                                    <label className="no-drag" htmlFor="checkbox-sideDish">반찬</label>
+                                                </span>
+                                                <span className="filter-detail-span">
+                                                    <input
+                                                        id="checkbox-specialDish"
+                                                        name='specialDish'
+                                                        checked={foodType.specialDish}
+                                                        onChange={changefoodCheck}
+                                                        className='checkbox'
+                                                        type="checkbox" />
+                                                    <label className="no-drag" htmlFor="checkbox-specialDish">일품</label>
+                                                </span>
+                                                <span className="filter-detail-span">
+                                                    <input
+                                                        id="checkbox-stew"
+                                                        name='stew'
+                                                        checked={foodType.stew}
+                                                        onChange={changefoodCheck}
+                                                        className='checkbox'
+                                                        type="checkbox" />
+                                                    <label className="no-drag" htmlFor="checkbox-stew">국&찌개</label>
+                                                </span>
+                                                <span className="filter-detail-span">
+                                                    <input
+                                                        id="checkbox-dessert"
+                                                        name='dessert'
+                                                        checked={foodType.dessert}
+                                                        onChange={changefoodCheck}
+                                                        className='checkbox'
+                                                        type="checkbox" />
+                                                    <label className="no-drag" htmlFor="checkbox-dessert">후식</label>
+                                                </span>
+                                            </div>
+                                            <div className="filter-detail-category">요리 방법</div>
+                                            <div className="filter-detail-div">
+                                                <span className="filter-detail-span">
+                                                    <input
+                                                        id="checkbox-steam"
+                                                        name='steam'
+                                                        checked={cookWay.steam}
+                                                        onChange={changeCookCheck}
+                                                        className='checkbox'
+                                                        type="checkbox" />
+                                                    <label className="no-drag" htmlFor="checkbox-steam">찌기</label>
+                                                </span>
+                                                <span className="filter-detail-span">
+                                                    <input
+                                                        id="checkbox-boil"
+                                                        name="boil"
+                                                        checked={cookWay.boil}
+                                                        onChange={changeCookCheck}
+                                                        className='checkbox'
+                                                        type="checkbox" />
+                                                    <label className="no-drag" htmlFor="checkbox-boil">끓이기</label>
+                                                </span>
+                                                <span className="filter-detail-span">
+                                                    <input
+                                                        id="checkbox-grill"
+                                                        name="grill"
+                                                        checked={cookWay.grill}
+                                                        onChange={changeCookCheck}
+                                                        className='checkbox'
+                                                        type="checkbox" />
+                                                    <label className="no-drag" htmlFor="checkbox-grill">굽기</label>
+                                                </span>
+                                                <span className="filter-detail-span">
+                                                    <input
+                                                        id="checkbox-stir"
+                                                        name="stir"
+                                                        checked={cookWay.stir}
+                                                        onChange={changeCookCheck}
+                                                        className='checkbox'
+                                                        type="checkbox" />
+                                                    <label className="no-drag" htmlFor="checkbox-stir">볶기</label>
+                                                </span>
+                                                <span className="filter-detail-span">
+                                                    <input
+                                                        id="checkbox-fry"
+                                                        name="fry"
+                                                        checked={cookWay.fry}
+                                                        onChange={changeCookCheck}
+                                                        className='checkbox'
+                                                        type="checkbox" />
+                                                    <label className="no-drag" htmlFor="checkbox-fry">튀기기</label>
+                                                </span>
+                                                <span className="filter-detail-span">
+                                                    <input
+                                                        id="checkbox-etc"
+                                                        name="etc"
+                                                        checked={cookWay.etc}
+                                                        onChange={changeCookCheck}
+                                                        className='checkbox'
+                                                        type="checkbox" />
+                                                    <label className="no-drag" htmlFor="checkbox-etc">기타</label>
+                                                </span>
+                                            </div>
+                                            <div className="filter-detail-category">영양성분</div>
+                                            <div className="filter-detail-div">
+                                                <span className="filter-detail-span range-span">
+                                                    탄수화물
+                                                    <div className="input-slide-container">
+                                                        {/* key를 부여해서 슬라이더 자체를 재렌더링 시킴 */}
+                                                        <MultiRangeSlider key={sliderKey} min={0} max={1000} unit="g" onChange={carInfoChange} />
+                                                    </div>
+                                                </span>
+                                                <span className="filter-detail-span range-span">
+                                                    열량
+                                                    <div className="input-slide-container">
+                                                        <MultiRangeSlider key={sliderKey} min={0} max={1000} unit="kcal" onChange={engInfoChange} />
+                                                    </div>
+                                                </span>
+                                                <span className="filter-detail-span range-span">
+                                                    지방
+                                                    <div className="input-slide-container">
+                                                        <MultiRangeSlider key={sliderKey} min={0} max={1000} unit="g" onChange={fatInfoChange} />
+                                                    </div>
+                                                </span>
+                                                <span className="filter-detail-span range-span">
+                                                    나트륨
+                                                    <div className="input-slide-container">
+                                                        <MultiRangeSlider key={sliderKey} min={0} max={1000} unit="mg" onChange={naInfoChange} />
+                                                    </div>
+                                                </span>
+                                                <span className="filter-detail-span range-span">
+                                                    단백질
+                                                    <div className="input-slide-container">
+                                                        <MultiRangeSlider key={sliderKey} min={0} max={1000} unit="g" onChange={proInfoChange} />
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="filter-submit">
+                                            {/* filter-button-div 하위에 존재하기 때문에 이벤트 버블링 발생 - 막도록 설정 */}
+                                            <div onClick={(e) => { e.stopPropagation(); searchByFilter(); }}>필터 적용하기</div>
+                                            <div onClick={unCheck}>필터 지우기</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        {/* 메뉴를 보여주는 영역 */}
+                        <div className="menu-section">
+                            {
+                                Array.isArray(displayedMenu) ?
+                                    <table className="menu-table">
+                                        <tbody>
+                                            {
+                                                // new Array를 이용하여 새 배열 생성(displayedMenu를 4로 나눈 몫만큼 map을 사용하기 위함)
+                                                // displayedMenu의 길이를 4로 나누고 소수점이 떨어지지 않을 경우를 대비하여 Math.ceil을 이용해 올림
+                                                // Math.min을 통해 tr의 최대 개수를 trPerPage(6개) 만큼으로 제한
+                                                // 그 후에, map은 undefined은 무시하기 때문에 fill을 사용해 모든 요소를 0으로 초기화
+                                                Array(Math.min(Math.ceil(displayedMenu.length / 4), trPerPage)).fill(0).map((_, index) => {
+                                                    // 한 페이지에 출력할 메뉴의 개수를 설정
+                                                    // 1페이지 = slice(0, 24), 2페이지 = slice(24, 48)...
+                                                    const startIndex = (currentPage - 1) * tdPerPage;
+                                                    const endIndex = startIndex + tdPerPage;
+                                                    const menuPerPage = displayedMenu.slice(startIndex, endIndex);
+                                                    // 0번째 tr = slice(0, 4), 2번째 tr = slice(4, 8)... 4개씩 나누어 출력
+                                                    const items = menuPerPage.slice(index * 4, index * 4 + 4);
+                                                    const hoverState = isHovered;
+                                                    return (
+                                                        <tr>
+                                                            {
+                                                                items.map((item, localIndex) => {
+                                                                    // 단순 index를 사용하면 현재 tr 내부로 제한되기 때문에, 페이지 전체의 인덱스를 계산해서 사용
+                                                                    const globalIndex = startIndex + index * 4 + localIndex;
+                                                                    return (
+                                                                        <td>
+                                                                            <div>
+                                                                                <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)} className="td-content">
+                                                                                    <Image
+                                                                                        src={`${item.ATT_FILE_NO_MK}`}
+                                                                                        style={{
+                                                                                            borderRadius: 8,
+                                                                                            cursor: 'pointer',
+                                                                                            transition: 'transform 0.3s ease',
+                                                                                            transform: hoverState[globalIndex] ?
+                                                                                                'scale(1.05)' :
+                                                                                                'scale(1)'
+                                                                                        }}
+                                                                                        width={250}
+                                                                                        height={250}
+                                                                                        alt={''}
+                                                                                        onMouseEnter={() => imgMouseEnter(globalIndex)}
+                                                                                        onMouseLeave={() => imgMouseOut(globalIndex)}
+                                                                                    />
+                                                                                </div>
+                                                                                <div className='RCP_NM'>{item.RCP_NM}</div>
+                                                                                <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
+                                                                            </div>
+                                                                        </td>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
+                                    </table> :
+                                    <SkeletonUI length={24} />
+                            }
+                        </div>
+                        <div className="pagination-section">
+                            {
+                                // 현재 페이지가 첫 페이지라면, 이전 페이지로 이동할 수 없음을 알림
+                                currentPage !== 1 ?
+                                    <span
+                                        onClick={() => movePage('down')}>
+                                        <svg className="movePage-svg left" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke={currentPage === 1 ? '#E8EBEE' : 'currentColor'} stroke-linecap="round" stroke-width="1.4" d="m6 12 4-4-4-4"></path>
+                                        </svg>
+                                    </span> :
+                                    <span
+                                        id="no-movePage-span">
+                                        <svg className="no-movePage-svg left" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke={currentPage === 1 ? '#E8EBEE' : 'currentColor'} stroke-linecap="round" stroke-width="1.4" d="m6 12 4-4-4-4"></path>
+                                        </svg>
+                                    </span>
+                            }
+                            {
+                                /* Array는 배열을 생성하여 내부를 undefined로 채움
+                                하지만 Array.from은 반복 가능한 객체를 얕은 복사하여 새 배열 생성(배열의 각 요소를 사용해야 할 때 사용) */
+                                // ex) startPage = 11, endPage = 20
+                                // length = 10, startPage + index = 11 + 0, 11 + 1, ... 11 + 9
+                                // 즉, 11, 12, 13, .. 20으로 이루어진 배열 생성 
+                                Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index)
+                                    .map((pageNumber) => {
+                                        return (
+                                            pageNumber === currentPage ?
+                                                <span
+                                                    onClick={() => setCurrentPage(pageNumber)}
+                                                    style={{ backgroundColor: '#002312', color: '#ffffff' }}>
+                                                    {pageNumber}
+                                                </span> :
+                                                <span className="pagination-hover" onClick={() => setCurrentPage(pageNumber)}>{pageNumber}</span>
+                                        )
+                                    })
+                            }
+                            {
+                                // 현재 페이지가 마지막 페이지라면, 이후 페이지로 이동할 수 없음을 알림
+                                currentPage !== totalPagecount ?
+                                    <span
+                                        onClick={() => movePage('up')}
+                                        className="movePage-span">
+                                        <svg className="movePage-svg right"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 16 16">
+                                            <path
+                                                stroke={currentPage === Math.ceil(displayedMenu.length / tdPerPage) ? '#E8EBEE' : 'currentColor'}
+                                                stroke-linecap="round"
+                                                stroke-width="1.4" d="m6 12 4-4-4-4">
+                                            </path>
+                                        </svg>
+                                    </span> :
+                                    <span
+                                        id="no-movePage-span">
+                                        <svg
+                                            className="no-movePage-svg right"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 16 16">
+                                            <path
+                                                stroke={currentPage === Math.ceil(displayedMenu.length / tdPerPage) ? '#E8EBEE' : 'currentColor'}
+                                                stroke-linecap="round"
+                                                stroke-width="1.4"
+                                                d="m6 12 4-4-4-4">
+                                            </path>
+                                        </svg>
+                                    </span>
+                            }
+                        </div>
                     </div>
                 </div>
                 <Footer />
             </div>
             <style jsx> {`
+                .container-float-top {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                }
                 .contents-container {
                     display: flex;
                     flex-direction: column;
@@ -725,12 +725,10 @@ export default function Recipe() {
                 .filter-button:hover {
                     border-color: rgb(130, 130, 130);
                 }
-                .filter-svg {
-                    position: relative;
-                    width: 17.5px;
-                    top: 0.5px;
-                    margin-right: 5px;
-                }
+                {/* .filter-svg-span {
+                    margin-top: 1.5px;
+                    margin-right: 4px;
+                } */}
                 .filter-button-div span {
                     font-size: 13px;
                     font-weight: 500;
