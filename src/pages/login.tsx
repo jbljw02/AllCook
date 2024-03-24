@@ -1,19 +1,113 @@
 import kakaoLogin from "../../public/images/kakao_login.png"
 import Image from "next/image";
 import googleLogin from '../../public/svgs/googleLogin.svg';
+import backSvg from '../../public/svgs/backBtn.svg';
+import closeSvg from '../../public/svgs/closeBtn.svg';
+import { useState } from "react";
+import { GoogleAuthProvider, signInWithPopup } from "@firebase/auth";
+import fireAuth from "@/firebase/fireAuth";
+import firebase from "@/firebase/firebasedb"
+
+export type loginForm = {
+    email: string,
+    password: string,
+    isSave: boolean,
+    submitted: boolean,
+}
 
 export default function login() {
+    // 이메일과 패스워드란에 커서가 위치할 때 스타일을 변경하기 위한 state
+    const [emailFocusStyle, setEmailFocusStyle] = useState({
+        fill: '#dadada',
+        borderColor: '',
+    })
+    const [pwdFocusStyle, setPwdFocusStyle] = useState({
+        stroke: '#dadada',
+        borderColor: '',
+    })
+
+    // input에 포커스가 있을 때와 없을 때의 속성을 구분
+    const inputFocus = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.name === 'email') {
+            setEmailFocusStyle({ fill: '#111111', borderColor: '#111111' });
+        }
+        if (e.target.name === 'password') {
+            setPwdFocusStyle({ stroke: '#111111', borderColor: '#111111' });
+        }
+    }
+    const inputBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.name === 'email') {
+            setEmailFocusStyle({ fill: '#dadada', borderColor: '' });
+        }
+        if (e.target.name === 'password') {
+            setPwdFocusStyle({ stroke: '#dadada', borderColor: '' });
+        }
+    }
+
+    const [formData, setFormdata] = useState<loginForm>({
+        email: '',
+        password: '',
+        isSave: false,
+        submitted: false,
+    })
+
+    // 이메일 유효성 검증을 위한 state와 정규식
+    const [emailValid, setEmailValid] = useState<boolean>(true);
+    let emailRegex = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z]{2,}$/;
+
+    // input의 바뀌는 값을 감지 
+    const formChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormdata({
+            ...formData,
+            [e.target.name]: e.target.value,
+        })
+
+        // 전송이 한 번 클릭되고, 이메일의 값이 바뀔 때 정규식과 일치하는지 검사
+        if (formData.submitted && e.target.name === 'email') {
+            if (emailRegex.test(e.target.value)) {
+                setEmailValid(true);
+            }
+            else {
+                setEmailValid(false);
+            }
+        }
+    }
+
+    // form을 전송함
+    const formSubmit = async (event: { preventDefault: () => void; }) => {
+        event.preventDefault(); // form의 기본 동작을 막음(조건이 만족해야 전송되도록)
+        setFormdata({
+            ...formData,
+            submitted: true,
+        })
+
+        // 이메일이 정규식을 통과하지 못할 경우
+        if (!emailRegex.test(formData.email)) {
+            setEmailValid(false);
+            return;
+        }
+        // 이메일 혹은 패스워드가 공란일 경우
+        if (formData.email === '' || formData.password === '') {
+            return;
+        }
+        // 이메일과 패스워드가 공란이 아니며, 이메일이 정규식을 통과했을 경우
+        if (formData.email !== '' &&
+            formData.password !== '' &&
+            emailValid) {
+            // 인증 작업
+            
+        }
+    }
+
     return (
         <>
             <div className="container">
                 <div className="header">
                     <span className="back-svg" >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" width="25" height="25" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-width="1.2" d="M17 22.5 6.85 12.35a.5.5 0 0 1 0-.7L17 1.5"></path>
-                        </svg>
+                        <Image src={backSvg} alt="" />
                     </span>
                     <span className="close-svg">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" width="25" height="25"><path stroke="currentColor" stroke-width="1.2" d="m1.5 1.5 21 21m0-21-21 21"></path>
-                        </svg>
+                        <Image src={closeSvg} alt="" />
                     </span>
                 </div>
                 <div className="contents-container">
@@ -23,31 +117,79 @@ export default function login() {
                     </div>
                     <div className="login-container">
                         <form>
-                            <div className="email-div">
+                            <div
+                                className='email-div'
+                                id={`${formData.submitted && (!emailValid || formData.email === '') ? 'warning-border' : ''}`}
+                                style={{ borderColor: emailFocusStyle.borderColor }}>
                                 <svg className="email-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 29" width="30" height="29">
-                                    <path fill="#dadada" fill-rule="evenodd" d="M7 7a2.5 2.5 0 0 0-2.5 2.5v9A2.5 2.5 0 0 0 7 21h15a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 22 7H7ZM5.5 9.5C5.5 8.67 6.17 8 7 8h15c.83 0 1.5.67 1.5 1.5v.17l-9 3.79-9-3.8V9.5Zm0 1.25v7.75c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-7.75l-8.8 3.71-.2.08-.2-.08-8.8-3.7Z"></path>
+                                    <path fill={emailFocusStyle.fill} fill-rule="evenodd" d="M7 7a2.5 2.5 0 0 0-2.5 2.5v9A2.5 2.5 0 0 0 7 21h15a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 22 7H7ZM5.5 9.5C5.5 8.67 6.17 8 7 8h15c.83 0 1.5.67 1.5 1.5v.17l-9 3.79-9-3.8V9.5Zm0 1.25v7.75c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-7.75l-8.8 3.71-.2.08-.2-.08-8.8-3.7Z"></path>
                                 </svg>
-                                <input className="email-input" type="text" placeholder="이메일"></input>
+                                <input
+                                    className="email-input"
+                                    onChange={formChange}
+                                    type="text"
+                                    name="email"
+                                    onFocus={inputFocus}
+                                    onBlur={inputBlur}
+                                    value={formData.email}
+                                    placeholder="이메일" />
                             </div>
-                            <div className="password-div">
+                            {
+                                formData.submitted && formData.email === '' ?
+                                    <div className="input-warning">이메일을 입력해주세요</div> :
+                                    null
+                            }
+                            {
+                                formData.submitted && formData.email !== '' && !emailValid ?
+                                    <div className="input-warning">유효한 이메일을 입력해주세요</div> :
+                                    null
+                            }
+                            <div
+                                className="password-div"
+                                id={`${formData.submitted && formData.password === '' ? 'warning-border' : ''}`}
+                                style={{ borderColor: pwdFocusStyle.borderColor }}>
                                 <svg className="password-svg" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 30 29" fill="none">
-                                    <rect x="3" y="11" width="18" height="11" rx="2" stroke="#dadada" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                    <path d="M7 10.9999V6.99988C7 4.23845 9.23858 1.99988 12 1.99988V1.99988C14.7614 1.99988 17 4.23845 17 6.99988V10.9999" stroke="#dadada" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                    <rect x="3" y="11" width="18" height="11" rx="2" stroke={pwdFocusStyle.stroke} stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M7 10.9999V6.99988C7 4.23845 9.23858 1.99988 12 1.99988V1.99988C14.7614 1.99988 17 4.23845 17 6.99988V10.9999" stroke={pwdFocusStyle.stroke} stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
-                                <input className="password-input" type="password" placeholder="비밀번호"></input>
+                                <input
+                                    className="password-input"
+                                    onChange={formChange}
+                                    type="password"
+                                    name="password"
+                                    onFocus={inputFocus}
+                                    onBlur={inputBlur}
+                                    value={formData.password}
+                                    placeholder="비밀번호" />
                             </div>
+                            {
+                                formData.submitted && formData.password === '' ?
+                                    <div className="input-warning">비밀번호를 입력해주세요</div> :
+                                    null
+                            }
                             <div className="login-footer-div">
-                                <div className="checkbox-div">
-                                    <input type="checkbox" />
-                                    <span>로그인 정보 저장</span>
+                                <div
+                                    className="checkbox-div no-drag"
+                                    onClick={() => setFormdata({
+                                        ...formData,
+                                        isSave: !formData.isSave,
+                                    })}>
+                                    <input
+                                        type="checkbox"
+                                        checked={formData.isSave} />
+                                    <label htmlFor="checkbox">로그인 정보 저장</label>
                                 </div>
-                                <div>비밀번호를 잊으셨나요?</div>
+                                {/* <div className="forgot-password">비밀번호를 잊으셨나요?</div> */}
                             </div>
-                            <button type="submit">로그인</button>
+                            <button
+                                type="submit"
+                                onClick={formSubmit}>
+                                로그인
+                            </button>
                         </form>
                         <div className="social-login-container">
                             <Image src={googleLogin} className="google-svg" alt="" />
-                            <Image width={280} height={44} src={kakaoLogin} alt={''} />
+                            <Image width={285} height={44} src={kakaoLogin} style={{ cursor: 'pointer' }} alt={''} />
                         </div>
                     </div>
                 </div>
@@ -77,6 +219,7 @@ export default function login() {
                     justify-content: center;
                     align-items: center;
                     margin-top: 110px;
+                    color: #111111;
                 }
                 .title-container {
                     display: flex;
@@ -110,24 +253,43 @@ export default function login() {
                     border-bottom: 1px solid #a8a8a8;
                     width: 490px;
                 }
+                .input-warning {
+                    margin-top: 6px;
+                    margin-bottom: 12px;
+                    margin-left: 2px;
+                    font-size: 11.5px;
+                    color: #FF0000;
+                }
+                #warning-border {
+                    border-color: #FF0000 !important;
+                }
                 .email-div, .password-div {
                     display: flex;
                     flex-direction: row;
                     border: 1px solid #dadada;
                     border-radius: 5px;
+                    transition: 0.15s ease border-color;
                 }
                 .email-div {
-                    margin-bottom: 15px;
+                }
+                .email-svg path {
+                    transition: 0.15s ease fill;
                 }
                 .email-svg {
                     position: relative;
                     top: 7px;
                     left: 5px;
                 }
+                .password-div {
+                    margin-top: 15px;
+                }
                 .password-svg {
                     position: relative;
                     top: 10px;
                     left: 9.5px;
+                }
+                .password-svg path, .password-svg rect {
+                    transition: 0.15s ease stroke;
                 }
                 .email-input, .password-input {
                     outline: none;
@@ -150,12 +312,18 @@ export default function login() {
                 .checkbox-div {
                     display: flex;
                     flex-direction: row;
+                    cursor: pointer;
                 }
                 .checkbox-div input {
-                    margin-top: 4px;
+                    margin-top: 4.2px;
+                    cursor: pointer;
                 }
-                .checkbox-div span {
+                .checkbox-div label {
                     margin-left: 3px;
+                    cursor: pointer;
+                }
+                .forgot-password {
+                    cursor: pointer;
                 }
                 button {
                     width: 100%;

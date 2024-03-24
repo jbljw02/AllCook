@@ -108,9 +108,8 @@ export default function Contact() {
             fetchForm(formData);
             setIsSubmitted(true);
             addDoc(collection(fireStore, 'temp'),
-                {
-                    formData
-                })
+                { formData }
+            )
         }
         // else if (formData.name === '' ||
         //     formData.mail === '' ||
@@ -194,8 +193,7 @@ export default function Contact() {
                                 height: 185,
                                 transform: 'translate(-50%, -50%)',
                             }
-                        }}
-                    >
+                        }}>
                         <div className="pop-up-container">
                             <div className="pop-up-title-section">
                                 <span>개인정보 처리방침</span>에 대한 동의가 필요합니다.
@@ -313,7 +311,7 @@ export default function Contact() {
                                         type="checkbox"
                                         checked={isChecked}
                                         onChange={checkboxChange}
-                                    ></input>
+                                    />
                                     <div>
                                         <span onClick={() => setIsModalOpen(true)}>개인정보 처리방침</span>에 동의합니다.
                                         <Modal
