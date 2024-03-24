@@ -10,7 +10,8 @@ import { fetchForm } from "@/utils/nodemailer/fetchForm";
 import Modal from 'react-modal';
 import { addDoc, collection } from "firebase/firestore";
 import fireStore from "@/firebase/firestore";
-// import sendMail from "@/api/sendMail";
+import telSvg from '../../public/svgs/tel.svg';
+import mailSvg from '../../public/svgs/mail.svg';
 
 export type Form = {
     id: string,
@@ -107,9 +108,9 @@ export default function Contact() {
             fetchForm(formData);
             setIsSubmitted(true);
             addDoc(collection(fireStore, 'temp'),
-            {
-                formData
-            })
+                {
+                    formData
+                })
         }
         // else if (formData.name === '' ||
         //     formData.mail === '' ||
@@ -382,15 +383,11 @@ export default function Contact() {
                                 {/* 좌측 하단 연락처, 이메일 영역 */}
                                 <div className="contact-footer">
                                     <div className="tel-section">
-                                        <svg className="tel-svg" xmlns="http://www.w3.org/2000/svg" width="19px" height="19px" viewBox="0 0 24 24" fill="none">
-                                            <path d="M18.7881 14.7644C17.4497 13.4433 15.9296 15.1939 14.9258 16.1847C11.8965 16.7827 6.44379 11.4006 7.6555 9.00853C8.65932 8.01771 10.4328 6.51729 9.09441 5.1962C7.75599 3.87511 5.85724 3.60737 4.85342 4.59819C4.02037 5.42046 3.41451 7.21449 4.92915 11.1016C6.44379 14.9887 8.86722 17.3807 13.0072 19.0751C17.1473 20.7694 18.5609 19.7728 19.394 18.9505C20.3978 17.9597 20.1265 16.0855 18.7881 14.7644Z" stroke="#111111" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
+                                        <Image src={telSvg} className="tel-svg" alt="" />
                                         <div>010-8511-3589</div>
                                     </div>
                                     <div className="mail-section">
-                                        <svg className="mail-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 29" width="23px" height="23px">
-                                            <path fill="#111111" fill-rule="evenodd" d="M7 7a2.5 2.5 0 0 0-2.5 2.5v9A2.5 2.5 0 0 0 7 21h15a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 22 7H7ZM5.5 9.5C5.5 8.67 6.17 8 7 8h15c.83 0 1.5.67 1.5 1.5v.17l-9 3.79-9-3.8V9.5Zm0 1.25v7.75c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-7.75l-8.8 3.71-.2.08-.2-.08-8.8-3.7Z"></path>
-                                        </svg>
+                                        <Image src={mailSvg} className="mail-svg" alt="" />
                                         <div>jbljw02@naver.com</div>
                                     </div>
                                 </div>
@@ -661,4 +658,10 @@ export default function Contact() {
             `}</style>
         </>
     )
+}
+
+export const getStaticProps = () => {
+    return {
+        props: {}
+    }
 }

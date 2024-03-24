@@ -10,6 +10,14 @@
     width: 100%;
     justify-content: center;
 }
+.title-logo {
+    width: 85px;
+    cursor: pointer;
+}
+.title-logo-small {
+    width: 24px;
+    cursor: pointer;
+}
 .input-div {
     display: flex;
     border: none;
@@ -27,7 +35,7 @@
     border-radius: 10px;
     border: none;
 }
-.img-search {
+.search-svg {
     position: absolute;
     margin-top: 7px;
     margin-left: 203px;
@@ -42,9 +50,8 @@
 .user-img-span {
     position: absolute;
 }
-.user-img {
+.user-svg {
     margin-right: 20px;
-    width: 24px;
 }
 .logIn {
     font-size: 15.5px;
