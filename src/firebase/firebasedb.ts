@@ -2,6 +2,7 @@
 import { FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -18,14 +19,18 @@ const firebaseConfig = {
 };
 
 // Firebase 앱 초기화
-export let firebaseApp: FirebaseApp;
+let firebaseApp: FirebaseApp;
 if (!getApps().length) {
     firebaseApp = initializeApp(firebaseConfig);
 } else {
     firebaseApp = getApp(); // 기존에 초기화된 앱 인스턴스를 가져옴
 }
 
-// Firestore 인스턴스 초기화
-const firebasedb = getFirestore(firebaseApp);
+// const firebasedb = initializeApp(firebaseConfig);
 
-export default firebasedb;
+// Firestore 인스턴스 초기화
+const firestore = getFirestore(firebaseApp);
+
+const auth = getAuth(firebaseApp);
+
+export { firestore, auth };

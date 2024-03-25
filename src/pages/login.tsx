@@ -4,9 +4,12 @@ import googleLogin from '../../public/svgs/googleLogin.svg';
 import backSvg from '../../public/svgs/backBtn.svg';
 import closeSvg from '../../public/svgs/closeBtn.svg';
 import { useState } from "react";
-import { GoogleAuthProvider, signInWithPopup } from "@firebase/auth";
-import fireAuth from "@/firebase/fireAuth";
-import firebase from "@/firebase/firebasedb"
+import { auth } from "@/firebase/firebasedb";
+import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { setUser } from "@/redux/features/userSlice";
 
 export type loginForm = {
     email: string,
@@ -16,6 +19,9 @@ export type loginForm = {
 }
 
 export default function login() {
+    const dispatch = useDispatch();
+    const router = useRouter();
+
     // 이메일과 패스워드란에 커서가 위치할 때 스타일을 변경하기 위한 state
     const [emailFocusStyle, setEmailFocusStyle] = useState({
         fill: '#dadada',
@@ -95,18 +101,63 @@ export default function login() {
             formData.password !== '' &&
             emailValid) {
             // 인증 작업
-            
+
         }
     }
+
+    const user = useSelector((state: RootState) => state.user);
+
+    const googleAuth = async () => {
+        const provider = new GoogleAuthProvider();
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                // 구글 인증 성공
+                const user = result.user;
+                if (user.displayName !== null) {
+                    dispatch(setUser((user.displayName).slice(0, 3)));
+                }
+                router.push('/')
+            })
+            .catch((error) => {
+                // 인증 실패 처리
+                console.error("구글 인증 실패: ", error);
+            });
+    };
+
+    const logout = () => {
+        signOut(auth).then(() => {
+            // 로그아웃 성공 시 실행될 로직
+            console.log("로그아웃 성공");
+        }).catch((error) => {
+            // 로그아웃 시 오류가 발생한 경우
+            console.error("로그아웃 중 오류 발생", error);
+        });
+    };
+
+    // 컴포넌트가 마운트 될 때, 로그인의 변화가 감지될 때 실행
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // 사용자가 로그인한 상태
+            console.log("로그인 상태입니다. 사용자 정보: ", user);
+            if (user.displayName !== null) {
+                dispatch(setUser((user.displayName).slice(0, 3)));
+            }
+        } else {
+            // 사용자가 로그아웃한 상태
+            console.log("로그아웃 상태입니다.");
+            setUser(null);
+        }
+    });
+
 
     return (
         <>
             <div className="container">
                 <div className="header">
-                    <span className="back-svg" >
+                    <span className="back-svg" onClick={router.back}>
                         <Image src={backSvg} alt="" />
                     </span>
-                    <span className="close-svg">
+                    <span className="close-svg" onClick={() => router.push('/')}>
                         <Image src={closeSvg} alt="" />
                     </span>
                 </div>
@@ -179,7 +230,7 @@ export default function login() {
                                         checked={formData.isSave} />
                                     <label htmlFor="checkbox">로그인 정보 저장</label>
                                 </div>
-                                {/* <div className="forgot-password">비밀번호를 잊으셨나요?</div> */}
+                                <div className="email-signUp">이메일로 회원가입</div>
                             </div>
                             <button
                                 type="submit"
@@ -188,8 +239,12 @@ export default function login() {
                             </button>
                         </form>
                         <div className="social-login-container">
-                            <Image src={googleLogin} className="google-svg" alt="" />
-                            <Image width={285} height={44} src={kakaoLogin} style={{ cursor: 'pointer' }} alt={''} />
+                            <Image
+                                src={googleLogin}
+                                onClick={googleAuth}
+                                className="google-svg"
+                                alt="" />
+                            <Image onClick={logout} width={285} height={44} src={kakaoLogin} style={{ cursor: 'pointer' }} alt={''} />
                         </div>
                     </div>
                 </div>
@@ -201,16 +256,16 @@ export default function login() {
                 .header {
                     display: flex;
                     justify-content: space-between;
-                    margin-top: 35px;
+                    margin-top: 30px;
                 }
                 .back-svg {
                     position: relative;
-                    left: 40px;
+                    left: 30px;
                     cursor: pointer;
                 }
                 .close-svg {
                     position: relative;
-                    right: 40px;
+                    right: 30px;
                     cursor: pointer;
                 }
                 .contents-container {
@@ -239,7 +294,7 @@ export default function login() {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    width: 570px;
+                    width: 540px;
                     padding: 40px 10px 40px 10px;
                     margin-top: 30px;
                     border: 1px solid #c6c6c6;
@@ -322,7 +377,7 @@ export default function login() {
                     margin-left: 3px;
                     cursor: pointer;
                 }
-                .forgot-password {
+                .email-signUp {
                     cursor: pointer;
                 }
                 button {

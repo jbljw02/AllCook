@@ -12,6 +12,9 @@ import searchSvg from '../../public/svgs/search.svg';
 import userLight from '../../public/svgs/user-light.svg';
 import userDark from '../../public/svgs/user-dark.svg';
 import Image from 'next/image';
+import { signOut } from 'firebase/auth';
+import { auth } from "@/firebase/firebasedb";
+import { setUser } from "@/redux/features/userSlice";
 
 const titleFont = Anek_Tamil({
     subsets: ['latin'],
@@ -25,7 +28,6 @@ export default function Header({ position, backgroundColor, color, borderColor, 
     const router = useRouter();
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
-    const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
 
     const [inputValue, setInputValue] = useState<string>('');
     const changeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,6 +65,19 @@ export default function Header({ position, backgroundColor, color, borderColor, 
             }
         }
     }
+
+    const user = useSelector((state: RootState) => state.user);
+
+    const logout = () => {
+        signOut(auth).then(() => {
+            // 로그아웃 성공 시 실행될 로직
+            console.log("로그아웃 성공");
+            dispatch(setUser(''));
+        }).catch((error) => {
+            // 로그아웃 시 오류가 발생한 경우
+            console.error("로그아웃 중 오류 발생", error);
+        });
+    };
 
     return (
         <>
@@ -127,20 +142,37 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                             <Image onClick={() => searchRecipe(inputValue)} className='search-svg' src={searchSvg} alt='' />
                         </div>
                         <div className='user-container'>
-                            <span className='user-img-span'>
-                                {
-                                    lightLogo ?
-                                        <>
-                                            <Image src={userLight} alt={''} />
-                                        </> :
-                                        <>
-                                            <Image src={userDark} alt={''} />
-                                        </>
-                                }
-                            </span>
-                            <span className='logIn'>
-                                로그인
-                            </span>
+                            {/* <span className='user-img-span'> */}
+                            {
+                                lightLogo ?
+                                    <>
+                                        <Image
+                                            className='user-svg'
+                                            src={userLight}
+                                            alt={''} />
+                                    </> :
+                                    <>
+                                        <Image
+                                            className='user-svg'
+                                            src={userDark}
+                                            alt={''} />
+                                    </>
+                            }
+                            {
+                                user === '' ?
+                                    <span className='logIn' onClick={() => router.push('/login')}>
+                                        로그인
+                                    </span> :
+                                    <>
+                                        <span className='logIn' onClick={logout}>
+                                            {user}
+                                        </span>
+                                        <svg width='17' className='sort-svg-header' viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="m9 4.5-3 3-3-3" stroke="currentColor" stroke-linecap="round"></path>
+                                        </svg>
+                                    </>
+                            }
+                            {/* </span> */}
                         </div>
                     </div>
                 </div>

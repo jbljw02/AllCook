@@ -1,3 +1,3 @@
-import firebasedb from './firebasedb';
+import { firestore } from './firebasedb';
 
-export default firebasedb;
+export default firestore;

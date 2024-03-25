@@ -9,6 +9,9 @@ import Image from 'next/image';
 import titleLogoSmall from '../../public/svgs/title-logo-small.svg';
 import searchSvg from '../../public/svgs/search.svg'
 import userDark from '../../public/svgs/user-dark.svg';
+import { signOut } from 'firebase/auth';
+import { auth } from "@/firebase/firebasedb";
+import { setUser } from '@/redux/features/userSlice';
 
 export default function Header({ className }: { className: string }) {
     const dispatch = useDispatch();
@@ -54,6 +57,19 @@ export default function Header({ className }: { className: string }) {
             }
         }
     }
+
+    const user = useSelector((state: RootState) => state.user);
+
+    const logout = () => {
+        signOut(auth).then(() => {
+            // 로그아웃 성공 시 실행될 로직
+            console.log("로그아웃 성공");
+            dispatch(setUser(''));
+        }).catch((error) => {
+            // 로그아웃 시 오류가 발생한 경우
+            console.error("로그아웃 중 오류 발생", error);
+        });
+    };
 
     return (
         <>
@@ -102,12 +118,24 @@ export default function Header({ className }: { className: string }) {
                             <Image onClick={() => searchRecipe(inputValue)} className='search-svg' src={searchSvg} alt='' />
                         </div>
                         <div className='user-container'>
-                            <span className='user-img-span'>
-                                <Image src={userDark} alt={''} />
-                            </span>
-                            <span className='logIn'>
-                                로그인
-                            </span>
+                            <Image
+                                className='user-svg on-contents'
+                                src={userDark}
+                                alt={''} />
+                            {
+                                user === '' ?
+                                    <span className='logIn' onClick={() => router.push('/login')}>
+                                        로그인
+                                    </span> :
+                                    <>
+                                        <span className='logIn'>
+                                            {user}
+                                        </span>
+                                        <svg width='17' className='sort-svg-header' style={{marginTop: '1px'}} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="m9 4.5-3 3-3-3" stroke="currentColor" stroke-linecap="round"></path>
+                                        </svg>
+                                    </>
+                            }
                         </div>
                     </div>
                 </div>
