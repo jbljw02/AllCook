@@ -1,8 +1,6 @@
 .google-svg {
     position: relative;
-    cursor: pointer;
-    top: 1px;
-    left: 5px;
+    top: 1.5px;
 }
 .tel-svg {
     position: relative;

@@ -17,3 +17,6 @@ body {
 .no-drag {
     user-select: none;
 }
+.underline {
+    text-decoration: underline;
+}

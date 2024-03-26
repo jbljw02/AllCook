@@ -160,7 +160,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                             }
                             {
                                 user === '' ?
-                                    <span className='logIn' onClick={() => router.push('/login')}>
+                                    <span className='logIn' onClick={() => router.push('/signIn')}>
                                         로그인
                                     </span> :
                                     <>

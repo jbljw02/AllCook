@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { setUser } from "@/redux/features/userSlice";
+import googleIcon from '../../public/svgs/google-icon.svg';
 
 export type loginForm = {
     email: string,
@@ -169,7 +170,7 @@ export default function login() {
                     <div className="login-container">
                         <form>
                             <div
-                                className='email-div'
+                                className='input-div email'
                                 id={`${formData.submitted && (!emailValid || formData.email === '') ? 'warning-border' : ''}`}
                                 style={{ borderColor: emailFocusStyle.borderColor }}>
                                 <svg className="email-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 29" width="30" height="29">
@@ -196,7 +197,7 @@ export default function login() {
                                     null
                             }
                             <div
-                                className="password-div"
+                                className="input-div password"
                                 id={`${formData.submitted && formData.password === '' ? 'warning-border' : ''}`}
                                 style={{ borderColor: pwdFocusStyle.borderColor }}>
                                 <svg className="password-svg" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 30 29" fill="none">
@@ -230,7 +231,7 @@ export default function login() {
                                         checked={formData.isSave} />
                                     <label htmlFor="checkbox">로그인 정보 저장</label>
                                 </div>
-                                <div className="email-signUp">이메일로 회원가입</div>
+                                <div>비밀번호를 잊으셨나요?</div>
                             </div>
                             <button
                                 type="submit"
@@ -238,17 +239,24 @@ export default function login() {
                                 로그인
                             </button>
                         </form>
-                        <div className="social-login-container">
+                        <div
+                            className="social-login-container"
+                            onClick={googleAuth}>
                             <Image
-                                src={googleLogin}
-                                onClick={googleAuth}
+                                src={googleIcon}
                                 className="google-svg"
                                 alt="" />
-                            <Image onClick={logout} width={285} height={44} src={kakaoLogin} style={{ cursor: 'pointer' }} alt={''} />
+                            <div>구글 계정으로 로그인</div>
                         </div>
                     </div>
+                    <div className="signUp">All Cook이 처음이신가요?
+                        <span
+                            className="underline"
+                            onClick={() => router.push('/signUp')}
+                        >이메일로 회원가입</span>
+                    </div>
                 </div>
-            </div>
+            </div >
             <style jsx>{`
                 .container {
                     justify-content: flex-start !important;
@@ -257,6 +265,10 @@ export default function login() {
                     display: flex;
                     justify-content: space-between;
                     margin-top: 30px;
+                }
+                .header div {
+                    font-size: 14px;
+                    margin-right: 30px;
                 }
                 .back-svg {
                     position: relative;
@@ -282,7 +294,7 @@ export default function login() {
                     align-items: center;
                 }
                 .title {
-                    font-size: 25px;
+                    font-size: 26px;
                     font-weight: 500;
                 }
                 .subtitle {
@@ -294,11 +306,11 @@ export default function login() {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    width: 540px;
-                    padding: 40px 10px 40px 10px;
-                    margin-top: 30px;
-                    border: 1px solid #c6c6c6;
+                    width: 510px;
+                    padding: 25px 10px 40px 10px;
+                    margin-top: 10px;
                     border-radius: 5px;
+                    {/* border: 1px solid #c6c6c6; */}
                 }
                 form {
                     flex-direction: column;
@@ -306,7 +318,45 @@ export default function login() {
                     align-items: center;
                     padding-bottom: 40px;
                     border-bottom: 1px solid #a8a8a8;
-                    width: 490px;
+                    width: 100%;
+                }
+                .input-div {
+                    display: flex;
+                    flex-direction: row;
+                    border: 1px solid #dadada;
+                    border-radius: 5px;
+                    transition: 0.15s ease border-color;
+                    margin-right: 0px;
+                }
+                .input-div input {
+                    outline: none;
+                    width: 100%;
+                    height: 42px;
+                    font-size: 14px;
+                    padding-left: 12px;
+                    padding-top: 3px;
+                    padding-bottom: 3px;
+                    border-radius: 10px;
+                    border: none;
+                }
+                .email-svg path {
+                    transition: 0.15s ease fill;
+                }
+                .email-svg {
+                    position: relative;
+                    top: 9.5px;
+                    left: 5px;
+                }
+                .password {
+                    margin-top: 15px;
+                }
+                .password-svg {
+                    position: relative;
+                    top: 11.5px;
+                    left: 9.5px;
+                }
+                .password-svg path, .password-svg rect {
+                    transition: 0.15s ease stroke;
                 }
                 .input-warning {
                     margin-top: 6px;
@@ -318,51 +368,15 @@ export default function login() {
                 #warning-border {
                     border-color: #FF0000 !important;
                 }
-                .email-div, .password-div {
-                    display: flex;
-                    flex-direction: row;
-                    border: 1px solid #dadada;
-                    border-radius: 5px;
-                    transition: 0.15s ease border-color;
-                }
-                .email-div {
-                }
-                .email-svg path {
-                    transition: 0.15s ease fill;
-                }
-                .email-svg {
-                    position: relative;
-                    top: 7px;
-                    left: 5px;
-                }
-                .password-div {
-                    margin-top: 15px;
-                }
-                .password-svg {
-                    position: relative;
-                    top: 10px;
-                    left: 9.5px;
-                }
-                .password-svg path, .password-svg rect {
-                    transition: 0.15s ease stroke;
-                }
-                .email-input, .password-input {
-                    outline: none;
-                    width: 100%;
-                    height: 38px;
-                    font-size: 14px;
-                    padding-left: 12px;
-                    padding-top: 3px;
-                    padding-bottom: 3px;
-                    border-radius: 10px;
-                    border: none;
-                }
                 .login-footer-div {
                     display: flex;
                     flex-direction: row;
                     justify-content: space-between;
                     font-size: 14px;
                     margin: 20px 2px 30px 2px;
+                }
+                .login-footer-div div {
+                    cursor: pointer;
                 }
                 .checkbox-div {
                     display: flex;
@@ -377,14 +391,11 @@ export default function login() {
                     margin-left: 3px;
                     cursor: pointer;
                 }
-                .email-signUp {
-                    cursor: pointer;
-                }
                 button {
                     width: 100%;
                     display: flex;
                     justify-content: center;
-                    padding: 15px 30px;
+                    padding: 16px 30px;
                     color: #fff;
                     border: 1px solid black;
                     background-color: #002312;
@@ -395,17 +406,29 @@ export default function login() {
                 .social-login-container {
                     display: flex;
                     flex-direction: row;
-                    justify-content: space-between;
-                    width: 515px;
+                    justify-content: center;
+                    width: 100%;
                     margin-top: 40px;
-                    margin-right: 16px;
-                }
-                .social-login-container div {
-                    padding: 12px 45px;
-                    color: #111111;
                     border: 1px solid #9a9a9a;
                     border-radius: 10px;
+                    padding: 10px 0px;
+                    cursor: pointer;
+                }
+                .social-login-container div {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-left: 3px;
+                    color: #111111;
                     font-size: 15px;
+                }
+                .signUp {
+                    margin-top: 5px;
+                    font-size: 15px;
+                }
+                .signUp span {
+                    margin-left: 5px;
+                    cursor: pointer;
                 }
             `}</style>
         </>
