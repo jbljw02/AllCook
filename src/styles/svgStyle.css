@@ -1,5 +1,6 @@
 .google-svg {
-    margin-left: 15px;
+    position: relative;
+    top: 1.5px;
 }
 .tel-svg {
     position: relative;

@@ -2,30 +2,35 @@
 import { FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: process.env.FIREBASE_APIKEY,
-    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.FIREBASE_PROJECTID,
-    storageBucket: process.env.FIREBASE_STORAGEBUCKET,
-    messagingSenderId: process.env.FIREBASE_MESSAGINGSENDERID,
-    appId: process.env.FIREBASE_APPID,
-    measurementId: process.env.FIREBASE_MEASUREMENTID,
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_APIKEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECTID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGEBUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGINGSENDERID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APPID,
+    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENTID,
 };
 
 // Firebase 앱 초기화
-let firebaseApp;
+let firebaseApp: FirebaseApp;
 if (!getApps().length) {
     firebaseApp = initializeApp(firebaseConfig);
 } else {
     firebaseApp = getApp(); // 기존에 초기화된 앱 인스턴스를 가져옴
 }
 
-// Firestore 인스턴스 초기화
-const firebasedb = getFirestore(firebaseApp);
+// const firebasedb = initializeApp(firebaseConfig);
 
-export default firebasedb;
+// Firestore 인스턴스 초기화
+const firestore = getFirestore(firebaseApp);
+
+const auth = getAuth(firebaseApp);
+
+export { firestore, auth };

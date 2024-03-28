@@ -1,0 +1,74 @@
+.modal-container {
+    width: 480px;
+    margin: 18px;
+    color: #111111;
+}
+.pi-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+.pi-rule {
+    font-size: 23px;
+    font-weight: 600;
+}
+.close-svg {
+    position: relative;
+    left: 62px;
+    bottom: 27px;
+    cursor: pointer;
+}
+.pi-section {
+    margin-top: 25px;
+}
+.pi-section-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.pi-section-detail {
+    font-size: 15px;
+    font-weight: 300;
+}
+.pop-up-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    margin: 20px 15px;
+}
+.pop-up-title-section {
+    font-size: 17px;
+}
+.pop-up-subtitle-section {
+    font-size: 15px;
+    font-weight: 300;
+    color: #5c5c5c;
+    margin-top: 6px;
+}
+.pop-up-title-section span {
+    text-decoration: underline;
+}
+.pop-up-btn-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 33px;
+    font-size: 14px;
+}
+.pop-up-btn-section div {
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 12px 90px;
+    cursor: pointer;
+}
+.read-btn {
+    color: #ffffff;
+    background-color: #002312;
+    margin-right: 25px;
+}
+.close-btn {
+    color: #5C5C5C;
+    background-color: #f2f2f2;
+}

@@ -4,6 +4,7 @@ import menuReducers from './features/menuSlice';
 import NutritionReducers from './features/nutritionSlice';
 import SortReducers from './features/sortSlice';
 import RecipeReducers from './features/recipeSlice';
+import UserReducers from './features/userSlice';
 
 export type RootState = {
     recomMenu: Menu[],
@@ -17,6 +18,7 @@ export type RootState = {
     maxValue: number,
     sortRule: '가나다순' | '추천순' | '저열량순' | '저지방순' | '저나트륨순' | '고단백질순',
     recipe: Menu,
+    user: string,
 }
 
 export type Menu = {
@@ -46,7 +48,7 @@ export type Menu = {
     RCP_SEQ: string,
     MANUAL_IMG02: string,
     INFO_WGT: string,
-    [key : string] : string | number | undefined,
+    [key: string]: string | number | undefined,
 }
 
 export type Nutrition = {
@@ -62,11 +64,12 @@ const combinedReducer = combineReducers({
     recomMenu: menuReducers.recomMenu,
     dessertMenu: menuReducers.dessertMenu,
     allMenu: menuReducers.allMenu,
-    displayedMenu: menuReducers.displayedMenuSlice,
+    displayedMenu: menuReducers.displayedMenu,
     nutritionInfo: NutritionReducers.nutritionInfo,
     sliderReset: NutritionReducers.sliderReset,
     sortRule: SortReducers.sortRule,
     recipe: RecipeReducers.recipe,
+    user: UserReducers.user,
 });
 
 // 전체 리듀서를 관리

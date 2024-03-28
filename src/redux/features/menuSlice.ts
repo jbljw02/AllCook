@@ -51,7 +51,7 @@ export const allMenuSlice = createSlice({
 
 // 화면에 보여지는 메뉴에 대한 Slice(모든 메뉴, 검색된 메뉴)
 export const displayedMenuSlice = createSlice({
-    name: 'displayedMenuSlice',
+    name: 'displayedMenu',
     initialState: initialState,
     reducers: {
         setDisplayedMenu: (state, action) => {
@@ -68,7 +68,7 @@ export const { setDisplayedMenu } = displayedMenuSlice.actions;
 const reducers = {
     recomMenu: recomMenuSlice.reducer,
     dessertMenu: dessertMenuSlice.reducer,
-    displayedMenuSlice: displayedMenuSlice.reducer,
+    displayedMenu: displayedMenuSlice.reducer,
     allMenu: allMenuSlice.reducer,
 }
 
