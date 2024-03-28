@@ -1,4 +1,4 @@
-import Header from "../../components/Header"
+import Header from "../../components/header/Header"
 import Footer from "../../components/Footer"
 import { useDispatch, useSelector } from "react-redux"
 import { Menu, RootState, wrapper } from "../../redux/store";
@@ -11,7 +11,7 @@ import { setNutritionInfo } from "../../redux/features/nutritionSlice";
 import { NutritionKey } from "../../redux/features/nutritionSlice";
 import { searchByKey, searchByRange } from "../../utils/filterMenu";
 import SortList from "../../components/SortList";
-import HeaderOnContents from '../../components/HeaderOnContents';
+import HeaderOnContents from '../../components/header/HeaderOnContents';
 import { setRecipe } from "@/redux/features/recipeSlice";
 import moveToDetail from "@/utils/moveToDetail";
 import shuffleArray from "@/utils/shuffleArray";

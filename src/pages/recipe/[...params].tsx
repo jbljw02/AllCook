@@ -1,5 +1,5 @@
-import Header from "../../components/Header";
-import HeaderOnContents from '../../components/HeaderOnContents';
+import Header from "../../components/header/Header";
+import HeaderOnContents from '../../components/header/HeaderOnContents';
 import Footer from '../../components/Footer';
 import Seo from "../../components/Seo";
 import { useEffect, useRef, useState } from "react";

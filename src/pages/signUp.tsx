@@ -4,13 +4,15 @@ import googleLogin from '../../public/svgs/googleLogin.svg';
 import backSvg from '../../public/svgs/backBtn.svg';
 import closeSvg from '../../public/svgs/closeBtn.svg';
 import { useState } from "react";
-import { auth } from "@/firebase/firebasedb";
-import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
+import { auth, firestore } from "@/firebase/firebasedb";
+import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { setUser } from "@/redux/features/userSlice";
 import googleIcon from '../../public/svgs/google-icon.svg';
+import { RootState } from "@/redux/store";
+import PiNoticeModal from "@/components/modal/PiNoticeModal";
+import PiModal from "@/components/modal/PiModal";
 
 export type loginForm = {
     name: string,
@@ -54,7 +56,7 @@ export default function login() {
         if (e.target.name === 'password') {
             setPwdFocusStyle({ stroke: '#111111', borderColor: '#111111' });
         }
-        if (e.target.name === 'password-double') {
+        if (e.target.name === 'passwordDouble') {
             setPwdDoubleFocusStyle({ stroke: '#111111', borderColor: '#111111' });
         }
     }
@@ -68,7 +70,7 @@ export default function login() {
         if (e.target.name === 'password') {
             setPwdFocusStyle({ stroke: '#dadada', borderColor: '' });
         }
-        if (e.target.name === 'password-double') {
+        if (e.target.name === 'passwordDouble') {
             setPwdDoubleFocusStyle({ stroke: '#dadada', borderColor: '' });
         }
     }
@@ -81,6 +83,14 @@ export default function login() {
         isCheck: false,
         submitted: false,
     })
+
+    // 비밀번호와 비밀번호 확인란이 일치하는지, 정규식을 통과하는지
+    const [pwdRule, setPwdRule] = useState({
+        identical: true,
+        valid: true,
+    });
+    // 비밀번호는 최소 6글자 이상이어야 하며, 특수문자를 하나 이상 포함해야 함
+    let pwdRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>]).{6,}$/;
 
     // 이메일 유효성 검증을 위한 state와 정규식
     const [emailValid, setEmailValid] = useState<boolean>(true);
@@ -102,6 +112,38 @@ export default function login() {
                 setEmailValid(false);
             }
         }
+        if (formData.submitted && e.target.name === 'password') {
+            if (pwdRegex.test(e.target.value)) {
+                setPwdRule({
+                    ...pwdRule,
+                    valid: true,
+                })
+            }
+            else {
+                setPwdRule({
+                    ...pwdRule,
+                    valid: false,
+                })
+            }
+        }
+    }
+
+    const signUp = async () => {
+        try {
+            await createUserWithEmailAndPassword(auth, formData.email, formData.password)
+            if (auth.currentUser) {
+                // 회원의 이름 정보를 폼 데이터와 동일하게 업데이트
+                await updateProfile(auth.currentUser, {
+                    displayName: formData.name,
+                    photoURL: ""
+                })
+                dispatch(setUser(auth.currentUser.displayName));
+            }
+            router.push('/');
+        }
+        catch (error) {
+            console.log("회원가입 정보 전송 실패 : ", error);
+        }
     }
 
     // form을 전송함
@@ -112,21 +154,57 @@ export default function login() {
             submitted: true,
         })
 
+        // 비밀번호가 정규식을 통과하지 못할 경우
+        if (!pwdRegex.test(formData.password)) {
+            setPwdRule({
+                ...pwdRule,
+                valid: false,
+            })
+        }
+
+        // 비밀번호가 정규식을 통과했으며, 비밀번호 확인란과 일치하는지 확인
+        if (pwdRegex.test(formData.password)) {
+            if (formData.password === formData.passwordDouble) {
+                setPwdRule({
+                    ...pwdRule,
+                    identical: true,
+                });
+            }
+            else if (formData.password !== formData.passwordDouble) {
+                setPwdRule({
+                    ...pwdRule,
+                    identical: false,
+                });
+            }
+        }
+
         // 이메일이 정규식을 통과하지 못할 경우
         if (!emailRegex.test(formData.email)) {
             setEmailValid(false);
-            return;
         }
-        // 이메일 혹은 패스워드가 공란일 경우
-        if (formData.email === '' || formData.password === '') {
-            return;
-        }
-        // 이메일과 패스워드가 공란이 아니며, 이메일이 정규식을 통과했을 경우
-        if (formData.email !== '' &&
-            formData.password !== '' &&
-            emailValid) {
-            // 인증 작업
 
+        /*
+            1. 공란인 항목이 없음
+            2. 이메일 및 비밀번호 유효성 검사 완료
+            3. 비밀번호와 비밀번호 확인란이 일치 
+        */
+        if (formData.name !== '' &&
+            formData.email !== '' &&
+            formData.password !== '' &&
+            formData.passwordDouble !== '' &&
+            emailValid &&
+            pwdRule.valid &&
+            pwdRule.identical
+        ) {
+            if (formData.isCheck) {
+                signUp();
+                console.log("성공");
+            }
+            // 개인정보 처리 방침에 동의하지 않은 경우
+            else {
+                setIsCheckedModalOpen(true);
+
+            }
         }
     }
 
@@ -162,6 +240,9 @@ export default function login() {
         }
     });
 
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // 개인정보 처리방침 모달 관리
+    const [isCheckedModalOpen, setIsCheckedModalOpen] = useState<boolean>(false); // 개인정보 처리방침에 동의하지 않았을 경우 나올 모달 관리
+
     return (
         <>
             <div className="container">
@@ -174,6 +255,16 @@ export default function login() {
                     </span>
                 </div>
                 <div className="contents-container">
+                    <PiNoticeModal
+                        isCheckedModalOpen={isCheckedModalOpen}
+                        setIsModalOpen={setIsModalOpen}
+                        setIsCheckedModalOpen={setIsCheckedModalOpen}
+                    />
+                    <PiModal
+                        isModalOpen={isModalOpen}
+                        setIsModalOpen={setIsModalOpen}
+                        category="회원가입"
+                    />
                     <div className="title-container">
                         <div className="title">회원가입</div>
                         <div className="subtitle">All Cook은 불필요한 개인정보를 수집하지 않아요.</div>
@@ -182,7 +273,9 @@ export default function login() {
                         <form>
                             <div
                                 className='input-div name'
-                                id={`${formData.submitted && formData.name === '' ? 'warning-border' : ''}`}
+                                id={`${formData.submitted && formData.name === '' ?
+                                    'warning-border' :
+                                    ''}`}
                                 style={{ borderColor: nameFocusStyle.borderColor }}>
                                 <svg className="name-svg" xmlns="http://www.w3.org/2000/svg" width="23px" height="20px" viewBox="0 0 24 24" fill="none">
                                     <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" stroke={nameFocusStyle.stroke} stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
@@ -198,9 +291,16 @@ export default function login() {
                                     value={formData.name}
                                     placeholder="이름" />
                             </div>
+                            {
+                                formData.submitted && formData.name === '' ?
+                                    <div className="input-warning">이름을 입력해주세요</div> :
+                                    null
+                            }
                             <div
                                 className='input-div email'
-                                id={`${formData.submitted && (!emailValid || formData.email === '') ? 'warning-border' : ''}`}
+                                id={`${formData.submitted && (!emailValid || formData.email === '') ?
+                                    'warning-border'
+                                    : ''}`}
                                 style={{ borderColor: emailFocusStyle.borderColor }}>
                                 <svg className="email-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 29" width="30" height="29">
                                     <path fill={emailFocusStyle.fill} fill-rule="evenodd" d="M7 7a2.5 2.5 0 0 0-2.5 2.5v9A2.5 2.5 0 0 0 7 21h15a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 22 7H7ZM5.5 9.5C5.5 8.67 6.17 8 7 8h15c.83 0 1.5.67 1.5 1.5v.17l-9 3.79-9-3.8V9.5Zm0 1.25v7.75c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-7.75l-8.8 3.71-.2.08-.2-.08-8.8-3.7Z"></path>
@@ -215,9 +315,21 @@ export default function login() {
                                     value={formData.email}
                                     placeholder="이메일" />
                             </div>
+                            {
+                                formData.submitted && formData.email === '' ?
+                                    <div className="input-warning">이메일을 입력해주세요</div> :
+                                    null
+                            }
+                            {
+                                formData.submitted && formData.email !== '' && !emailValid ?
+                                    <div className="input-warning">유효한 이메일을 입력해주세요</div> :
+                                    null
+                            }
                             <div
                                 className="input-div password"
-                                id={`${formData.submitted && formData.password === '' ? 'warning-border' : ''}`}
+                                id={`${formData.submitted && (formData.password === '' || !pwdRule.valid) ?
+                                    'warning-border' :
+                                    ''}`}
                                 style={{ borderColor: pwdFocusStyle.borderColor }}>
                                 <svg className="password-svg" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 30 29" fill="none">
                                     <rect x="3" y="11" width="18" height="11" rx="2" stroke={pwdFocusStyle.stroke} stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
@@ -233,9 +345,23 @@ export default function login() {
                                     value={formData.password}
                                     placeholder="비밀번호" />
                             </div>
+                            {
+                                formData.submitted && formData.password === '' ?
+                                    <div className="input-warning">비밀번호를 입력해주세요</div> :
+                                    null
+                            }
+                            {
+                                formData.submitted && formData.password !== '' && !pwdRule.valid ?
+                                    <div className="input-warning">비밀번호는 6자 이상, 최소 한 개의 특수문자를 포함해야 합니다</div> :
+                                    null
+                            }
                             <div
                                 className="input-div password"
-                                id={`${formData.submitted && formData.password === '' ? 'warning-border' : ''}`}
+                                id={`${formData.submitted &&
+                                    formData.password !== '' &&
+                                    !pwdRule.identical ?
+                                    'warning-border' :
+                                    ''}`}
                                 style={{ borderColor: pwdDoubleFocusStyle.borderColor }}>
                                 <svg className="password-svg" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 30 29" fill="none">
                                     <rect x="3" y="11" width="18" height="11" rx="2" stroke={pwdDoubleFocusStyle.stroke} stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
@@ -245,29 +371,38 @@ export default function login() {
                                     className="password-input"
                                     onChange={formChange}
                                     type="password"
-                                    name="password-double"
+                                    name="passwordDouble"
                                     onFocus={inputFocus}
                                     onBlur={inputBlur}
-                                    value={formData.password}
+                                    value={formData.passwordDouble}
                                     placeholder="비밀번호 확인" />
                             </div>
+                            {
+                                formData.submitted && formData.password !== '' && !pwdRule.identical ?
+                                    <div className="input-warning">비밀번호가 일치하지 않아요</div> :
+                                    null
+                            }
                             <div className="login-footer-div">
-                                <div
-                                    className="checkbox-div no-drag"
-                                    onClick={() => setFormdata({
-                                        ...formData,
-                                        isCheck: !formData.isCheck,
-                                    })}>
+                                <div className="checkbox-div no-drag">
                                     <input
                                         type="checkbox"
-                                        checked={formData.isCheck} />
-                                    <label htmlFor="checkbox">개인정보 처리방침에 동의합니다.</label>
+                                        checked={formData.isCheck}
+                                        onClick={() => setFormdata({
+                                            ...formData,
+                                            isCheck: !formData.isCheck,
+                                        })} />
+                                    <label htmlFor="checkbox" />
+                                    <div
+                                        className="underline"
+                                        onClick={() => setIsModalOpen(true)}>
+                                        개인정보 처리방침
+                                    </div>에 동의합니다.
                                 </div>
                             </div>
                             <button
                                 type="submit"
                                 onClick={formSubmit}>
-                                로그인
+                                회원가입
                             </button>
                         </form>
                         <div
@@ -403,20 +538,21 @@ export default function login() {
                     font-size: 14px;
                     margin: 20px 2px 30px 2px;
                 }
-                .login-footer-div div {
-                    cursor: pointer;
-                }
                 .checkbox-div {
                     display: flex;
                     flex-direction: row;
-                    cursor: pointer;
                 }
                 .checkbox-div input {
                     margin-top: 4.2px;
                     cursor: pointer;
                 }
+                .checkbox-div input {
+                    margin-top: 4.5px;
+                }
                 .checkbox-div label {
                     margin-left: 3px;
+                }
+                .checkbox-div div {
                     cursor: pointer;
                 }
                 button {

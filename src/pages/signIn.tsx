@@ -4,13 +4,16 @@ import googleLogin from '../../public/svgs/googleLogin.svg';
 import backSvg from '../../public/svgs/backBtn.svg';
 import closeSvg from '../../public/svgs/closeBtn.svg';
 import { useState } from "react";
-import { auth } from "@/firebase/firebasedb";
-import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
+import { auth, firestore } from "@/firebase/firebasedb";
+import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { setUser } from "@/redux/features/userSlice";
 import googleIcon from '../../public/svgs/google-icon.svg';
+import Modal from 'react-modal';
+import SubmitModal from "@/components/modal/SubmitModal";
+import { FirebaseError } from "firebase/app";
 
 export type loginForm = {
     email: string,
@@ -57,6 +60,7 @@ export default function login() {
         isSave: false,
         submitted: false,
     })
+    const [isSuccess, setIsSucceess] = useState<boolean>(true);
 
     // 이메일 유효성 검증을 위한 state와 정규식
     const [emailValid, setEmailValid] = useState<boolean>(true);
@@ -68,6 +72,7 @@ export default function login() {
             ...formData,
             [e.target.name]: e.target.value,
         })
+        setIsSucceess(true);
 
         // 전송이 한 번 클릭되고, 이메일의 값이 바뀔 때 정규식과 일치하는지 검사
         if (formData.submitted && e.target.name === 'email') {
@@ -78,6 +83,32 @@ export default function login() {
                 setEmailValid(false);
             }
         }
+    }
+
+    const signIn = async () => {
+        try {
+            await signInWithEmailAndPassword(auth, formData.email, formData.password)
+            if (auth.currentUser) {
+                dispatch(setUser(auth.currentUser.displayName));
+            }
+            setIsSucceess(true);
+            router.push('/');
+        }
+        catch (error) {
+            if (error instanceof FirebaseError) {
+                console.log("로그인 실패 : ", error.code);
+                setIsSucceess(false);
+            }
+        }
+    }
+
+    const logout = () => {
+        signOut(auth).then(() => {
+            console.log("로그아웃 성공");
+            dispatch(setUser(null));
+        }).catch((error) => {
+            console.log("로그아웃 실패 : ", error);
+        })
     }
 
     // form을 전송함
@@ -101,12 +132,9 @@ export default function login() {
         if (formData.email !== '' &&
             formData.password !== '' &&
             emailValid) {
-            // 인증 작업
-
+            signIn();
         }
     }
-
-    const user = useSelector((state: RootState) => state.user);
 
     const googleAuth = async () => {
         const provider = new GoogleAuthProvider();
@@ -125,16 +153,6 @@ export default function login() {
             });
     };
 
-    const logout = () => {
-        signOut(auth).then(() => {
-            // 로그아웃 성공 시 실행될 로직
-            console.log("로그아웃 성공");
-        }).catch((error) => {
-            // 로그아웃 시 오류가 발생한 경우
-            console.error("로그아웃 중 오류 발생", error);
-        });
-    };
-
     // 컴포넌트가 마운트 될 때, 로그인의 변화가 감지될 때 실행
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -149,7 +167,6 @@ export default function login() {
             setUser(null);
         }
     });
-
 
     return (
         <>
@@ -171,7 +188,10 @@ export default function login() {
                         <form>
                             <div
                                 className='input-div email'
-                                id={`${formData.submitted && (!emailValid || formData.email === '') ? 'warning-border' : ''}`}
+                                id={`${(formData.submitted && (!emailValid || formData.email === ''))
+                                    || !isSuccess ?
+                                    'warning-border' :
+                                    ''}`}
                                 style={{ borderColor: emailFocusStyle.borderColor }}>
                                 <svg className="email-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 29" width="30" height="29">
                                     <path fill={emailFocusStyle.fill} fill-rule="evenodd" d="M7 7a2.5 2.5 0 0 0-2.5 2.5v9A2.5 2.5 0 0 0 7 21h15a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 22 7H7ZM5.5 9.5C5.5 8.67 6.17 8 7 8h15c.83 0 1.5.67 1.5 1.5v.17l-9 3.79-9-3.8V9.5Zm0 1.25v7.75c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-7.75l-8.8 3.71-.2.08-.2-.08-8.8-3.7Z"></path>
@@ -198,7 +218,10 @@ export default function login() {
                             }
                             <div
                                 className="input-div password"
-                                id={`${formData.submitted && formData.password === '' ? 'warning-border' : ''}`}
+                                id={`${(formData.submitted && formData.password === '') ||
+                                    !isSuccess ?
+                                    'warning-border' :
+                                    ''}`}
                                 style={{ borderColor: pwdFocusStyle.borderColor }}>
                                 <svg className="password-svg" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 30 29" fill="none">
                                     <rect x="3" y="11" width="18" height="11" rx="2" stroke={pwdFocusStyle.stroke} stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
@@ -219,6 +242,11 @@ export default function login() {
                                     <div className="input-warning">비밀번호를 입력해주세요</div> :
                                     null
                             }
+                            {
+                                !isSuccess ?
+                                    <div className="input-warning">이메일 또는 비밀번호가 일치하지 않습니다</div> :
+                                    null
+                            }
                             <div className="login-footer-div">
                                 <div
                                     className="checkbox-div no-drag"
@@ -231,7 +259,7 @@ export default function login() {
                                         checked={formData.isSave} />
                                     <label htmlFor="checkbox">로그인 정보 저장</label>
                                 </div>
-                                <div>비밀번호를 잊으셨나요?</div>
+                                <div onClick={logout}>비밀번호를 잊으셨나요?</div>
                             </div>
                             <button
                                 type="submit"

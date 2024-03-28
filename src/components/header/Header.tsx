@@ -4,13 +4,13 @@ import { Anek_Tamil } from 'next/font/google';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { setDisplayedMenu } from '@/redux/features/menuSlice';
-import { searchByMenuIngredient } from '../utils/headerSearch'
+import { searchByMenuIngredient } from '../../utils/headerSearch'
 import { useRouter } from 'next/router';
-import lightTitleLogo from '../../public/svgs/title-logo-light.svg'
-import darkTitleLogo from '../../public/svgs/title-logo-dark.svg';
-import searchSvg from '../../public/svgs/search.svg';
-import userLight from '../../public/svgs/user-light.svg';
-import userDark from '../../public/svgs/user-dark.svg';
+import lightTitleLogo from '../../../public/svgs/title-logo-light.svg'
+import darkTitleLogo from '../../../public/svgs/title-logo-dark.svg';
+import searchSvg from '../../../public/svgs/search.svg';
+import userLight from '../../../public/svgs/user-light.svg';
+import userDark from '../../../public/svgs/user-dark.svg';
 import Image from 'next/image';
 import { signOut } from 'firebase/auth';
 import { auth } from "@/firebase/firebasedb";
@@ -72,7 +72,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
         signOut(auth).then(() => {
             // 로그아웃 성공 시 실행될 로직
             console.log("로그아웃 성공");
-            dispatch(setUser(''));
+            dispatch(setUser(null));
         }).catch((error) => {
             // 로그아웃 시 오류가 발생한 경우
             console.error("로그아웃 중 오류 발생", error);
@@ -159,7 +159,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                                     </>
                             }
                             {
-                                user === '' ?
+                                user === null ?
                                     <span className='logIn' onClick={() => router.push('/signIn')}>
                                         로그인
                                     </span> :

@@ -1,7 +1,7 @@
-import Header from "../components/Header"
+import Header from "../components/header/Header"
 import Footer from "../components/Footer"
 import Seo from "@/components/Seo"
-import HeaderOnContents from "@/components/HeaderOnContents";
+import HeaderOnContents from "@/components/header/HeaderOnContents";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import contactImage from "/public/images/contact-img.jpg";
@@ -12,6 +12,9 @@ import { addDoc, collection } from "firebase/firestore";
 import fireStore from "@/firebase/firestore";
 import telSvg from '../../public/svgs/tel.svg';
 import mailSvg from '../../public/svgs/mail.svg';
+import PiNoticeModal from "@/components/modal/PiNoticeModal";
+import PiModal from "@/components/modal/PiModal";
+import SubmitModal from "@/components/modal/SubmitModal";
 
 export type Form = {
     id: string,
@@ -111,11 +114,6 @@ export default function Contact() {
                 { formData }
             )
         }
-        // else if (formData.name === '' ||
-        //     formData.mail === '' ||
-        //     formData.content === '') {
-
-        // }
         // 모든 필수 항목이 공란이 아니지만, 개인정보 처리 방침에 동의하지 않았을 경우
         else if ((formData.name !== '' &&
             formData.mail !== '' &&
@@ -179,74 +177,16 @@ export default function Contact() {
                 </div>
                 <div className="contents-container">
                     {/* 개인정보 처리방침에 동의하지 않았을 경우의 팝업 */}
-                    <Modal
-                        isOpen={isCheckedModalOpen}
-                        style={{
-                            overlay: {
-                                backgroundColor: 'rgba(0, 0, 0, 0.5)'
-                            },
-                            content: {
-                                position: 'absolute',
-                                left: '50%',
-                                top: '45%',
-                                width: 500,
-                                height: 185,
-                                transform: 'translate(-50%, -50%)',
-                            }
-                        }}>
-                        <div className="pop-up-container">
-                            <div className="pop-up-title-section">
-                                <span>개인정보 처리방침</span>에 대한 동의가 필요합니다.
-                            </div>
-                            <div className="pop-up-subtitle-section">
-                                원할한 문의 처리를 위해 개인정보 처리방침을 확인하시고, 동의해 주시기 바랍니다.
-                            </div>
-                            <div className="pop-up-btn-section">
-                                <div
-                                    className="read-btn"
-                                    onClick={() => {
-                                        setIsModalOpen(true);
-                                        setIsCheckedModalOpen(false);
-                                    }}>읽기</div>
-                                <div
-                                    className="close-btn"
-                                    onClick={() => setIsCheckedModalOpen(false)
-                                    }>닫기</div>
-                            </div>
-                        </div>
-                    </Modal>
+                    <PiNoticeModal
+                        isCheckedModalOpen={isCheckedModalOpen}
+                        setIsModalOpen={setIsModalOpen}
+                        setIsCheckedModalOpen={setIsCheckedModalOpen}
+                    />
                     {/* 문의사항이 전송 완료되었음을 알리는 팝업 */}
-                    <Modal
-                        isOpen={isSubmitted}
-                        style={{
-                            overlay: {
-                                backgroundColor: 'rgba(0, 0, 0, 0.5)'
-                            },
-                            content: {
-                                position: 'absolute',
-                                left: '50%',
-                                top: '45%',
-                                width: 500,
-                                height: 185,
-                                transform: 'translate(-50%, -50%)',
-                            }
-                        }}
-                    >
-                        <div className="pop-up-container">
-                            <div className="pop-up-title-section">
-                                문의사항이 전송 완료되었습니다!
-                            </div>
-                            <div className="pop-up-subtitle-section">
-                                귀하의 소중한 의견 감사드리며, 작성하신 이메일을 통해 문의사항에 대한 답변을 드릴테니 조금만 기다려 주세요.
-                            </div>
-                            <div className="pop-up-btn-section">
-                                <div
-                                    className="read-btn"
-                                    onClick={() => setIsSubmitted(false)
-                                    }>확인</div>
-                            </div>
-                        </div>
-                    </Modal>
+                    <SubmitModal
+                        isSubmitted={isSubmitted}
+                        setIsSubmitted={setIsSubmitted}
+                    />
                     {/* 문의 내용에 대한 영역 */}
                     <div className="contact-section">
                         <div className="contact-contents">
@@ -314,68 +254,11 @@ export default function Contact() {
                                     />
                                     <div>
                                         <span onClick={() => setIsModalOpen(true)}>개인정보 처리방침</span>에 동의합니다.
-                                        <Modal
-                                            isOpen={isModalOpen}
-                                            style={{
-                                                overlay: {
-                                                    backgroundColor: 'rgba(0, 0, 0, 0.5)'
-                                                },
-                                                content: {
-                                                    position: 'absolute',
-                                                    left: '50%',
-                                                    top: '50%',
-                                                    width: 550,
-                                                    height: 700,
-                                                    transform: 'translate(-50%, -50%)',
-                                                }
-                                            }}
-                                        >
-                                            <div className="modal-container">
-                                                <div className="pi-header">
-                                                    <div className="pi-rule">개인정보 처리방침</div>
-                                                    <svg className="close-svg" onClick={() => setIsModalOpen(false)} xmlns="http://www.w3.org/2000/svg" width="35px" height="35px" viewBox="0 0 24 24" fill="none">
-                                                        <rect width="24" height="24" fill="white" />
-                                                        <path d="M7 17L16.8995 7.10051" stroke="#111111" stroke-linecap="round" stroke-linejoin="round" />
-                                                        <path d="M7 7.00001L16.8995 16.8995" stroke="#111111" stroke-linecap="round" stroke-linejoin="round" />
-                                                    </svg>
-                                                </div>
-                                                <div className="pi-section">
-                                                    <div className="pi-section-title">1. 개인정보 수집 이용에 대한 동의</div>
-                                                    <div className="pi-section-detail">
-                                                        귀하의 개인정보는 아래의 방침에 따라 수집 및 이용됩니다. <br />
-                                                        All Cook은 필요한 최소한의 개인정보만을 수집하며, 수집된 개인정보는 철저한 보호와 관리를 통해 취급될 것임을 약속드립니다. <br />
-                                                        이에 따라, 개인정보의 수집 및 활용에 관한 귀하의 동의를 요청드립니다.
-                                                    </div>
-                                                </div>
-                                                <div className="pi-section">
-                                                    <div className="pi-section-title">2. 개인정보의 수집 목적</div>
-                                                    <div className="pi-section-detail">
-                                                        귀하의 문의에 대한 답변을 드리기 위해 개인정보가 수집됩니다.
-                                                    </div>
-                                                </div>
-                                                <div className="pi-section">
-                                                    <div className="pi-section-title">3. 개인정보의 수집 항목</div>
-                                                    <div className="pi-section-detail">
-                                                        필수항목 : 성명, 이메일, 문의내용 <br />
-                                                        선택항목 : 연락처
-                                                    </div>
-                                                </div>
-                                                <div className="pi-section">
-                                                    <div className="pi-section-title">4. 개인정보의 보존 기간</div>
-                                                    <div className="pi-section-detail">
-                                                        보존기간 : 문의사항 처리시까지 <br />
-                                                        개인정보 수집 목적이 달성된 후에는 해당 정보를 즉시 파기합니다.
-                                                    </div>
-                                                </div>
-                                                <div className="pi-section">
-                                                    <div className="pi-section-title">5. 개인정보 수집을 거부할 수 있는 권리 및 거부 시의 영향</div>
-                                                    <div className="pi-section-detail">
-                                                        문의 처리를 위해 필수적인 개인정보의 수집 및 이용에 대한 동의는 필수입니다. 이에 동의하지 않으시면, 문의에 대한 처리를 받으실 수 없습니다.  <br />
-                                                        선택항목에 대한 수집 및 이용에 관해서는 동의를 거부할 권리가 있습니다. 선택항목에 대한 정보를 제공하지 않으시면, 해당 정보의 수집 및 이용에 관해서는 동의하지 않은 것으로 간주됩니다.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </Modal>
+                                        <PiModal
+                                            isModalOpen={isModalOpen}
+                                            setIsModalOpen={setIsModalOpen}
+                                            category="문의"
+                                        />
                                     </div>
                                 </div>
                                 {/* 좌측 하단 연락처, 이메일 영역 */}
@@ -516,80 +399,6 @@ export default function Contact() {
                 .checkbox-div span {
                     text-decoration: underline;
                     cursor: pointer;
-                }
-                .modal-container {
-                    width: 480px;
-                    margin: 18px;
-                    color: #111111;
-                }
-                .pi-header {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                    margin-top: 20px;
-                }
-                .pi-rule {
-                    font-size: 23px;
-                    font-weight: 600;
-                }
-                .close-svg {
-                    position: relative;
-                    left: 62px;
-                    bottom: 27px;
-                    cursor: pointer;
-                }
-                .pi-section {
-                    margin-top: 25px;
-                }
-                .pi-section-title {
-                    font-size: 17px;
-                    font-weight: 600;
-                    margin-bottom: 10px;
-                }
-                .pi-section-detail {
-                    font-size: 15px;
-                    font-weight: 300;
-                }
-                .pop-up-container {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    text-align: center;
-                    margin: 20px 15px;
-                }
-                .pop-up-title-section {
-                    font-size: 17px;
-                }
-                .pop-up-subtitle-section {
-                    font-size: 15px;
-                    font-weight: 300;
-                    color: #5c5c5c;
-                    margin-top: 6px;
-                }
-                .pop-up-title-section span {
-                    text-decoration: underline;
-                }
-                .pop-up-btn-section {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: center;
-                    margin-top: 33px;
-                    font-size: 14px;
-                }
-                .pop-up-btn-section div {
-                    border: 1px solid transparent;
-                    border-radius: 5px;
-                    padding: 12px 90px;
-                    cursor: pointer;
-                }
-                .read-btn {
-                    color: #ffffff;
-                    background-color: #002312;
-                    margin-right: 25px;
-                }
-                .close-btn {
-                    color: #5C5C5C;
-                    background-color: #f2f2f2;
                 }
                 .contact-right {
                     display: flex;
