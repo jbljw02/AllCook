@@ -27,7 +27,7 @@ export default function PiModal({ isModalOpen, setIsModalOpen, category }: modal
             <div className="modal-container">
                 <div className="pi-header">
                     <div className="pi-rule">개인정보 처리방침</div>
-                    <svg className="close-svg" onClick={() => setIsModalOpen(false)} xmlns="http://www.w3.org/2000/svg" width="35px" height="35px" viewBox="0 0 24 24" fill="none">
+                    <svg className="close-modal-svg" onClick={() => setIsModalOpen(false)} xmlns="http://www.w3.org/2000/svg" width="35px" height="35px" viewBox="0 0 24 24" fill="none">
                         <rect width="24" height="24" fill="white" />
                         <path d="M7 17L16.8995 7.10051" stroke="#111111" stroke-linecap="round" stroke-linejoin="round" />
                         <path d="M7 7.00001L16.8995 16.8995" stroke="#111111" stroke-linecap="round" stroke-linejoin="round" />
@@ -89,7 +89,7 @@ export default function PiModal({ isModalOpen, setIsModalOpen, category }: modal
                                 선택항목에 대한 수집 및 이용에 관해서는 동의를 거부할 권리가 있습니다. 선택항목에 대한 정보를 제공하지 않으시면, 해당 정보의 수집 및 이용에 관해서는 동의하지 않은 것으로 간주됩니다.
                             </div> :
                             <div className="pi-section-detail">
-                                문의 처리를 위해 필수적인 개인정보의 수집 및 이용에 대한 동의는 필수입니다. 이에 동의하지 않으시면, 회원가입이 불가능합니다.  <br />
+                                회원가입을 위해 필수적인 개인정보의 수집 및 이용에 대한 동의는 필수입니다. 이에 동의하지 않으시면, 회원가입이 불가능합니다.  <br />
                             </div>
                     }
                 </div>

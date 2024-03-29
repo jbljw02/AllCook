@@ -11,9 +11,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { setUser } from "@/redux/features/userSlice";
 import googleIcon from '../../public/svgs/google-icon.svg';
-import Modal from 'react-modal';
-import SubmitModal from "@/components/modal/SubmitModal";
 import { FirebaseError } from "firebase/app";
+import HeaderButton from "@/components/header/HeaderButton";
+import logout from "@/utils/logout";
+import EmailVerifyModal from "@/components/modal/EmailVerifyModal";
 
 export type loginForm = {
     email: string,
@@ -61,6 +62,7 @@ export default function login() {
         submitted: false,
     })
     const [isSuccess, setIsSucceess] = useState<boolean>(true);
+    const [isVerifyFail, setIsVerifyFail] = useState<boolean>(false);
 
     // 이메일 유효성 검증을 위한 state와 정규식
     const [emailValid, setEmailValid] = useState<boolean>(true);
@@ -85,14 +87,26 @@ export default function login() {
         }
     }
 
+    const user = auth.currentUser;
+
     const signIn = async () => {
         try {
             await signInWithEmailAndPassword(auth, formData.email, formData.password)
-            if (auth.currentUser) {
-                dispatch(setUser(auth.currentUser.displayName));
+            // 로그인된 사용자의 이메일 인증 여부 확인
+            if (user && user.emailVerified) {
+                dispatch(setUser(user.displayName));
+                setIsSucceess(true);
+                setIsVerifyFail(false);
+                router.push('/');
             }
-            setIsSucceess(true);
-            router.push('/');
+            else if(user && !user.emailVerified) {
+                setIsVerifyFail(true);
+                console.log("이메일 인증 미완료");
+            }
+            else {
+                setIsVerifyFail(true);
+                console.log("그 외 에러");
+            }
         }
         catch (error) {
             if (error instanceof FirebaseError) {
@@ -100,15 +114,6 @@ export default function login() {
                 setIsSucceess(false);
             }
         }
-    }
-
-    const logout = () => {
-        signOut(auth).then(() => {
-            console.log("로그아웃 성공");
-            dispatch(setUser(null));
-        }).catch((error) => {
-            console.log("로그아웃 실패 : ", error);
-        })
     }
 
     // form을 전송함
@@ -136,6 +141,26 @@ export default function login() {
         }
     }
 
+    // onAuthStateChanged(auth, (user) => {
+    //     if (user) {
+    //         user.reload().then(() => {
+    //             if (!user.emailVerified) {
+    //                 try {
+    //                     logout();
+    //                     console.log("이메일 인증 미실시로 로그아웃");
+    //                 } catch (error) {
+    //                     console.log("이메일 인증 미실시/로그아웃 실패: ", error);
+    //                 }
+    //             }
+    //         })
+    //         console.log("사용자 존재: ", user);
+    //     }
+    //     else {
+    //         console.log("사용자 미존재");
+    //     }
+    // });
+
+
     const googleAuth = async () => {
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider)
@@ -153,32 +178,14 @@ export default function login() {
             });
     };
 
-    // 컴포넌트가 마운트 될 때, 로그인의 변화가 감지될 때 실행
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // 사용자가 로그인한 상태
-            console.log("로그인 상태입니다. 사용자 정보: ", user);
-            if (user.displayName !== null) {
-                dispatch(setUser((user.displayName).slice(0, 3)));
-            }
-        } else {
-            // 사용자가 로그아웃한 상태
-            console.log("로그아웃 상태입니다.");
-            setUser(null);
-        }
-    });
-
     return (
         <>
             <div className="container">
-                <div className="header">
-                    <span className="back-svg" onClick={router.back}>
-                        <Image src={backSvg} alt="" />
-                    </span>
-                    <span className="close-svg" onClick={() => router.push('/')}>
-                        <Image src={closeSvg} alt="" />
-                    </span>
-                </div>
+                <HeaderButton />
+                <EmailVerifyModal
+                    isSubmitted={isVerifyFail}
+                    setIsSubmitted={setIsVerifyFail}
+                />
                 <div className="contents-container">
                     <div className="title-container">
                         <div className="title">로그인</div>
@@ -259,7 +266,10 @@ export default function login() {
                                         checked={formData.isSave} />
                                     <label htmlFor="checkbox">로그인 정보 저장</label>
                                 </div>
-                                <div onClick={logout}>비밀번호를 잊으셨나요?</div>
+                                <div onClick={() => {
+                                    logout();
+                                    dispatch(setUser(null));
+                                }}>비밀번호를 잊으셨나요?</div>
                             </div>
                             <button
                                 type="submit"
@@ -288,25 +298,6 @@ export default function login() {
             <style jsx>{`
                 .container {
                     justify-content: flex-start !important;
-                }
-                .header {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: 30px;
-                }
-                .header div {
-                    font-size: 14px;
-                    margin-right: 30px;
-                }
-                .back-svg {
-                    position: relative;
-                    left: 30px;
-                    cursor: pointer;
-                }
-                .close-svg {
-                    position: relative;
-                    right: 30px;
-                    cursor: pointer;
                 }
                 .contents-container {
                     display: flex;
@@ -351,6 +342,7 @@ export default function login() {
                 .input-div {
                     display: flex;
                     flex-direction: row;
+                    align-items: center;
                     border: 1px solid #dadada;
                     border-radius: 5px;
                     transition: 0.15s ease border-color;
@@ -367,24 +359,8 @@ export default function login() {
                     border-radius: 10px;
                     border: none;
                 }
-                .email-svg path {
-                    transition: 0.15s ease fill;
-                }
-                .email-svg {
-                    position: relative;
-                    top: 9.5px;
-                    left: 5px;
-                }
                 .password {
                     margin-top: 15px;
-                }
-                .password-svg {
-                    position: relative;
-                    top: 11.5px;
-                    left: 9.5px;
-                }
-                .password-svg path, .password-svg rect {
-                    transition: 0.15s ease stroke;
                 }
                 .input-warning {
                     margin-top: 6px;

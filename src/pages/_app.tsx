@@ -7,6 +7,12 @@ import '../styles/scrollStyle.css'
 import '../styles/header.css'
 import '../styles/svgStyle.css'
 import '../styles/modal.css'
+import { useDispatch } from 'react-redux';
+import { auth } from '@/firebase/firebasedb';
+import { User, onAuthStateChanged } from 'firebase/auth';
+import { setUser } from '@/redux/features/userSlice';
+import logout from '@/utils/logout';
+import { useEffect, useState } from 'react';
 
 const noto = Noto_Sans_KR({
     subsets: ['latin'],
