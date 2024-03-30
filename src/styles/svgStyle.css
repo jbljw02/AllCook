@@ -15,3 +15,37 @@
     top: 1.4px;
     margin-right: 5px;
 }
+.back-svg {
+    position: relative;
+    left: 30px;
+    cursor: pointer;
+}
+.close-svg {
+    position: relative;
+    right: 30px;
+    cursor: pointer;
+}
+.name-svg {
+    position: relative;
+    bottom: 0.5px;
+    left: 7px;
+}
+.name-svg path {
+    transition: 0.15s ease stroke;
+}
+.email-svg {
+    position: relative;
+    top: 0.5px;
+    left: 5px;
+}
+.email-svg path {
+    transition: 0.15s ease fill;
+}
+.password-svg {
+    position: relative;
+    top: 1px;
+    left: 9.5px;
+}
+.password-svg path, .password-svg rect {
+    transition: 0.15s ease stroke;
+}

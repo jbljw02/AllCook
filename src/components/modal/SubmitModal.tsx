@@ -25,9 +25,12 @@ export default function SubmitModal({ isSubmitted, setIsSubmitted }: modalProps)
             }}
         >
             <div className="pop-up-container">
-                <div className="pop-up-title-section">
-                    문의사항이 전송 완료되었습니다!
-                </div>
+                {
+
+                    <div className="pop-up-title-section">
+                        문의사항이 전송 완료되었습니다!
+                    </div>
+                }
                 <div className="pop-up-subtitle-section">
                     귀하의 소중한 의견 감사드리며, 작성하신 이메일을 통해 문의사항에 대한 답변을 드릴테니 조금만 기다려 주세요.
                 </div>

@@ -3,9 +3,9 @@ import Image from "next/image";
 import googleLogin from '../../public/svgs/googleLogin.svg';
 import backSvg from '../../public/svgs/backBtn.svg';
 import closeSvg from '../../public/svgs/closeBtn.svg';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { auth, firestore } from "@/firebase/firebasedb";
-import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, createUserWithEmailAndPassword, updateProfile, sendEmailVerification, User } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/redux/features/userSlice";
@@ -13,8 +13,11 @@ import googleIcon from '../../public/svgs/google-icon.svg';
 import { RootState } from "@/redux/store";
 import PiNoticeModal from "@/components/modal/PiNoticeModal";
 import PiModal from "@/components/modal/PiModal";
+import HeaderButton from "@/components/header/HeaderButton";
+import EmailVerifyModal from "@/components/modal/EmailVerifyModal";
+import logout from "@/utils/logout";
 
-export type loginForm = {
+export type signUpForm = {
     name: string,
     email: string,
     password: string,
@@ -75,7 +78,7 @@ export default function login() {
         }
     }
 
-    const [formData, setFormdata] = useState<loginForm>({
+    const [formData, setFormdata] = useState<signUpForm>({
         name: '',
         email: '',
         password: '',
@@ -128,18 +131,85 @@ export default function login() {
         }
     }
 
+    // const [currentUser, setCurrentUser] = useState<User | null>(null); // 현재 사용자 상태 관리
+
+    // useEffect(() => {
+    //     console.log("1번");
+    //     // 로그인 상태 감시자 설정
+    //     onAuthStateChanged(auth, (user) => {
+    //         setCurrentUser(user); // 사용자 상태 업데이트
+    //     });
+    // }, []);
+
+    // useEffect(() => {
+    //     console.log("2번");
+    //     if (currentUser) {
+    //         // reload 후 currentUser의 최신 상태를 반영
+    //         const updatedUser = auth.currentUser;
+    //         if (!updatedUser?.emailVerified) {
+    //             // 이메일 인증을 하지 않았을 경우의 처리
+    //             console.log("이메일 인증 미실시로 로그아웃");
+    //             logout();
+    //             // 로그아웃 처리 등
+    //         } else {
+    //             // 이메일 인증을 완료한 경우
+    //             console.log("이메일 인증 완료: ", updatedUser);
+    //         }
+    //     }
+    // }, [currentUser]);
+
+
+    const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+
+    // useEffect(() => {
+    //     const checkEmailVerified = async () => {
+    //         const user = auth.currentUser;
+    //         await user?.reload(); // 사용자 정보 최신화
+    //         if (user && !user.emailVerified) {
+    //             console.log("이메일 미인증으로 인한 로그아웃");
+    //             logout(); // 로그아웃 처리
+    //         } else if (user && user.emailVerified) {
+    //             console.log("이메일 인증 완료");
+    //         } else {
+    //             console.log("사용자 존재 X");
+    //         }
+    //     };
+
+    //     checkEmailVerified();
+    // }, []);
+
+    // useEffect(() => {
+    //     const checkEmailVerified = async () => {
+    //         console.log("모달 : ", isSubmitted);
+    //         console.log("동작");
+    //         const user = auth.currentUser;
+    //         if (user) {
+    //             await user.reload();
+    //             if (!user.emailVerified && !isSubmitted) {
+    //                 console.log("이메일 미인증으로 인한 로그아웃");
+    //                 logout(); // 로그아웃 처리
+    //             }
+    //         }
+    //     };
+
+    //     if (!isSubmitted) {
+    //         // isSubmitted가 false일 때만 인터벌을 설정
+    //         const interval = setInterval(checkEmailVerified, 3000); // 예를 들어 3초로 설정
+    //         // 컴포넌트가 언마운트될 때 인터벌을 정리
+    //         return () => clearInterval(interval);
+    //     }
+    // }, [isSubmitted]); // 의존성 배열에 isSubmitted 추가
+
+    // 회원가입 초기 작업
     const signUp = async () => {
         try {
-            await createUserWithEmailAndPassword(auth, formData.email, formData.password)
-            if (auth.currentUser) {
-                // 회원의 이름 정보를 폼 데이터와 동일하게 업데이트
-                await updateProfile(auth.currentUser, {
-                    displayName: formData.name,
-                    photoURL: ""
-                })
-                dispatch(setUser(auth.currentUser.displayName));
-            }
-            router.push('/');
+            const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
+            const user = userCredential.user;
+
+            // 이메일을 전송한 후,
+            await sendEmailVerification(user);
+            // 이메일 인증 여부를 확인하는 모달을 띄움
+            setIsSubmitted(true);
         }
         catch (error) {
             console.log("회원가입 정보 전송 실패 : ", error);
@@ -225,35 +295,13 @@ export default function login() {
             });
     };
 
-    // 컴포넌트가 마운트 될 때, 로그인의 변화가 감지될 때 실행
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // 사용자가 로그인한 상태
-            console.log("로그인 상태입니다. 사용자 정보: ", user);
-            if (user.displayName !== null) {
-                dispatch(setUser((user.displayName).slice(0, 3)));
-            }
-        } else {
-            // 사용자가 로그아웃한 상태
-            console.log("로그아웃 상태입니다.");
-            setUser(null);
-        }
-    });
-
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // 개인정보 처리방침 모달 관리
     const [isCheckedModalOpen, setIsCheckedModalOpen] = useState<boolean>(false); // 개인정보 처리방침에 동의하지 않았을 경우 나올 모달 관리
 
     return (
         <>
             <div className="container">
-                <div className="header">
-                    <span className="back-svg" onClick={router.back}>
-                        <Image src={backSvg} alt="" />
-                    </span>
-                    <span className="close-svg" onClick={() => router.push('/')}>
-                        <Image src={closeSvg} alt="" />
-                    </span>
-                </div>
+                <HeaderButton />
                 <div className="contents-container">
                     <PiNoticeModal
                         isCheckedModalOpen={isCheckedModalOpen}
@@ -264,6 +312,11 @@ export default function login() {
                         isModalOpen={isModalOpen}
                         setIsModalOpen={setIsModalOpen}
                         category="회원가입"
+                    />
+                    <EmailVerifyModal
+                        isSubmitted={isSubmitted}
+                        setIsSubmitted={setIsSubmitted}
+                        name={formData.name}
                     />
                     <div className="title-container">
                         <div className="title">회원가입</div>
@@ -314,6 +367,7 @@ export default function login() {
                                     onBlur={inputBlur}
                                     value={formData.email}
                                     placeholder="이메일" />
+                                <div className="email-verify">중복확인</div>
                             </div>
                             {
                                 formData.submitted && formData.email === '' ?
@@ -398,6 +452,10 @@ export default function login() {
                                         개인정보 처리방침
                                     </div>에 동의합니다.
                                 </div>
+                                <div
+                                    className="already-account"
+                                    onClick={() => router.push('/signIn')}
+                                >이미 계정이 있으신가요?</div>
                             </div>
                             <button
                                 type="submit"
@@ -420,21 +478,6 @@ export default function login() {
             <style jsx>{`
                 .container {
                     justify-content: flex-start !important;
-                }
-                .header {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: 30px;
-                }
-                .back-svg {
-                    position: relative;
-                    left: 30px;
-                    cursor: pointer;
-                }
-                .close-svg {
-                    position: relative;
-                    right: 30px;
-                    cursor: pointer;
                 }
                 .contents-container {
                     display: flex;
@@ -478,6 +521,7 @@ export default function login() {
                 .input-div {
                     display: flex;
                     flex-direction: row;
+                    align-items: center;
                     border: 1px solid #dadada;
                     border-radius: 5px;
                     transition: 0.15s ease border-color;
@@ -497,29 +541,17 @@ export default function login() {
                 .password, .email {
                     margin-top: 15px;
                 }
-                .name-svg {
-                    position: relative;
-                    top: 13px;
-                    left: 7px;
-                }
-                .name-svg path {
-                    transition: 0.15s ease stroke;
-                }
-                .email-svg {
-                    position: relative;
-                    top: 9.5px;
-                    left: 5px;
-                }
-                .email-svg path {
-                    transition: 0.15s ease fill;
-                }
-                .password-svg {
-                    position: relative;
-                    top: 11.5px;
-                    left: 9.5px;
-                }
-                .password-svg path, .password-svg rect {
-                    transition: 0.15s ease stroke;
+                .email-verify {
+                    display: flex;
+                    justify-content: center;
+                    font-size: 12px;
+                    width: 60px;
+                    cursor: pointer;
+                    margin-right: 10px;
+                    color: #323232;
+                    background-color: #f2f2f2;
+                    border-radius: 4px;
+                    padding: 4px 6px;
                 }
                 .input-warning {
                     margin-top: 6px;
@@ -553,6 +585,9 @@ export default function login() {
                     margin-left: 3px;
                 }
                 .checkbox-div div {
+                    cursor: pointer;
+                }
+                .already-account {
                     cursor: pointer;
                 }
                 button {
