@@ -15,7 +15,6 @@ import PiNoticeModal from "@/components/modal/PiNoticeModal";
 import PiModal from "@/components/modal/PiModal";
 import HeaderButton from "@/components/header/HeaderButton";
 import EmailVerifyModal from "@/components/modal/EmailVerifyModal";
-import logout from "@/utils/logout";
 
 export type signUpForm = {
     name: string,
@@ -131,74 +130,7 @@ export default function login() {
         }
     }
 
-    // const [currentUser, setCurrentUser] = useState<User | null>(null); // 현재 사용자 상태 관리
-
-    // useEffect(() => {
-    //     console.log("1번");
-    //     // 로그인 상태 감시자 설정
-    //     onAuthStateChanged(auth, (user) => {
-    //         setCurrentUser(user); // 사용자 상태 업데이트
-    //     });
-    // }, []);
-
-    // useEffect(() => {
-    //     console.log("2번");
-    //     if (currentUser) {
-    //         // reload 후 currentUser의 최신 상태를 반영
-    //         const updatedUser = auth.currentUser;
-    //         if (!updatedUser?.emailVerified) {
-    //             // 이메일 인증을 하지 않았을 경우의 처리
-    //             console.log("이메일 인증 미실시로 로그아웃");
-    //             logout();
-    //             // 로그아웃 처리 등
-    //         } else {
-    //             // 이메일 인증을 완료한 경우
-    //             console.log("이메일 인증 완료: ", updatedUser);
-    //         }
-    //     }
-    // }, [currentUser]);
-
-
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-
-    // useEffect(() => {
-    //     const checkEmailVerified = async () => {
-    //         const user = auth.currentUser;
-    //         await user?.reload(); // 사용자 정보 최신화
-    //         if (user && !user.emailVerified) {
-    //             console.log("이메일 미인증으로 인한 로그아웃");
-    //             logout(); // 로그아웃 처리
-    //         } else if (user && user.emailVerified) {
-    //             console.log("이메일 인증 완료");
-    //         } else {
-    //             console.log("사용자 존재 X");
-    //         }
-    //     };
-
-    //     checkEmailVerified();
-    // }, []);
-
-    // useEffect(() => {
-    //     const checkEmailVerified = async () => {
-    //         console.log("모달 : ", isSubmitted);
-    //         console.log("동작");
-    //         const user = auth.currentUser;
-    //         if (user) {
-    //             await user.reload();
-    //             if (!user.emailVerified && !isSubmitted) {
-    //                 console.log("이메일 미인증으로 인한 로그아웃");
-    //                 logout(); // 로그아웃 처리
-    //             }
-    //         }
-    //     };
-
-    //     if (!isSubmitted) {
-    //         // isSubmitted가 false일 때만 인터벌을 설정
-    //         const interval = setInterval(checkEmailVerified, 3000); // 예를 들어 3초로 설정
-    //         // 컴포넌트가 언마운트될 때 인터벌을 정리
-    //         return () => clearInterval(interval);
-    //     }
-    // }, [isSubmitted]); // 의존성 배열에 isSubmitted 추가
 
     // 회원가입 초기 작업
     const signUp = async () => {

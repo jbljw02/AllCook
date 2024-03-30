@@ -28,7 +28,7 @@ function App({ Component, pageProps }: AppProps) {
                 console.log("로그인중 + 이메일 미인증");
             }
             else if (user.emailVerified) {
-                console.log("로그인중 + 이메일 인증 O");
+                console.log("로그인중 + 이메일 인증 O", user);
                 dispatch(setUser(user.displayName));
             }
         }

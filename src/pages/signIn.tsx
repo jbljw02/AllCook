@@ -5,7 +5,7 @@ import backSvg from '../../public/svgs/backBtn.svg';
 import closeSvg from '../../public/svgs/closeBtn.svg';
 import { useState } from "react";
 import { auth, firestore } from "@/firebase/firebasedb";
-import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -61,8 +61,9 @@ export default function login() {
         isSave: false,
         submitted: false,
     })
-    const [isSuccess, setIsSucceess] = useState<boolean>(true);
-    const [isVerifyFail, setIsVerifyFail] = useState<boolean>(false);
+    const [isSuccess, setIsSucceess] = useState<boolean>(true); // 회원 정보가 일치하는지
+    const [isVerifyFail, setIsVerifyFail] = useState<boolean>(false); // 이메일 인증 여부 확인
+    const [isForgot, setIsForgot] = useState<boolean>(false);
 
     // 이메일 유효성 검증을 위한 state와 정규식
     const [emailValid, setEmailValid] = useState<boolean>(true);
@@ -86,7 +87,7 @@ export default function login() {
             }
         }
     }
-    
+
     const signIn = async () => {
         try {
             await signInWithEmailAndPassword(auth, formData.email, formData.password);
@@ -110,6 +111,17 @@ export default function login() {
                 console.log("로그인 실패 : ", error.code);
                 setIsSucceess(false);
             }
+        }
+    }
+
+    // 비밀번호를 재설정
+    const resetPassword = async () => {
+        try {
+            await sendPasswordResetEmail(auth, 'jbljw02@naver.com');
+            alert('비밀번호 재설정 이메일이 발송되었습니다. 이메일을 확인해주세요.');
+        } catch (error) {
+            console.error("비밀번호 재설정 이메일 발송 실패: ", error);
+            alert('비밀번호 재설정 이메일을 보내는 데 실패했습니다.');
         }
     }
 
@@ -246,6 +258,7 @@ export default function login() {
                                 <div onClick={() => {
                                     logout();
                                     dispatch(setUser(null));
+                                    router.push('/resetPassword');
                                 }}>비밀번호를 잊으셨나요?</div>
                             </div>
                             <button
@@ -264,11 +277,12 @@ export default function login() {
                             <div>구글 계정으로 로그인</div>
                         </div>
                     </div>
-                    <div className="signUp">All Cook이 처음이신가요?
+                    <div className="contents-footer">All Cook이 처음이신가요?
                         <span
                             className="underline"
-                            onClick={() => router.push('/signUp')}
-                        >이메일로 회원가입</span>
+                            onClick={() => router.push('/signUp')}>
+                            이메일로 회원가입
+                        </span>
                     </div>
                 </div>
             </div >
@@ -403,11 +417,11 @@ export default function login() {
                     color: #111111;
                     font-size: 15px;
                 }
-                .signUp {
+                .contents-footer {
                     margin-top: 5px;
                     font-size: 15px;
                 }
-                .signUp span {
+                .contents-footer span {
                     margin-left: 5px;
                     cursor: pointer;
                 }
