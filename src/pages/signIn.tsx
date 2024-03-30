@@ -86,26 +86,23 @@ export default function login() {
             }
         }
     }
-
-    const user = auth.currentUser;
-
+    
     const signIn = async () => {
         try {
-            await signInWithEmailAndPassword(auth, formData.email, formData.password)
+            await signInWithEmailAndPassword(auth, formData.email, formData.password);
+            const user = auth.currentUser;
+
             // 로그인된 사용자의 이메일 인증 여부 확인
             if (user && user.emailVerified) {
-                dispatch(setUser(user.displayName));
+                console.log("이메일 인증 완료, 로그인");
                 setIsSucceess(true);
                 setIsVerifyFail(false);
                 router.push('/');
             }
-            else if(user && !user.emailVerified) {
-                setIsVerifyFail(true);
-                console.log("이메일 인증 미완료");
-            }
+            // 이메일 인증이 완료되지 않았을 경우, 인증 모달 팝업
             else {
                 setIsVerifyFail(true);
-                console.log("그 외 에러");
+                console.log("이메일 인증 미완료, 로그인 X");
             }
         }
         catch (error) {
@@ -140,26 +137,6 @@ export default function login() {
             signIn();
         }
     }
-
-    // onAuthStateChanged(auth, (user) => {
-    //     if (user) {
-    //         user.reload().then(() => {
-    //             if (!user.emailVerified) {
-    //                 try {
-    //                     logout();
-    //                     console.log("이메일 인증 미실시로 로그아웃");
-    //                 } catch (error) {
-    //                     console.log("이메일 인증 미실시/로그아웃 실패: ", error);
-    //                 }
-    //             }
-    //         })
-    //         console.log("사용자 존재: ", user);
-    //     }
-    //     else {
-    //         console.log("사용자 미존재");
-    //     }
-    // });
-
 
     const googleAuth = async () => {
         const provider = new GoogleAuthProvider();

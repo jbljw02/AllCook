@@ -1,28 +1,36 @@
 import Modal from 'react-modal';
 import { auth } from "@/firebase/firebasedb";
-import { onAuthStateChanged, sendEmailVerification, updateProfile } from 'firebase/auth';
-import { signUpForm } from '@/pages/signUp';
+import { sendEmailVerification, updateProfile } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/redux/features/userSlice';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { createKey } from 'next/dist/shared/lib/router/router';
-import logout from '@/utils/logout';
 
 interface modalProps {
     isSubmitted: boolean,
     setIsSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
-    formData?: signUpForm,
+    name?: string,
 }
 
-export default function EmailVerifyModal({ isSubmitted, setIsSubmitted, formData }: modalProps) {
+export default function EmailVerifyModal({ isSubmitted, setIsSubmitted, name }: modalProps) {
     const dispatch = useDispatch();
     const router = useRouter();
 
+    const user = auth.currentUser;
+
+    useEffect(() => {
+        if (name !== undefined && user) {
+            // 계정의 이름을 업데이트하고, state도 그와 동일하게 업데이트
+            updateProfile(user, {
+                displayName: name,
+                photoURL: ""
+            })
+            dispatch(setUser(user.displayName));
+        }
+    }, [name, user])
+
     const [isVerify, setIsVerify] = useState<boolean>(true); // 이메일이 인증됐는지
     const [isVibrate, setIsVibrate] = useState<boolean>(false); // 진동 효과를 줄지
-
-    const user = auth.currentUser;
 
     // 사용자의 이메일 인증 여부를 확인하고, 그에 따라 계정을 활성화할지 결정
     const accountActivate = async () => {
@@ -32,15 +40,6 @@ export default function EmailVerifyModal({ isSubmitted, setIsSubmitted, formData
                 // 사용자의 이메일 인증이 완료된 경우
                 if (user.emailVerified) {
                     console.log("이메일 인증 성공");
-
-                    if(formData !== undefined) {
-                        await updateProfile(user, {
-                            displayName: formData.name,
-                            photoURL: ""
-                        })
-                    }
-                    dispatch(setUser(user.displayName));
-
                     setIsSubmitted(false);
                     router.push('/');
                 }
