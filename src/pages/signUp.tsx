@@ -15,6 +15,7 @@ import PiNoticeModal from "@/components/modal/PiNoticeModal";
 import PiModal from "@/components/modal/PiModal";
 import HeaderButton from "@/components/header/HeaderButton";
 import EmailVerifyModal from "@/components/modal/EmailVerifyModal";
+import { FirebaseError } from "firebase/app";
 
 export type signUpForm = {
     name: string,
@@ -94,6 +95,9 @@ export default function login() {
     // 비밀번호는 최소 6글자 이상이어야 하며, 특수문자를 하나 이상 포함해야 함
     let pwdRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>]).{6,}$/;
 
+    // 이메일의 중복 여부
+    const [emailDuplicated, setEmailDuplicated] = useState<boolean>(false);
+
     // 이메일 유효성 검증을 위한 state와 정규식
     const [emailValid, setEmailValid] = useState<boolean>(true);
     let emailRegex = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z]{2,}$/;
@@ -104,6 +108,7 @@ export default function login() {
             ...formData,
             [e.target.name]: e.target.value,
         })
+        setEmailDuplicated(false);
 
         // 전송이 한 번 클릭되고, 이메일의 값이 바뀔 때 정규식과 일치하는지 검사
         if (formData.submitted && e.target.name === 'email') {
@@ -142,9 +147,17 @@ export default function login() {
             await sendEmailVerification(user);
             // 이메일 인증 여부를 확인하는 모달을 띄움
             setIsSubmitted(true);
+
+            setEmailDuplicated(false);
         }
         catch (error) {
-            console.log("회원가입 정보 전송 실패 : ", error);
+            if ((error as FirebaseError).code === 'auth/email-already-in-use') {
+                console.log("회원가입 실패(이미 사용중인 이메일): ", error);
+                setEmailDuplicated(true);
+            }
+            else {
+                console.log("회원가입 정보 전송 실패: ", error);
+            }
         }
     }
 
@@ -283,7 +296,8 @@ export default function login() {
                             }
                             <div
                                 className='input-div email'
-                                id={`${formData.submitted && (!emailValid || formData.email === '') ?
+                                id={`${formData.submitted && 
+                                    (!emailValid || formData.email === '' || emailDuplicated) ?
                                     'warning-border'
                                     : ''}`}
                                 style={{ borderColor: emailFocusStyle.borderColor }}>
@@ -299,7 +313,6 @@ export default function login() {
                                     onBlur={inputBlur}
                                     value={formData.email}
                                     placeholder="이메일" />
-                                <div className="email-verify">중복확인</div>
                             </div>
                             {
                                 formData.submitted && formData.email === '' ?
@@ -309,6 +322,11 @@ export default function login() {
                             {
                                 formData.submitted && formData.email !== '' && !emailValid ?
                                     <div className="input-warning">유효한 이메일을 입력해주세요</div> :
+                                    null
+                            }
+                            {
+                                formData.submitted && formData.email !== '' && emailDuplicated ?
+                                    <div className="input-warning">이미 존재하는 이메일입니다</div> :
                                     null
                             }
                             <div
