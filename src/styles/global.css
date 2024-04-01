@@ -20,6 +20,9 @@ body {
 .underline {
     text-decoration: underline;
 }
+.rotate-clockwise {
+    transform: rotate(-90deg);
+}
 
 /* 진동 효과 */
 @keyframes vibrate {

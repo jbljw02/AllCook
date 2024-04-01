@@ -12,6 +12,7 @@ import userDark from '../../../public/svgs/user-dark.svg';
 import { signOut } from 'firebase/auth';
 import { auth } from "@/firebase/firebasedb";
 import { setUser } from '@/redux/features/userSlice';
+import UserDropdown from '../UserDropdown';
 
 export default function Header({ className }: { className: string }) {
     const dispatch = useDispatch();
@@ -71,6 +72,8 @@ export default function Header({ className }: { className: string }) {
         });
     };
 
+    const [userDetail, setUserDetail] = useState<boolean>(false);
+
     return (
         <>
             <header className={`${className} header`}>
@@ -109,7 +112,7 @@ export default function Header({ className }: { className: string }) {
                     <div className='right-nav'>
                         <div className='input-div'>
                             {/* onKeyDown = 키가 눌렸을 때 발생 */}
-                        <input
+                            <input
                                 onKeyDown={searchRecipe}
                                 value={inputValue}
                                 onChange={changeInput}
@@ -117,7 +120,10 @@ export default function Header({ className }: { className: string }) {
                                 placeholder='메뉴, 재료로 검색' />
                             <Image onClick={() => searchRecipe(inputValue)} className='search-svg' src={searchSvg} alt='' />
                         </div>
-                        <div className='user-container'>
+                        <div
+                            className='user-container no-drag'
+                            onClick={() => setUserDetail(!userDetail)}
+                        >
                             <Image
                                 className='user-svg on-contents'
                                 src={userDark}
@@ -131,12 +137,27 @@ export default function Header({ className }: { className: string }) {
                                         <span className='logIn'>
                                             {user}
                                         </span>
-                                        <svg width='17' className='sort-svg-header' style={{marginTop: '1px'}} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <svg
+                                            width='17'
+                                            className={`${userDetail ?
+                                                'sort-svg-header rotate-clockwise'
+                                                : 'sort-svg-header'}`}
+                                            style={{ marginTop: '1px' }}
+                                            viewBox="0 0 12 12"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
                                             <path d="m9 4.5-3 3-3-3" stroke="currentColor" stroke-linecap="round"></path>
                                         </svg>
                                     </>
                             }
                         </div>
+                        {
+                            userDetail && user ?
+                                <UserDropdown
+                                    category='header-on-contents'
+                                /> :
+                                null
+                        }
                     </div>
                 </div>
             </header >

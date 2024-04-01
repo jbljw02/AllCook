@@ -15,6 +15,7 @@ import Image from 'next/image';
 import { signOut } from 'firebase/auth';
 import { auth } from "@/firebase/firebasedb";
 import { setUser } from "@/redux/features/userSlice";
+import UserDropdown from '../UserDropdown';
 
 const titleFont = Anek_Tamil({
     subsets: ['latin'],
@@ -79,6 +80,8 @@ export default function Header({ position, backgroundColor, color, borderColor, 
         });
     };
 
+    const [userDetail, setUserDetail] = useState<boolean>(false);
+
     return (
         <>
             <header
@@ -115,7 +118,10 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                         </span>
                     </div>
                     {/* 타이틀 이미지 */}
-                    <div className='title-logo-div'>
+                    <div
+                        className='title-logo-div'
+                        onClick={logout}
+                    >
                         <Link href={'/'}>
                             {
                                 lightLogo ?
@@ -141,8 +147,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                                 placeholder='메뉴, 재료로 검색' />
                             <Image onClick={() => searchRecipe(inputValue)} className='search-svg' src={searchSvg} alt='' />
                         </div>
-                        <div className='user-container'>
-                            {/* <span className='user-img-span'> */}
+                        <div className='user-container no-drag' onClick={() => setUserDetail(!userDetail)}>
                             {
                                 lightLogo ?
                                     <>
@@ -164,16 +169,27 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                                         로그인
                                     </span> :
                                     <>
-                                        <span className='logIn' onClick={logout}>
-                                            {user}
-                                        </span>
-                                        <svg width='17' className='sort-svg-header' viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <span className='logIn'>{user}</span>
+                                        <svg
+                                            width='17'
+                                            className={`${!userDetail ?
+                                                'sort-svg-header' :
+                                                'sort-svg-header rotate-clockwise'}`}
+                                            viewBox="0 0 12 12"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
                                             <path d="m9 4.5-3 3-3-3" stroke="currentColor" stroke-linecap="round"></path>
                                         </svg>
                                     </>
                             }
-                            {/* </span> */}
                         </div>
+                        {
+                            userDetail && user ?
+                                <UserDropdown
+                                    category='header'
+                                /> :
+                                null
+                        }
                     </div>
                 </div>
             </header>
