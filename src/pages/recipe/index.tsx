@@ -725,10 +725,6 @@ export default function Recipe() {
                 .filter-button:hover {
                     border-color: rgb(130, 130, 130);
                 }
-                {/* .filter-svg-span {
-                    margin-top: 1.5px;
-                    margin-right: 4px;
-                } */}
                 .filter-button-div span {
                     font-size: 13px;
                     font-weight: 500;
@@ -901,41 +897,6 @@ export default function Recipe() {
         </>
     )
 }
-
-// export const getStaticProps = wrapper.getStaticProps(store => async () => {
-//     const API_KEY = process.env.API_KEY;
-
-//     const allMenu = store.getState().allMenu;
-//     // 홈 화면을 통해 접근하지 않을 경우, allMenu가 undefined 상태이기 때문에 업데이트
-//     if (allMenu.length === undefined) {
-//         const startParam = 1;
-//         const endParam = 1000;
-
-//         const response = await fetch(`http://openapi.foodsafetykorea.go.kr/api/
-//         ${API_KEY}/COOKRCP01/json/${startParam}/${endParam}`, {
-//             method: "GET",
-//         });
-//         const jsonResult = await response.json();
-//         const result = jsonResult.COOKRCP01.row;
-
-//         // 포함하지 않을 문자열을 필터링하는 정규식
-//         // 미완된 음식의 이미지나, 워터마크가 있는 이미지를 필터링하기 위함
-//         const regex = /(uploadimg\/(2014|2015|2019|2020|2021|2023)|common\/ecmFileView\.do\?)/;
-
-//         const excludeSeqs = ['2981', '886', '3217', '977', '745', '760'];
-
-//         const menuData = result.filter((item: Menu) => {
-//             const match = (item.ATT_FILE_NO_MK).match(regex);
-//             return match === null && !excludeSeqs.includes(item.RCP_SEQ);
-//         });
-
-//         store.dispatch(setAllMenu(menuData));
-//     }
-
-//     return {
-//         props: {}
-//     }
-// })
 
 export const getStaticProps = () => {
     return {

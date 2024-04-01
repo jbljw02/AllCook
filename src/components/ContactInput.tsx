@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Form } from "@/pages/contact";
 
 export default function ContactInput({ form, name, height, placeholder, msgWhether, onChange, emailValid }: { form: Form, name: keyof Form, height: string, placeholder: string, msgWhether: boolean, onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void, emailValid?: boolean, }) {

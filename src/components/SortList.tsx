@@ -59,7 +59,7 @@ export default function SortList({ currentPage, setCurrentPage }: SortListProps)
             <div className={`${!isSortClicked ? 'dropdown-hover' : 'dropdown'} no-drag`}>
                 <div onClick={() => setIsSortClicked(!isSortClicked)} className={`${!isSortClicked ? 'dropdown-title' : 'dropdown-title open'}`}>
                     <span>{sortRule}</span>
-                    <svg className={`${isSortClicked ? 'counter-clockwise' : ''} sort-svg`} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m9 4.5-3 3-3-3" stroke="currentColor" stroke-linecap="round"></path>
+                    <svg className={`${isSortClicked ? 'rotate-clockwise' : ''} sort-svg`} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m9 4.5-3 3-3-3" stroke="currentColor" stroke-linecap="round"></path>
                     </svg>
                 </div>
                 {
@@ -123,9 +123,6 @@ export default function SortList({ currentPage, setCurrentPage }: SortListProps)
                     width: 18px;
                     top: 1px;
                     transition: transform 0.15s ease-in-out;
-                }
-                .counter-clockwise {
-                    transform: rotate(-90deg);
                 }
                 .open {
                     border-bottom: 1px solid #e8e8e8;

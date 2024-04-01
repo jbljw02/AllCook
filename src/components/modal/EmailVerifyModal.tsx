@@ -90,7 +90,7 @@ export default function EmailVerifyModal({ isSubmitted, setIsSubmitted, name }: 
                 {
                     isVerify ?
                         <div className="pop-up-title-section">
-                            이메일로 인증 메일을 전송했습니다!
+                            이메일로 인증 메일을 전송했습니다.
                         </div> :
                         <div className="pop-up-title-section" style={{ color: '#FF0000' }}>
                             인증이 아직 완료되지 않았습니다!
