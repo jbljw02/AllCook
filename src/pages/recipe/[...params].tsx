@@ -13,6 +13,7 @@ import { nutritionInfoSlice } from "@/redux/features/nutritionSlice";
 import moveToDetail from "@/utils/moveToDetail";
 import { setRecipe } from "@/redux/features/recipeSlice";
 import { setAllMenu, setDisplayedMenu } from "@/redux/features/menuSlice";
+import bookmarkSvg from "../../../public/svgs/bookmark.svg";
 
 export default function RecipeDetail() {
     const dispatch = useDispatch();

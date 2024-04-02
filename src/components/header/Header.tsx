@@ -118,10 +118,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                         </span>
                     </div>
                     {/* 타이틀 이미지 */}
-                    <div
-                        className='title-logo-div'
-                        onClick={logout}
-                    >
+                    <div className='title-logo-div'>
                         <Link href={'/'}>
                             {
                                 lightLogo ?

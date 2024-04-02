@@ -82,11 +82,11 @@ export default function SortList({ currentPage, setCurrentPage }: SortListProps)
             </div>
             <style jsx>{`
                 .dropdown, .dropdown-hover {
+                    position: absolute;
                     display: flex;
                     flex-direction: column;
                     justify-content: flex-start;
                     font-size: 13px;
-                    position: absolute;
                     margin-top: -4.5px;
                     margin-left: 8px;
                     border: 1px solid #e8e8e8;
