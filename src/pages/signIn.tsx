@@ -15,6 +15,7 @@ import { FirebaseError } from "firebase/app";
 import HeaderButton from "@/components/header/HeaderButton";
 import logout from "@/utils/logout";
 import EmailVerifyModal from "@/components/modal/EmailVerifyModal";
+import Seo from "@/components/Seo";
 
 export type loginForm = {
     email: string,
@@ -170,6 +171,7 @@ export default function login() {
     return (
         <>
             <div className="container">
+                <Seo title="로그인" />
                 <HeaderButton />
                 <EmailVerifyModal
                     isSubmitted={isVerifyFail}

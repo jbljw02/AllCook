@@ -3,6 +3,7 @@ import { auth } from "@/firebase/firebasedb";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { useRouter } from "next/router";
 import HeaderButton from "@/components/header/HeaderButton";
+import Seo from "@/components/Seo";
 
 export type emailForm = {
     email: string,
@@ -99,6 +100,7 @@ export default function ResetPassword() {
     return (
         <>
             <div className="container">
+                <Seo title="비밀번호 재생성" />
                 <HeaderButton />
                 <div className="contents-container">
                     <div className="title-container">
@@ -163,7 +165,7 @@ export default function ResetPassword() {
                                 <span
                                     className="underline"
                                     onClick={() => router.push('/signIn')}
-                                    >
+                                >
                                     로그인
                                 </span>
                             </div> :

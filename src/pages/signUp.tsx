@@ -16,6 +16,7 @@ import PiModal from "@/components/modal/PiModal";
 import HeaderButton from "@/components/header/HeaderButton";
 import EmailVerifyModal from "@/components/modal/EmailVerifyModal";
 import { FirebaseError } from "firebase/app";
+import Seo from "@/components/Seo";
 
 export type signUpForm = {
     name: string,
@@ -246,6 +247,7 @@ export default function login() {
     return (
         <>
             <div className="container">
+                <Seo title="회원가입" />
                 <HeaderButton />
                 <div className="contents-container">
                     <PiNoticeModal
@@ -296,7 +298,7 @@ export default function login() {
                             }
                             <div
                                 className='input-div email'
-                                id={`${formData.submitted && 
+                                id={`${formData.submitted &&
                                     (!emailValid || formData.email === '' || emailDuplicated) ?
                                     'warning-border'
                                     : ''}`}

@@ -30,9 +30,9 @@ export default function UserDropdown({ category }: { category: string }) {
                     className='user-detail-div'
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
-                    onClick={() => router.push('/savedRecipe')}>
+                    onClick={() => router.push('/favoriteRecipe')}>
                     <svg className="bookmark svg" xmlns="http://www.w3.org/2000/svg" width="17px" height="17px" fill="none" viewBox="0 0 17.5 17.5">
-                        <path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.8" d="m15 16-5-3.333L5 16V5.333c0-.353.15-.692.418-.942S6.05 4 6.428 4h7.143c.38 0 .743.14 1.01.39.269.25.419.59.419.943V16z" />
+                        <path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m15 16-5-3.333L5 16V5.333c0-.353.15-.692.418-.942S6.05 4 6.428 4h7.143c.38 0 .743.14 1.01.39.269.25.419.59.419.943V16z" />
                     </svg>
                     <div>관심 레시피</div>
                 </div>
@@ -40,8 +40,8 @@ export default function UserDropdown({ category }: { category: string }) {
                     className='user-detail-div'
                     onClick={() => router.push('/userDetail')}>
                     <svg className="svg" xmlns="http://www.w3.org/2000/svg" width="17px" height="17px" viewBox="0 0 25 25" fill="none">
-                        <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" stroke="#292D32" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M20.5899 22C20.5899 18.13 16.7399 15 11.9999 15C7.25991 15 3.40991 18.13 3.40991 22" stroke="#292D32" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" stroke="#292D32" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M20.5899 22C20.5899 18.13 16.7399 15 11.9999 15C7.25991 15 3.40991 18.13 3.40991 22" stroke="#292D32" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     <div>회원 정보</div>
                 </div>
@@ -49,7 +49,7 @@ export default function UserDropdown({ category }: { category: string }) {
                     className='user-detail-div'
                     onClick={signOut}>
                     <svg className="svg" xmlns="http://www.w3.org/2000/svg" width="17px" height="17px" viewBox="0 0 23 23" fill="none">
-                        <path d="M15 16.5V19C15 20.1046 14.1046 21 13 21H6C4.89543 21 4 20.1046 4 19V5C4 3.89543 4.89543 3 6 3H13C14.1046 3 15 3.89543 15 5V8.0625M11 12H21M21 12L18.5 9.5M21 12L18.5 14.5" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M15 16.5V19C15 20.1046 14.1046 21 13 21H6C4.89543 21 4 20.1046 4 19V5C4 3.89543 4.89543 3 6 3H13C14.1046 3 15 3.89543 15 5V8.0625M11 12H21M21 12L18.5 9.5M21 12L18.5 14.5" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     <div>로그아웃</div>
                 </div>
@@ -62,13 +62,13 @@ export default function UserDropdown({ category }: { category: string }) {
                     justify-content: flex-start;
                     font-size: 13px;
                     top: 80px;
-                    margin-left: 180px;
+                    margin-left: 185px;
                     color: #111111;
                     border: 1px solid #e8e8e8;
                     background-color: #ffffff;
                     border-radius: 8px;
                     width: 160px;
-                    font-weight: 300;
+                    {/* font-weight: 300; */}
                 }
                 .on-contents-dropdown {
                     top: 60px;

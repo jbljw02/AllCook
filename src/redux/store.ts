@@ -5,6 +5,7 @@ import NutritionReducers from './features/nutritionSlice';
 import SortReducers from './features/sortSlice';
 import RecipeReducers from './features/recipeSlice';
 import UserReducers from './features/userSlice';
+import FavoriteRecipesReducers, { FavoriteRecipes } from './features/favoriteRecipeSlice';
 
 export type RootState = {
     recomMenu: Menu[],
@@ -19,6 +20,7 @@ export type RootState = {
     sortRule: '가나다순' | '추천순' | '저열량순' | '저지방순' | '저나트륨순' | '고단백질순',
     recipe: Menu,
     user: string,
+    favoriteRecipes: FavoriteRecipes[],
 }
 
 export type Menu = {
@@ -70,6 +72,7 @@ const combinedReducer = combineReducers({
     sortRule: SortReducers.sortRule,
     recipe: RecipeReducers.recipe,
     user: UserReducers.user,
+    favoriteRecipes: FavoriteRecipesReducers.favoriteRecipe,
 });
 
 // 전체 리듀서를 관리

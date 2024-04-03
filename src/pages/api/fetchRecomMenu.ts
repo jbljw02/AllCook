@@ -1,4 +1,4 @@
-import firebasedb from "@/firebase/firebasedb";
+import { firestore } from '@/firebase/firebasedb';
 import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { addDoc, collection } from "firebase/firestore";

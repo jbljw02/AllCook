@@ -636,11 +636,6 @@ export default function Recipe() {
                 <Footer />
             </div>
             <style jsx> {`
-                .container-float-top {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                }
                 .contents-container {
                     display: flex;
                     flex-direction: column;

@@ -217,6 +217,10 @@ export default function RecipeDetail() {
         dispatch(setRecipe(selectedMenu));
     }
 
+    const saveRecipe = () => {
+        
+    }
+
     return (
         <>
             <Seo title="레시피" />
