@@ -1,15 +1,16 @@
-import { FavoriteRecipes, setFavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";
+import { FavoriteRecipe, addFavoriteRecipeFolder } from "@/redux/features/favoriteRecipeSlice";
 import { RootState } from "@/redux/store";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function FolderList() {
     const dispatch = useDispatch();
 
-    const favoriteRecipes = useSelector((state: RootState) => state.favoriteRecipes);
+    const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
 
     const [isAddFolder, setIsAddFolder] = useState<boolean>(false); // 현재 새 폴더를 추가중인지
     const [newFolderName, setNewFolderName] = useState<string>(''); // 새 폴더의 이름
+    const nameRef = useRef<HTMLInputElement>(null);
 
     // 새 폴더의 이름을 변경
     const newFolderNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,13 +22,13 @@ export default function FolderList() {
         // 이름을 입력하고 엔터키를 누른 경우, 폴더가 추가됨
         if (e.key == 'Enter') {
             if (newFolderName.trim() !== '') {
-                dispatch(setFavoriteRecipe({ name: newFolderName }));
+                dispatch(addFavoriteRecipeFolder({ name: newFolderName, recipes: [] }));
                 setNewFolderName('');
                 setIsAddFolder(false);
             }
         }
         // ESC 키를 누를 경우, 폴더 추가 작업이 취소
-        else if(e.key === 'Escape') {
+        else if (e.key === 'Escape') {
             setIsAddFolder(false);
             setNewFolderName('');
         }
@@ -39,11 +40,23 @@ export default function FolderList() {
         setNewFolderName('');
     }
 
+    // 폴더 추가 작업을 시작
+    const addNewFolder = () => {
+        setIsAddFolder(true);
+    }
+    
+    // 폴더 추가 작업이 실행되면, 입력 포커스를 새 폴더의 input으로 이동
+    useEffect(() => {
+        if(isAddFolder && nameRef.current) {
+            nameRef.current.focus();
+        }
+    }, [isAddFolder])
+
     return (
         <>
             <div className="folder-list-section">
                 {
-                    favoriteRecipes.map((item: FavoriteRecipes) => {
+                    favoriteRecipe.map((item: FavoriteRecipe) => {
                         return (
                             <>
                                 <div className="folder">
@@ -63,6 +76,7 @@ export default function FolderList() {
                             <input
                                 className="new-folder-input"
                                 type="text"
+                                ref={nameRef}
                                 value={newFolderName}
                                 onChange={newFolderNameChange}
                                 onKeyDown={newFolderSave}
@@ -72,7 +86,7 @@ export default function FolderList() {
                         </div>
                     </div>
                 }
-                <div className="folder" onClick={() => setIsAddFolder(true)}>
+                <div className="folder" onClick={addNewFolder}>
                     <div className="folder-thumbnail add-folder-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="35px" height="35px" viewBox="0 0 24 24" fill="none">
                             <rect width="24" height="24" fill="white" />
@@ -98,7 +112,7 @@ export default function FolderList() {
                 .folder-thumbnail {
                     width: 290px;
                     height: 220px;
-                    background-color: #f9fafc;
+                    background-color: #f4f5f6;
                 }
                 .title {
                     margin-top: 12px;

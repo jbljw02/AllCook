@@ -3,7 +3,6 @@ import Seo from "@/components/Seo";
 import FolderList from "@/components/favoriteRecipe/FolderList";
 import Header from "@/components/header/Header";
 import HeaderOnContents from "@/components/header/HeaderOnContents";
-import { FavoriteRecipes, setFavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";
 import { RootState } from "@/redux/store";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
