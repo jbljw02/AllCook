@@ -1,4 +1,4 @@
-import firebasedb from '@/firebase/firebasedb';
+import { firestore } from '@/firebase/firebasedb';
 import { Menu } from '@/redux/store';
 import axios from 'axios';
 import { addDoc, collection } from 'firebase/firestore';
@@ -32,9 +32,9 @@ const fetchRecipe = async (req: NextApiRequest, res: NextApiResponse) => {
         // 필터링한 레시피들을 DB에 추가
         const promises = filteredRecipes.map((item: Menu) => {
             // DB에 'redipces'라는 컬렉션에 레시피 배열들을 하나씩 추가
-            addDoc(collection(firebasedb, 'recipes'), item);
+            addDoc(collection(firestore, 'recipes'), item);
         })
-        
+
         // 배열 중 하나라도 실패하면 거부(병렬 실행)
         await Promise.all(promises);
 

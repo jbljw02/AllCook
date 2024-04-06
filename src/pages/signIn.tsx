@@ -15,6 +15,7 @@ import { FirebaseError } from "firebase/app";
 import HeaderButton from "@/components/header/HeaderButton";
 import logout from "@/utils/logout";
 import EmailVerifyModal from "@/components/modal/EmailVerifyModal";
+import Seo from "@/components/Seo";
 
 export type loginForm = {
     email: string,
@@ -114,17 +115,6 @@ export default function login() {
         }
     }
 
-    // 비밀번호를 재설정
-    const resetPassword = async () => {
-        try {
-            await sendPasswordResetEmail(auth, 'jbljw02@naver.com');
-            alert('비밀번호 재설정 이메일이 발송되었습니다. 이메일을 확인해주세요.');
-        } catch (error) {
-            console.error("비밀번호 재설정 이메일 발송 실패: ", error);
-            alert('비밀번호 재설정 이메일을 보내는 데 실패했습니다.');
-        }
-    }
-
     // form을 전송함
     const formSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault(); // form의 기본 동작을 막음(조건이 만족해야 전송되도록)
@@ -170,6 +160,7 @@ export default function login() {
     return (
         <>
             <div className="container">
+                <Seo title="로그인" />
                 <HeaderButton />
                 <EmailVerifyModal
                     isSubmitted={isVerifyFail}
