@@ -113,6 +113,7 @@ export default function FolderList() {
                     width: 290px;
                     height: 220px;
                     background-color: #f4f5f6;
+                    border-radius: 3px;
                 }
                 .title {
                     margin-top: 12px;

@@ -196,13 +196,13 @@ export default function Recipe() {
         setSliderKey(sliderKey + 1);
     }
 
-    const [currentPage, setCurrentPage] = useState(1);  // 현재 페이지 번호
-    const trPerPage = 6;  // 한 페이지에 출력할 tr의 개수
-    const tdPerPage = 24;  // 한 페이지에 출력할 td의 개수
-    const [currentBlock, setCurrentBlock] = useState(1);  // 현재 페이지 블록의 번호
-    const pagesPerBlock = 10;  // 한 블록에 출력할 페이지 번호의 개수
-    const totalPagecount = Math.ceil(displayedMenu.length / tdPerPage);  // 전체 페이지의 수의 올림값
-    const startPage = (currentBlock - 1) * pagesPerBlock + 1;  // 페이지의 시작 인덱스
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 번호
+    const trPerPage = 6; // 한 페이지에 출력할 tr의 개수
+    const tdPerPage = 24; // 한 페이지에 출력할 td의 개수
+    const [currentBlock, setCurrentBlock] = useState(1); // 현재 페이지 블록의 번호
+    const pagesPerBlock = 10; // 한 블록에 출력할 페이지 번호의 개수
+    const totalPagecount = Math.ceil(displayedMenu.length / tdPerPage); // 전체 페이지의 수의 올림값
+    const startPage = (currentBlock - 1) * pagesPerBlock + 1; // 페이지의 시작 인덱스
     // 마지막 페이지는 10, 20, 30.. 등등이 마지막 페이지 번호가 아닐 수 있음
     // 그렇기 때문에 전체 페이지의 개수와 현재 블록의 마지막 인덱스중 더 작은 값을 endPage로 설정
     // ex) 23이 마지막 페이지 번호라고 한다면, 30과 23중엔 23이 작은 값이므로 23 할당

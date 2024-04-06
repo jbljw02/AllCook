@@ -1,5 +1,6 @@
-import { addRecipeToFolder } from '@/redux/features/favoriteRecipeSlice';
+import { addFavoriteRecipeFolder, addRecipeToFolder } from '@/redux/features/favoriteRecipeSlice';
 import { RootState } from '@/redux/store';
+import { useState, useEffect, useRef } from 'react';
 import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,6 +19,50 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
         await dispatch(addRecipeToFolder({ id, recipe }));
         setIsModalOpen(false);
     }
+
+    const [isAddFolder, setIsAddFolder] = useState<boolean>(false); // 현재 새 폴더를 추가중인지
+    const [newFolderName, setNewFolderName] = useState<string>(''); // 새 폴더의 이름
+    const nameRef = useRef<HTMLInputElement>(null);
+
+    // 새 폴더의 이름을 변경
+    const newFolderNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewFolderName(e.target.value);
+    }
+
+    // 새 폴더의 이름을 state에 push
+    const newFolderSave = (e: { key: string; }) => {
+        // 이름을 입력하고 엔터키를 누른 경우, 폴더가 추가됨
+        if (e.key == 'Enter') {
+            if (newFolderName.trim() !== '') {
+                dispatch(addFavoriteRecipeFolder({ name: newFolderName, recipes: [] }));
+                setNewFolderName('');
+                setIsAddFolder(false);
+            }
+        }
+        // ESC 키를 누를 경우, 폴더 추가 작업이 취소
+        else if (e.key === 'Escape') {
+            setIsAddFolder(false);
+            setNewFolderName('');
+        }
+    }
+
+    // 포커스를 input 밖으로 두면 폴더 추가 작업 취소
+    const newFolderBlur = () => {
+        setIsAddFolder(false);
+        setNewFolderName('');
+    }
+
+    // 폴더 추가 작업을 시작
+    const addNewFolder = () => {
+        setIsAddFolder(true);
+    }
+
+    // 폴더 추가 작업이 실행되면, 입력 포커스를 새 폴더의 input으로 이동
+    useEffect(() => {
+        if (isAddFolder && nameRef.current) {
+            nameRef.current.focus();
+        }
+    }, [isAddFolder])
 
     return (
         <>
@@ -76,6 +121,36 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
                                 )
                             })
                         }
+                        {
+                            // 폴더를 추가하려는 상태일 때만 보이도록 함
+                            isAddFolder &&
+                            <div className='folder-section'>
+                                <div className='folder-thumbnail'></div>
+                                <div className='folder-title-section'>
+                                    <input
+                                        className="new-folder-input"
+                                        type="text"
+                                        ref={nameRef}
+                                        value={newFolderName}
+                                        onChange={newFolderNameChange}
+                                        onKeyDown={newFolderSave}
+                                        onBlur={newFolderBlur}
+                                        placeholder="폴더의 이름을 정해주세요!"
+                                    />
+                                </div>
+                            </div>
+                        }
+                        <div
+                            className='folder-section dotted-folder'
+                            onClick={addNewFolder}
+                        >
+                            <svg className='plus' xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none">
+                                <rect width="24" height="24" fill="white" />
+                                <path d="M12 6V18" stroke="#949A9F" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M6 12H18" stroke="#949A9F" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div>새 폴더 만들기</div>
+                        </div>
                     </div>
                     {/* <div className='pop-up-footer'>
                         <div
@@ -105,7 +180,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
                 }
                 .title-all-folder {
                     font-size: 14.5px;
-                    margin-bottom: 12px;
+                    margin-bottom: 15px;
                 }
                 .pop-up-folder-list {
                     display: flex;
@@ -121,6 +196,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
                     flex-direction: row;
                     cursor: pointer;
                     margin-bottom: 15px;
+                    align-items: center;
                     width: 100%;
                     border: 1px solid #f4f5f6;
                     padding: 10px 0px 10px 15px;
@@ -142,6 +218,11 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
                     font-size: 14px;
                     margin-left: 16px;
                 }
+                .new-folder-input {
+                    outline: none;
+                    font-size: 14.5px;
+                    border: 1px solid transparent;
+                }
                 .folder-thumbnail {
                     width: 44px;
                     height: 44px;
@@ -152,6 +233,23 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
                 .folder-subtitle {
                     color: #949A9F;
                     font-weight: 300;
+                }
+                .dotted-folder {
+                    border: 1px dotted #d7d7d7;
+                    color: #949A9F;
+                    justify-content: center;
+                    font-size: 15px;
+                    padding-top: 17px;
+                    padding-bottom: 17px;
+                    cursor: pointer;
+                }
+                .dotted-folder div {
+                    margin-left: 4px;
+                    margin-right: 20px;
+                }
+                .plus {
+                    position: relative;
+                    top: 1px;
                 }
                 {/* .pop-up-footer {
                     display: flex;

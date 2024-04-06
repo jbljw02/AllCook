@@ -105,3 +105,9 @@ export default function SavedRecipe() {
         </>
     )
 }
+
+export const getStaticProps = () => {
+    return {
+        props: {}
+    }
+}

@@ -75,13 +75,24 @@ export default function RecipeDetail() {
         };
     }, [scrollPassContent]);
 
-    const [inputHover, setInputHover] = useState<boolean>(false);  // input 안에 마우스가 들어갔는지
+    const [inputHover, setInputHover] = useState<boolean>(false); // input 안에 마우스가 들어갔는지
 
-    const recipe = useSelector((state: RootState) => state.recipe);  // 레시피의 상세 정보를 담고있는 state
-    const [servings, setServings] = useState<number>(1);  // 레시피의 인분 수
-    const [recipeIngredients, setRecipeIngredients] = useState('');  // 레시피의 재료
-    const [recipeManual, setRecipeManual] = useState<string[]>([]);  // 레시피의 요리 방법
-    const [relatedRecipe, setRelatedRecipe] = useState<Menu[]>([]);  // 관련 레시피
+    const recipe = useSelector((state: RootState) => state.recipe); // 레시피의 상세 정보를 담고있는 state
+    const [servings, setServings] = useState<number>(1); // 레시피의 인분 수
+    const [recipeIngredients, setRecipeIngredients] = useState(''); // 레시피의 재료
+    const [recipeManual, setRecipeManual] = useState<string[]>([]); // 레시피의 요리 방법
+    const [relatedRecipe, setRelatedRecipe] = useState<Menu[]>([]); // 관련 레시피
+
+    useEffect(() => {
+        if(recipe.RCP_NM === "") {
+            let selectedRecipe = localStorage.getItem('selectedRecipe');
+            selectedRecipe = JSON.parse(selectedRecipe as string);
+            dispatch(setRecipe(selectedRecipe));
+        }
+        else {
+            localStorage.setItem('selectedRecipe', JSON.stringify(recipe));
+        }
+    }, [])
 
     useEffect(() => {
         // 레시피의 재료 문자열을 가공함
@@ -123,26 +134,28 @@ export default function RecipeDetail() {
         let recipeWithCount: { recipe: Menu, count: number }[] = [];
         let newRelatedRecipe: Menu[] = [];
 
-        allMenu.forEach(recipeItem => {
-            // 형식을 통일하기 위해 재료 정보를 가공
-            let filteredString = filterIngredString(recipeItem);
-            let ingredArray = filteredString.split(', ');
-            let ingredString = exportIngredientsName(ingredArray);
-
-            // 공통된 재료를 사용하는 레시피를 찾고, 공통분모가 되는 재료가 몇 개인지 카운트
-            let commonIngred = ingredString.filter(item => ingredNames.includes(item));
-            // 현재 선택된 레시피와 동일한 레시피는 제외
-            if (recipe.RCP_SEQ !== recipeItem.RCP_SEQ) {
-                recipeWithCount.push({ recipe: recipeItem, count: commonIngred.length });
-            }
-        })
-        // 겹치는 재료가 많은 순으로 내림차순 정렬
-        recipeWithCount.sort((a, b) => b.count - a.count);
-        // 상위 4개의 레시피만 추출하여 state 업데이트
-        newRelatedRecipe = recipeWithCount.slice(0, 4).map(item => item.recipe);
-        setRelatedRecipe(newRelatedRecipe);
+        if(Array.isArray(allMenu)) {
+            allMenu.forEach(recipeItem => {
+                // 형식을 통일하기 위해 재료 정보를 가공
+                let filteredString = filterIngredString(recipeItem);
+                let ingredArray = filteredString.split(', ');
+                let ingredString = exportIngredientsName(ingredArray);
+                
+                // 공통된 재료를 사용하는 레시피를 찾고, 공통분모가 되는 재료가 몇 개인지 카운트
+                let commonIngred = ingredString.filter(item => ingredNames.includes(item));
+                // 현재 선택된 레시피와 동일한 레시피는 제외
+                if (recipe.RCP_SEQ !== recipeItem.RCP_SEQ) {
+                    recipeWithCount.push({ recipe: recipeItem, count: commonIngred.length });
+                }
+            })
+            // 겹치는 재료가 많은 순으로 내림차순 정렬
+            recipeWithCount.sort((a, b) => b.count - a.count);
+            // 상위 4개의 레시피만 추출하여 state 업데이트
+            newRelatedRecipe = recipeWithCount.slice(0, 4).map(item => item.recipe);
+            setRelatedRecipe(newRelatedRecipe);
+        }
     }
-
+        
     // 인분 수의 덧셈, 뺄셈
     const calculateServings = (param: string) => {
         if (param === 'plus') {
@@ -721,4 +734,10 @@ export default function RecipeDetail() {
             `}</style>
         </>
     )
+}
+
+export const getStaticProps = () => {
+    return {
+        props: {}
+    }
 }
