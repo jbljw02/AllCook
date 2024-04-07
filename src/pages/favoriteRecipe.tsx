@@ -88,7 +88,7 @@ export default function SavedRecipe() {
                     flex-direction: column;
                     color: #111111;
                     margin-top: 80px;
-                    margin-left: 250px;
+                    margin-left: 270px;
                     margin-right: auto;
                     width: auto;
                     height: 100%;

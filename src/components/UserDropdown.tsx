@@ -3,11 +3,8 @@ import logout from "@/utils/logout";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import Image from "next/image";
-import bookmarkSvg from "../../public/svgs/bookmark.svg";
-import userSvg from '../../public/svgs/name.svg';
 
-export default function UserDropdown({ category }: { category: string }) {
+export default function UserDropdown({ category}: { category: string }) {
     const router = useRouter();
     const dispatch = useDispatch();
 
@@ -22,7 +19,7 @@ export default function UserDropdown({ category }: { category: string }) {
         <>
             <div className={`${category === 'header' ?
                 'user-detail-dropdown' :
-                'on-contents-dropdown'} 
+                'on-contents-dropdown user-detail-dropdown'} 
                 ${isHovered ?
                     'hovered' :
                     ''}`}>
@@ -68,28 +65,14 @@ export default function UserDropdown({ category }: { category: string }) {
                     background-color: #ffffff;
                     border-radius: 8px;
                     width: 160px;
+                    z-index: 1000;
+                    border-bottom: none;
                     {/* font-weight: 300; */}
                 }
                 .on-contents-dropdown {
-                    top: 60px;
-                    border: 1px solid #e8e8e8;
-                    border-bottom: none;
+                    top: 60px !important;
                 }
                 .user-detail-dropdown::before {
-                    content: "";
-                    position: absolute;
-                    top: -10px;
-                    right: 15px; 
-                    width: 0;
-                    height: 0;
-                    border-left: 10px solid transparent; 
-                    border-right: 10px solid transparent; 
-                    border-bottom: 10px solid #ffffff; 
-                }
-                .user-detail-dropdown.hovered::before {
-                    border-bottom: 10px solid #f2f2f2; 
-                }
-                .on-contents-dropdown::before {
                     content: "";
                     position: absolute;
                     top: -10px; 
@@ -100,7 +83,7 @@ export default function UserDropdown({ category }: { category: string }) {
                     border-right: 10px solid transparent; 
                     border-bottom: 10px solid #e8e8e8;
                 }
-                .on-contents-dropdown::after {
+                .user-detail-dropdown::after {
                     content: "";
                     position: absolute;
                     top: -9px; 
@@ -111,7 +94,7 @@ export default function UserDropdown({ category }: { category: string }) {
                     border-right: 9px solid transparent;
                     border-bottom: 9px solid #ffffff; 
                 }
-                .on-contents-dropdown.hovered::after {
+                .user-detail-dropdown.hovered::after {
                     border-bottom: 9px solid #f2f2f2;
                 }
                 .user-detail-div {
@@ -122,6 +105,8 @@ export default function UserDropdown({ category }: { category: string }) {
                     cursor: pointer;
                     padding: 10px 5px 10px 10px;
                     border-bottom: 1px solid #e8e8e8;
+                }
+                .user-detail-div:last-child {
                 }
                 .user-detail-div:hover {
                     background-color: #f2f2f2;

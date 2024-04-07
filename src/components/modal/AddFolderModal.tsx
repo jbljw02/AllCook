@@ -1,22 +1,52 @@
-import { addFavoriteRecipeFolder, addRecipeToFolder } from '@/redux/features/favoriteRecipeSlice';
+import { addFavoriteRecipeFolder, addRecipeToFolder, removeRecipeFromFolder, setAddedRecipeInfo, setRecipeMoveModal } from '@/redux/features/favoriteRecipeSlice';
 import { RootState } from '@/redux/store';
 import { useState, useEffect, useRef } from 'react';
 import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
+import RecipeThumbnail from '../favoriteRecipe/RecipeThumbnail';
 
 interface modalProps {
     isModalOpen: boolean,
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    isMoving?: boolean,
+    prevFolderId?: number,
 }
 
-export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalProps) {
+export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving, prevFolderId }: modalProps) {
     const dispatch = useDispatch();
 
     const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
     const recipe = useSelector((state: RootState) => state.recipe);
+    const recipeMoveModal = useSelector((state: RootState) => state.recipeMoveModal);
+    console.log("모달 : ", recipeMoveModal);
 
-    const addFavoriteRecipe = async (id: number) => {
-        await dispatch(addRecipeToFolder({ id, recipe }));
+    // 레시피를 다른 폴더로 이동시킴
+    const moveRecipeToAnotherFolder = async (newFolderId: number) => {
+        // 레시피를 추가한 이전 폴더에서 레시피를 삭제
+        await dispatch(removeRecipeFromFolder({
+            forderId: prevFolderId,
+            recipeNum: recipe.RCP_SEQ,
+        }))
+        // 이동시킬 폴더에 레시피를 추가
+        await dispatch(addRecipeToFolder({
+            folderId: newFolderId,
+            recipe: recipe
+        }))
+        dispatch(setRecipeMoveModal(false));
+    }
+
+    // 레시피를 폴더에 추가하고 모달을 닫음
+    const addFavoriteRecipe = async (id: number, folderName: string) => {
+        await dispatch(addRecipeToFolder({
+            folderId: id,
+            recipe: recipe
+        }));
+        // 추가한 레시피의 상세 정보를 업데이트(팝업을 띄우기 위해)
+        await dispatch(setAddedRecipeInfo({
+            folderId: id,
+            imgString: recipe.ATT_FILE_NO_MAIN,
+            folderName: folderName,
+        }))
         setIsModalOpen(false);
     }
 
@@ -101,10 +131,15 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
                                 return (
                                     <div
                                         className='folder-section'
-                                        onClick={() => addFavoriteRecipe(item.id)}
-                                        key={item.id}
-                                    >
-                                        <div className='folder-thumbnail'></div>
+                                        onClick={() => {
+                                            isMoving ?
+                                                moveRecipeToAnotherFolder(item.folderId) :
+                                                addFavoriteRecipe(item.folderId, item.name)
+                                        }}
+                                        key={item.folderId}>
+                                        <div className='folder-thumbnail'>
+                                            <RecipeThumbnail recipes={item.recipes} />
+                                        </div>
                                         <div className='folder-title-section'>
                                             <div className='folder-title'>
                                                 {item.name}
@@ -142,8 +177,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
                         }
                         <div
                             className='folder-section dotted-folder'
-                            onClick={addNewFolder}
-                        >
+                            onClick={addNewFolder}>
                             <svg className='plus' xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none">
                                 <rect width="24" height="24" fill="white" />
                                 <path d="M12 6V18" stroke="#949A9F" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />

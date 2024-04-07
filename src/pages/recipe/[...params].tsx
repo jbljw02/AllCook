@@ -3,17 +3,17 @@ import HeaderOnContents from '../../components/header/HeaderOnContents';
 import Footer from '../../components/Footer';
 import Seo from "../../components/Seo";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
 import { RootState, wrapper, Menu } from "../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { filterIngredString } from "@/utils/filterIngredString";
 import { adjustForServings } from "@/utils/adjustForServings";
-import { nutritionInfoSlice } from "@/redux/features/nutritionSlice";
 import moveToDetail from "@/utils/moveToDetail";
 import { setRecipe } from "@/redux/features/recipeSlice";
 import { setAllMenu, setDisplayedMenu } from "@/redux/features/menuSlice";
 import AddFolderModal from "@/components/modal/AddFolderModal";
+import AddCompletePopUp from "@/components/favoriteRecipe/AddCompletePopUp";
+import { setAddedRecipeInfo } from "@/redux/features/favoriteRecipeSlice";
 
 export default function RecipeDetail() {
     const dispatch = useDispatch();
@@ -84,11 +84,13 @@ export default function RecipeDetail() {
     const [relatedRecipe, setRelatedRecipe] = useState<Menu[]>([]); // 관련 레시피
 
     useEffect(() => {
-        if(recipe.RCP_NM === "") {
+        // 페이지를 새로고침 하면 state가 초기화되기 때문에, 로컬 스토리지에서 선택된 레시피를 가져와서 업데이트
+        if (recipe.RCP_NM === "") {
             let selectedRecipe = localStorage.getItem('selectedRecipe');
             selectedRecipe = JSON.parse(selectedRecipe as string);
             dispatch(setRecipe(selectedRecipe));
         }
+        // 페이지에 도착하면 로컬 스토리지에 현재 선택된 레시피를 담음
         else {
             localStorage.setItem('selectedRecipe', JSON.stringify(recipe));
         }
@@ -134,13 +136,13 @@ export default function RecipeDetail() {
         let recipeWithCount: { recipe: Menu, count: number }[] = [];
         let newRelatedRecipe: Menu[] = [];
 
-        if(Array.isArray(allMenu)) {
+        if (Array.isArray(allMenu)) {
             allMenu.forEach(recipeItem => {
                 // 형식을 통일하기 위해 재료 정보를 가공
                 let filteredString = filterIngredString(recipeItem);
                 let ingredArray = filteredString.split(', ');
                 let ingredString = exportIngredientsName(ingredArray);
-                
+
                 // 공통된 재료를 사용하는 레시피를 찾고, 공통분모가 되는 재료가 몇 개인지 카운트
                 let commonIngred = ingredString.filter(item => ingredNames.includes(item));
                 // 현재 선택된 레시피와 동일한 레시피는 제외
@@ -155,7 +157,7 @@ export default function RecipeDetail() {
             setRelatedRecipe(newRelatedRecipe);
         }
     }
-        
+
     // 인분 수의 덧셈, 뺄셈
     const calculateServings = (param: string) => {
         if (param === 'plus') {
@@ -235,11 +237,48 @@ export default function RecipeDetail() {
         setIsAddFolderModal(true);
     }
 
+    const addedRecipeInfo = useSelector((state: RootState) => state.addedRecipeInfo);
+    const [isShowPopUp, setIsShowPopUp] = useState<boolean>(false);
+    const recipeMoveModal = useSelector((state: RootState) => state.recipeMoveModal);
+
+    console.log("모달 : ", recipeMoveModal);
+    // 레시피 추가 완료 팝업을 관리
+    const handleCompletePopUp = () => {
+        // 레시피 추가 정보가 존재하는 경우에만 팝업 띄우도록
+        if (addedRecipeInfo.folderName !== '') {
+            setIsShowPopUp(true);
+
+            // 5초 후에 팝업을 제거, state도 초기 상태로 돌려놓아 레시피가 추가됐을 때만 팝업이 올라오도록
+            setTimeout(() => {
+                dispatch(setAddedRecipeInfo({
+                    folderId: null,
+                    imgString: '',
+                    folderName: '',
+                }))
+                setIsShowPopUp(false);
+            }, 4000);
+        }
+    }
+
+    useEffect(() => {
+        if (!recipeMoveModal) {
+            handleCompletePopUp();
+        }
+    }, [addedRecipeInfo, recipeMoveModal]);
+
     return (
         <>
             <Seo title="레시피" />
             <div ref={contentsRef} className="contents-ref"></div>
             <div className="container">
+                {
+                    isShowPopUp &&
+                    <AddCompletePopUp
+                        folderId={addedRecipeInfo.folderId}
+                        imgString={addedRecipeInfo.imgString}
+                        folderName={addedRecipeInfo.folderName}
+                    />
+                }
                 <div className="header-container">
                     {
                         // 스크롤이 contents-container 영역을 지나치면 헤더가 사라지도록 설정
@@ -277,8 +316,7 @@ export default function RecipeDetail() {
                         <div className="recipe-img-section">
                             <div
                                 className="recipe-button-div"
-                                onClick={saveRecipe}
-                            >
+                                onClick={saveRecipe}>
                                 <AddFolderModal
                                     isModalOpen={isAddFolderModal}
                                     setIsModalOpen={setIsAddFolderModal}
@@ -736,7 +774,7 @@ export default function RecipeDetail() {
     )
 }
 
-export const getStaticProps = () => {
+export const getServerSideProps = () => {
     return {
         props: {}
     }
