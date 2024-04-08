@@ -5,7 +5,7 @@ import NutritionReducers from './features/nutritionSlice';
 import SortReducers from './features/sortSlice';
 import RecipeReducers from './features/recipeSlice';
 import UserReducers from './features/userSlice';
-import FavoriteRecipeReducers, { FavoriteRecipe } from './features/favoriteRecipeSlice';
+import FavoriteRecipeReducers, { FavoriteRecipe, AddedRecipeInfo } from './features/favoriteRecipeSlice';
 
 export type RootState = {
     recomMenu: Menu[],
@@ -21,6 +21,8 @@ export type RootState = {
     recipe: Menu,
     user: string,
     favoriteRecipe: FavoriteRecipe[],
+    addedRecipeInfo: AddedRecipeInfo,
+    recipeMoveModal: boolean,
 }
 
 export type Menu = {
@@ -73,6 +75,8 @@ const combinedReducer = combineReducers({
     recipe: RecipeReducers.recipe,
     user: UserReducers.user,
     favoriteRecipe: FavoriteRecipeReducers.favoriteRecipe,
+    addedRecipeInfo: FavoriteRecipeReducers.addedRecipeInfo,
+    recipeMoveModal: FavoriteRecipeReducers.recipeMoveModal,
 });
 
 // 전체 리듀서를 관리

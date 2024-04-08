@@ -1,24 +1,76 @@
-import { addFavoriteRecipeFolder, addRecipeToFolder } from '@/redux/features/favoriteRecipeSlice';
+import { addFavoriteRecipeFolder, addRecipeToFolder, removeRecipeFromFolder, setAddedRecipeInfo, setRecipeMoveModal } from '@/redux/features/favoriteRecipeSlice';
 import { RootState } from '@/redux/store';
 import { useState, useEffect, useRef } from 'react';
 import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
+import RecipeThumbnail from '../favoriteRecipe/RecipeThumbnail';
 
 interface modalProps {
     isModalOpen: boolean,
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    isMoving?: boolean,
+    prevFolderId?: number,
 }
 
-export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalProps) {
+export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving, prevFolderId }: modalProps) {
     const dispatch = useDispatch();
 
     const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
     const recipe = useSelector((state: RootState) => state.recipe);
+    const recipeMoveModal = useSelector((state: RootState) => state.recipeMoveModal);
 
-    const addFavoriteRecipe = async (id: number) => {
-        await dispatch(addRecipeToFolder({ id, recipe }));
-        setIsModalOpen(false);
+    // 레시피를 다른 폴더로 이동시킴
+    const moveRecipeToAnotherFolder = async (newFolderId: number) => {
+        // 레시피를 추가한 이전 폴더에서 레시피를 삭제
+        await dispatch(removeRecipeFromFolder({
+            forderId: prevFolderId,
+            recipeNum: recipe.RCP_SEQ,
+        }))
+        // 이동시킬 폴더에 레시피를 추가
+        await dispatch(addRecipeToFolder({
+            folderId: newFolderId,
+            recipe: recipe
+        }))
+        dispatch(setRecipeMoveModal(false));
     }
+
+    // 레시피를 폴더에 추가하고 모달을 닫음
+    const addFavoriteRecipe = async (id: number, folderName: string) => {
+        let targetFolder = favoriteRecipe.find(folder => folder.folderId === id);
+        let targetRecipe = targetFolder?.recipes.find(item => item === recipe);
+
+        // 폴더 내에 동일한 레시피가 존재하지 않을 경우
+        if (targetRecipe === undefined) {
+            await dispatch(addRecipeToFolder({
+                folderId: id,
+                recipe: recipe
+            }));
+            // 추가한 레시피의 상세 정보를 업데이트(팝업을 띄우기 위해)
+            await dispatch(setAddedRecipeInfo({
+                folderId: id,
+                imgString: recipe.ATT_FILE_NO_MAIN,
+                folderName: folderName,
+            }))
+            setIsRecipeDuplicated({
+                folderId: id,
+                duplicated: false,
+            });
+            setIsModalOpen(false);
+            dispatch(setRecipeMoveModal(false));
+        }
+        else {
+            setIsRecipeDuplicated({
+                folderId: id,
+                duplicated: true,
+            });
+        }
+    }
+
+    // N번 폴더에 이미 레시피가 존재하는지 여부
+    const [isRecipeDuplicated, setIsRecipeDuplicated] = useState({
+        folderId: 0,
+        duplicated: false,
+    });
 
     const [isAddFolder, setIsAddFolder] = useState<boolean>(false); // 현재 새 폴더를 추가중인지
     const [newFolderName, setNewFolderName] = useState<string>(''); // 새 폴더의 이름
@@ -35,8 +87,8 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
         if (e.key == 'Enter') {
             if (newFolderName.trim() !== '') {
                 dispatch(addFavoriteRecipeFolder({ name: newFolderName, recipes: [] }));
-                setNewFolderName('');
                 setIsAddFolder(false);
+                setNewFolderName('');
             }
         }
         // ESC 키를 누를 경우, 폴더 추가 작업이 취소
@@ -51,6 +103,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
         setIsAddFolder(false);
         setNewFolderName('');
     }
+
 
     // 폴더 추가 작업을 시작
     const addNewFolder = () => {
@@ -99,25 +152,36 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
                         {
                             favoriteRecipe.map((item) => {
                                 return (
-                                    <div
-                                        className='folder-section'
-                                        onClick={() => addFavoriteRecipe(item.id)}
-                                        key={item.id}
-                                    >
-                                        <div className='folder-thumbnail'></div>
-                                        <div className='folder-title-section'>
-                                            <div className='folder-title'>
-                                                {item.name}
+                                    <>
+                                        <div
+                                            className='folder-section'
+                                            id={(isRecipeDuplicated.folderId === item.folderId && isRecipeDuplicated.duplicated) ?
+                                                'duplicated-border' :
+                                                ''}
+                                            onClick={() => {
+                                                isMoving ?
+                                                    moveRecipeToAnotherFolder(item.folderId) :
+                                                    addFavoriteRecipe(item.folderId, item.name)
+                                            }}
+                                            key={item.folderId}>
+                                            <div className='folder-thumbnail'>
+                                                <RecipeThumbnail recipes={item.recipes} />
                                             </div>
-                                            <div className='folder-subtitle'>
-                                                {
-                                                    Array.isArray(item.recipes) &&
-                                                    item.recipes.length
-                                                }
-                                                개의 항목
+                                            <div className='folder-title-section'>
+                                                <div className='folder-title'>
+                                                    {item.name}
+                                                </div>
+                                                <div className='folder-subtitle'>
+                                                    {Array.isArray(item.recipes) && item.recipes.length}개의 항목
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        {
+                                            (isRecipeDuplicated.folderId === item.folderId
+                                                && isRecipeDuplicated.duplicated) &&
+                                            <div className='duplicated-recipe'>폴더 내에 이미 동일한 레시피가 존재합니다</div>
+                                        }
+                                    </>
                                 )
                             })
                         }
@@ -141,9 +205,8 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
                             </div>
                         }
                         <div
-                            className='folder-section dotted-folder'
-                            onClick={addNewFolder}
-                        >
+                            className='dotted-folder'
+                            onClick={addNewFolder}>
                             <svg className='plus' xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none">
                                 <rect width="24" height="24" fill="white" />
                                 <path d="M12 6V18" stroke="#949A9F" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
@@ -152,11 +215,6 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
                             <div>새 폴더 만들기</div>
                         </div>
                     </div>
-                    {/* <div className='pop-up-footer'>
-                        <div
-                            className="close-btn"
-                            onClick={() => setIsModalOpen(false)}>닫기</div>
-                    </div> */}
                 </div>
             </Modal >
             <style jsx>{`
@@ -207,8 +265,11 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
                 .folder-section:hover {
                     border-color: rgb(130, 130, 130);
                 }
-                .folder-section:last-child {
+                .folder-section:last-of-type {
                     margin-bottom: 0px;
+                }
+                #duplicated-border {
+                    border: 1px solid #ff0000;
                 }
                 .folder-title-section {
                     display: flex;
@@ -234,14 +295,30 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen }: modalPro
                     color: #949A9F;
                     font-weight: 300;
                 }
+                .duplicated-recipe {
+                    margin-top: -9px;
+                    margin-bottom: 13px;
+                    font-size: 12.5px;
+                    color: #FF0000;
+                }
                 .dotted-folder {
+                    display: flex;
+                    flex-direction: row;
+                    cursor: pointer;
+                    align-items: center;
+                    width: 100%;
+                    padding: 17px 0px 17px 15px;
+                    border-radius: 10px;
+                    margin-left: -4px;
+                    transition: border-color 0.2s ease;
                     border: 1px dotted #d7d7d7;
                     color: #949A9F;
                     justify-content: center;
                     font-size: 15px;
-                    padding-top: 17px;
-                    padding-bottom: 17px;
                     cursor: pointer;
+                }
+                .dotted-folder:hover {
+                    border-color: rgb(97, 97, 97);
                 }
                 .dotted-folder div {
                     margin-left: 4px;

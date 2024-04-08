@@ -1,7 +1,8 @@
 import { FavoriteRecipe, addFavoriteRecipeFolder } from "@/redux/features/favoriteRecipeSlice";
-import { RootState } from "@/redux/store";
+import { Menu, RootState } from "@/redux/store";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import RecipeThumbnail from "./RecipeThumbnail";
 
 export default function FolderList() {
     const dispatch = useDispatch();
@@ -44,23 +45,26 @@ export default function FolderList() {
     const addNewFolder = () => {
         setIsAddFolder(true);
     }
-    
+
     // 폴더 추가 작업이 실행되면, 입력 포커스를 새 폴더의 input으로 이동
     useEffect(() => {
-        if(isAddFolder && nameRef.current) {
+        if (isAddFolder && nameRef.current) {
             nameRef.current.focus();
         }
-    }, [isAddFolder])
+    }, [isAddFolder]);
+
 
     return (
         <>
             <div className="folder-list-section">
                 {
-                    favoriteRecipe.map((item: FavoriteRecipe) => {
+                    favoriteRecipe.map((item: FavoriteRecipe, index: number) => {
                         return (
                             <>
                                 <div className="folder">
-                                    <div className="folder-thumbnail"></div>
+                                    <div className="folder-thumbnail">
+                                        <RecipeThumbnail recipes={item.recipes} />
+                                    </div>
                                     <div className="title">{item.name}</div>
                                 </div>
                             </>
@@ -110,8 +114,8 @@ export default function FolderList() {
                     cursor: pointer;
                 }
                 .folder-thumbnail {
-                    width: 290px;
-                    height: 220px;
+                    width: 280px;
+                    height: 280px;
                     background-color: #f4f5f6;
                     border-radius: 3px;
                 }
