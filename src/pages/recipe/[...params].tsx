@@ -13,7 +13,7 @@ import { setRecipe } from "@/redux/features/recipeSlice";
 import { setAllMenu, setDisplayedMenu } from "@/redux/features/menuSlice";
 import AddFolderModal from "@/components/modal/AddFolderModal";
 import AddCompletePopUp from "@/components/favoriteRecipe/AddCompletePopUp";
-import { setAddedRecipeInfo } from "@/redux/features/favoriteRecipeSlice";
+import { setAddedRecipeInfo, setRecipeMoveModal } from "@/redux/features/favoriteRecipeSlice";
 
 export default function RecipeDetail() {
     const dispatch = useDispatch();
@@ -241,7 +241,6 @@ export default function RecipeDetail() {
     const [isShowPopUp, setIsShowPopUp] = useState<boolean>(false);
     const recipeMoveModal = useSelector((state: RootState) => state.recipeMoveModal);
 
-    console.log("모달 : ", recipeMoveModal);
     // 레시피 추가 완료 팝업을 관리
     const handleCompletePopUp = () => {
         // 레시피 추가 정보가 존재하는 경우에만 팝업 띄우도록
@@ -261,9 +260,7 @@ export default function RecipeDetail() {
     }
 
     useEffect(() => {
-        if (!recipeMoveModal) {
-            handleCompletePopUp();
-        }
+        handleCompletePopUp();
     }, [addedRecipeInfo, recipeMoveModal]);
 
     return (
@@ -273,12 +270,19 @@ export default function RecipeDetail() {
             <div className="container">
                 {
                     isShowPopUp &&
+                    // 레시피 추가 완료 시 띄울 팝업
                     <AddCompletePopUp
-                        folderId={addedRecipeInfo.folderId}
                         imgString={addedRecipeInfo.imgString}
                         folderName={addedRecipeInfo.folderName}
                     />
                 }
+                {/* 레시피의 폴더 변경 시 띄울 모달 */}
+                <AddFolderModal
+                    isModalOpen={recipeMoveModal}
+                    setIsModalOpen={(isOpen) => dispatch(setRecipeMoveModal(isOpen))}
+                    isMoving={true}
+                    prevFolderId={addedRecipeInfo.folderId}
+                />
                 <div className="header-container">
                     {
                         // 스크롤이 contents-container 영역을 지나치면 헤더가 사라지도록 설정

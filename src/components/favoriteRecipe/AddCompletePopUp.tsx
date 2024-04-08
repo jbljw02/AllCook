@@ -1,28 +1,19 @@
 import Image from "next/image"
-import AddFolderModal from "../modal/AddFolderModal"
 import { useDispatch, useSelector } from "react-redux";
 import { setRecipeMoveModal } from "@/redux/features/favoriteRecipeSlice";
-import { RootState } from "@/redux/store";
 
 type ParamsType = {
     imgString: string,
     folderName: string,
-    folderId: number,
 }
 
-export default function AddCompletePopUp({ imgString, folderId, folderName }: ParamsType) {
+export default function AddCompletePopUp({ imgString, folderName }: ParamsType) {
     const dispatch = useDispatch();
 
-    const recipeMoveModal = useSelector((state: RootState) => state.recipeMoveModal);
     return (
         <>
             <div className="add-complete-container fade-in">
-                <AddFolderModal
-                    isModalOpen={recipeMoveModal}
-                    setIsModalOpen={(isOpen) => dispatch(setRecipeMoveModal(isOpen))}
-                    isMoving={true}
-                    prevFolderId={folderId}
-                />
+
                 <Image style={{ borderRadius: '3px' }} width={42} height={42} src={imgString} alt="" />
                 <div className="add-complete-section">
                     <div className="title">
