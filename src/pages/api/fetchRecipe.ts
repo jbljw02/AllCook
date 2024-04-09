@@ -27,8 +27,6 @@ const fetchRecipe = async (req: NextApiRequest, res: NextApiResponse) => {
             return match === null && !excludeSeqs.includes(item.RCP_SEQ);
         })
 
-        console.log("길이 : ", filteredRecipes.length);
-
         // 필터링한 레시피들을 DB에 추가
         const promises = filteredRecipes.map((item: Menu) => {
             // DB에 'redipces'라는 컬렉션에 레시피 배열들을 하나씩 추가

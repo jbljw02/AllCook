@@ -17,30 +17,52 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving, 
 
     const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
     const recipe = useSelector((state: RootState) => state.recipe);
-    const recipeMoveModal = useSelector((state: RootState) => state.recipeMoveModal);
+
+    // 폴더 내에 동일한 레시피가 존재하는지 판별
+    const isDuplicatedRecipe = (id: number) => {
+        const targetFolder = favoriteRecipe.find(folder => folder.folderId === id);
+        const targetRecipe = targetFolder?.recipes.find(item => item === recipe);
+
+        // 폴더 내에 중복된 레시피가 없는 경우
+        if (targetRecipe === undefined) {
+            return false;
+        }
+        // 중복된 레시피가 있는 경우
+        else {
+            return true;
+        }
+    }
 
     // 레시피를 다른 폴더로 이동시킴
     const moveRecipeToAnotherFolder = async (newFolderId: number) => {
-        // 레시피를 추가한 이전 폴더에서 레시피를 삭제
-        await dispatch(removeRecipeFromFolder({
-            forderId: prevFolderId,
-            recipeNum: recipe.RCP_SEQ,
-        }))
-        // 이동시킬 폴더에 레시피를 추가
-        await dispatch(addRecipeToFolder({
-            folderId: newFolderId,
-            recipe: recipe
-        }))
-        dispatch(setRecipeMoveModal(false));
+        const isDuplicated = isDuplicatedRecipe(newFolderId);
+
+        if (!isDuplicated) {
+            // 레시피를 추가한 이전 폴더에서 레시피를 삭제
+            await dispatch(removeRecipeFromFolder({
+                forderId: prevFolderId,
+                recipeNum: recipe.RCP_SEQ,
+            }))
+            // 이동시킬 폴더에 레시피를 추가
+            await dispatch(addRecipeToFolder({
+                folderId: newFolderId,
+                recipe: recipe
+            }))
+            dispatch(setRecipeMoveModal(false));
+        }
+        else {
+            setIsRecipeDuplicated({
+                folderId: newFolderId,
+                duplicated: true,
+            });
+        }
     }
 
     // 레시피를 폴더에 추가하고 모달을 닫음
     const addFavoriteRecipe = async (id: number, folderName: string) => {
-        let targetFolder = favoriteRecipe.find(folder => folder.folderId === id);
-        let targetRecipe = targetFolder?.recipes.find(item => item === recipe);
+        const isDuplicated = isDuplicatedRecipe(id);
 
-        // 폴더 내에 동일한 레시피가 존재하지 않을 경우
-        if (targetRecipe === undefined) {
+        if (!isDuplicated) {
             await dispatch(addRecipeToFolder({
                 folderId: id,
                 recipe: recipe
