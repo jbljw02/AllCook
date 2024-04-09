@@ -1,14 +1,9 @@
-import kakaoLogin from "../../public/images/kakao_login.png"
 import Image from "next/image";
-import googleLogin from '../../public/svgs/googleLogin.svg';
-import backSvg from '../../public/svgs/backBtn.svg';
-import closeSvg from '../../public/svgs/closeBtn.svg';
 import { useState } from "react";
 import { auth, firestore } from "@/firebase/firebasedb";
 import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { setUser } from "@/redux/features/userSlice";
 import googleIcon from '../../public/svgs/google-icon.svg';
 import { FirebaseError } from "firebase/app";
@@ -16,6 +11,8 @@ import HeaderButton from "@/components/header/HeaderButton";
 import logout from "@/utils/logout";
 import EmailVerifyModal from "@/components/modal/EmailVerifyModal";
 import Seo from "@/components/Seo";
+import googleAuth from "@/utils/googleAuth";
+import { RootState } from "@/redux/store";
 
 export type loginForm = {
     email: string,
@@ -140,22 +137,12 @@ export default function login() {
         }
     }
 
-    const googleAuth = async () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                // 구글 인증 성공
-                const user = result.user;
-                if (user.displayName !== null) {
-                    dispatch(setUser((user.displayName).slice(0, 3)));
-                }
-                router.push('/')
-            })
-            .catch((error) => {
-                // 인증 실패 처리
-                console.error("구글 인증 실패: ", error);
-            });
-    };
+    const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
+
+    const googleLogin = () => {
+        const userName = googleAuth(favoriteRecipe);
+        dispatch(setUser(userName));
+    }
 
     return (
         <>
@@ -260,7 +247,7 @@ export default function login() {
                         </form>
                         <div
                             className="social-login-container"
-                            onClick={googleAuth}>
+                            onClick={googleLogin}>
                             <Image
                                 src={googleIcon}
                                 className="google-svg"

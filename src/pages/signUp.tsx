@@ -1,8 +1,4 @@
-import kakaoLogin from "../../public/images/kakao_login.png"
 import Image from "next/image";
-import googleLogin from '../../public/svgs/googleLogin.svg';
-import backSvg from '../../public/svgs/backBtn.svg';
-import closeSvg from '../../public/svgs/closeBtn.svg';
 import { useEffect, useState } from "react";
 import { auth, firestore } from "@/firebase/firebasedb";
 import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, createUserWithEmailAndPassword, updateProfile, sendEmailVerification, User } from "firebase/auth";
@@ -17,6 +13,8 @@ import HeaderButton from "@/components/header/HeaderButton";
 import EmailVerifyModal from "@/components/modal/EmailVerifyModal";
 import { FirebaseError } from "firebase/app";
 import Seo from "@/components/Seo";
+import googleAuth from "@/utils/googleAuth";
+import sendUserInitialData from "@/utils/sendUserInitialData";
 
 export type signUpForm = {
     name: string,
@@ -162,6 +160,13 @@ export default function login() {
         }
     }
 
+    const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
+
+    const googleLogin = () => {
+        const userName = googleAuth(favoriteRecipe);
+        dispatch(setUser(userName));
+    }
+
     // form을 전송함
     const formSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault(); // form의 기본 동작을 막음(조건이 만족해야 전송되도록)
@@ -214,32 +219,14 @@ export default function login() {
         ) {
             if (formData.isCheck) {
                 signUp();
-                console.log("성공");
+                sendUserInitialData(formData.email, favoriteRecipe);
             }
             // 개인정보 처리 방침에 동의하지 않은 경우
             else {
                 setIsCheckedModalOpen(true);
-
             }
         }
     }
-
-    const googleAuth = async () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                // 구글 인증 성공
-                const user = result.user;
-                if (user.displayName !== null) {
-                    dispatch(setUser((user.displayName).slice(0, 3)));
-                }
-                router.push('/')
-            })
-            .catch((error) => {
-                // 인증 실패 처리
-                console.error("구글 인증 실패: ", error);
-            });
-    };
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // 개인정보 처리방침 모달 관리
     const [isCheckedModalOpen, setIsCheckedModalOpen] = useState<boolean>(false); // 개인정보 처리방침에 동의하지 않았을 경우 나올 모달 관리
@@ -417,7 +404,7 @@ export default function login() {
                         </form>
                         <div
                             className="social-login-container"
-                            onClick={googleAuth}>
+                            onClick={googleLogin}>
                             <Image
                                 src={googleIcon}
                                 className="google-svg"
