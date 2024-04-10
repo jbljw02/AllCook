@@ -8,7 +8,7 @@ const reciveRecipesFromStore = async (req: NextApiRequest, res: NextApiResponse)
 
         return res.status(200).json({ data: recipes });
     } catch (error) {
-        return res.status(500).json({error: "DB 데이터 수신 실패"})
+        return res.status(500).json({ error: "DB 데이터 수신 실패" })
     }
 
 }

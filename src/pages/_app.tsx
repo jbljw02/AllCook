@@ -25,11 +25,14 @@ function App({ Component, pageProps }: AppProps) {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             if (!user.emailVerified) {
-                console.log("로그인중 + 이메일 미인증");
+                // console.log("로그인중 + 이메일 미인증");
             }
             else if (user.emailVerified) {
-                console.log("로그인중 + 이메일 인증 O", user);
-                dispatch(setUser(user.displayName));
+                // console.log("로그인중 + 이메일 인증 O", user);
+                dispatch(setUser({
+                    name: user.displayName,
+                    email: user.email,
+                }));
             }
         }
         else {

@@ -31,6 +31,9 @@ export const favoriteRecipeSlice = createSlice({
     name: 'favoriteRecipe',
     initialState: folderInitialState,
     reducers: {
+        setFavoriteRecipe: (state, action) => {
+            return action.payload;
+        },
         // 레시피 폴더를 추가
         addFavoriteRecipeFolder: (state, action) => {
             // ex)현재 배열에 요소가 2개 있다면 다음 id는 3, 0개 있다면 다음 id는 1
@@ -86,7 +89,7 @@ export const recipeMoveModalSlice = createSlice({
     }
 })
 
-export const { addFavoriteRecipeFolder, removeFavoriteRecipeFolder, addRecipeToFolder, removeRecipeFromFolder } = favoriteRecipeSlice.actions;
+export const { setFavoriteRecipe, addFavoriteRecipeFolder, removeFavoriteRecipeFolder, addRecipeToFolder, removeRecipeFromFolder } = favoriteRecipeSlice.actions;
 export const { setAddedRecipeInfo } = addedRecipeInfoSlice.actions;
 export const { setRecipeMoveModal } = recipeMoveModalSlice.actions;
 

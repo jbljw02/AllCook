@@ -25,7 +25,10 @@ export default function EmailVerifyModal({ isSubmitted, setIsSubmitted, name }: 
                 displayName: name,
                 photoURL: ""
             })
-            dispatch(setUser(user.displayName));
+            dispatch(setUser({
+                name: user.displayName,
+                email: user.email,
+            }));
         }
     }, [name, user])
 

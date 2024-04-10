@@ -4,7 +4,7 @@ import menuReducers from './features/menuSlice';
 import NutritionReducers from './features/nutritionSlice';
 import SortReducers from './features/sortSlice';
 import RecipeReducers from './features/recipeSlice';
-import UserReducers from './features/userSlice';
+import UserReducers, { User } from './features/userSlice';
 import FavoriteRecipeReducers, { FavoriteRecipe, AddedRecipeInfo } from './features/favoriteRecipeSlice';
 
 export type RootState = {
@@ -19,7 +19,7 @@ export type RootState = {
     maxValue: number,
     sortRule: '가나다순' | '추천순' | '저열량순' | '저지방순' | '저나트륨순' | '고단백질순',
     recipe: Menu,
-    user: string,
+    user: User,
     favoriteRecipe: FavoriteRecipe[],
     addedRecipeInfo: AddedRecipeInfo,
     recipeMoveModal: boolean,
