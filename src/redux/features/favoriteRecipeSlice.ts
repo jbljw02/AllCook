@@ -3,7 +3,7 @@ import { Menu, RootState } from "../store";
 
 export type FavoriteRecipe = {
     folderId: number,
-    name: string,
+    folderName: string,
     recipes: Menu[],
 }
 
@@ -16,7 +16,7 @@ export type AddedRecipeInfo = {
 const folderInitialState: FavoriteRecipe[] = [
     {
         folderId: 0,
-        name: `최근 저장한 레시피`,
+        folderName: `최근 저장한 레시피`,
         recipes: [],
     }
 ];

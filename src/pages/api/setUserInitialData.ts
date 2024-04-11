@@ -10,12 +10,13 @@ const setUserInitialData = async (req: NextApiRequest, res: NextApiResponse) => 
         const userDocRef = doc(firestore, 'users', email);
         const userDocSnap = await getDoc(userDocRef)
 
-        // 회원이 이미 존재하는 경우
+        // 회원이 이미 존재하는 경우    
         if (userDocSnap.exists()) {
             res.status(200).json({ success: "회원이 이미 존재" })
         }
         else {
-            // users 컬렉션을 생성하고 email 문서에 필드들을 추가함
+            // users 컬렉션을 생성하고 email 문서를 생성 후, 필드들을 생성
+            // 문서 자체를 생성하는 메소드
             await setDoc(doc(firestore, 'users', email), {
                 email: email,
                 FavoriteRecipe: initialFolder,

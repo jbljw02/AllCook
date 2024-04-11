@@ -1,4 +1,5 @@
-import firestore from "@/firebase/firebaseAdmin"
+import { firestore } from "@/firebase/firebasedb";
+import { doc, getDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 
 // 사용자의 관심 레시피를 DB로부터 받아옴
@@ -6,11 +7,11 @@ export const reciveFavRecipes = async (req: NextApiRequest, res: NextApiResponse
     const { email } = req.body;
 
     try {
-        const favoriteRecipeRef = await firestore.collection('users').doc(email);
-        const favoriteRecipeSnap = await favoriteRecipeRef.get();
+        const favoriteRecipeRef = doc(firestore, 'users', email);
+        const favoriteRecipeSnap = await getDoc(favoriteRecipeRef);
 
         // 관심 레시피가 존재하는지 확인
-        if (favoriteRecipeSnap.exists) {
+        if (favoriteRecipeSnap.exists()) {
             const favoriteRecipe = favoriteRecipeSnap.data()?.FavoriteRecipe;
             return res.status(200).json({ favoriteRecipe: favoriteRecipe })
         }
@@ -18,6 +19,7 @@ export const reciveFavRecipes = async (req: NextApiRequest, res: NextApiResponse
             return res.status(500).json({ error: "관심 레시피 존재 X" })
         }
     } catch (error) {
+        console.error("관심 레시피 가져오기 실패: ", error);
         return res.status(500).json({ error: "관심 레시피 가져오기 실패" })
     }
 }

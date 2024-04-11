@@ -1,10 +1,14 @@
-import firestore from '@/firebase/firebaseAdmin'
+import { firestore } from '@/firebase/firebasedb';
+import { collection } from '@firebase/firestore';
+import { getDocs } from 'firebase/firestore';
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-const reciveRecipesFromStore = async (req: NextApiRequest, res: NextApiResponse) => {
+const reciveRecipes = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const dataFromStore = await firestore.collection('recipes').get();
-        const recipes = dataFromStore.docs.map(doc => doc.data());
+        const recipesRef = collection(firestore, 'recipes');
+        const recipesSnap = await getDocs(recipesRef);
+
+        const recipes = recipesSnap.docs.map(doc => doc.data());
 
         return res.status(200).json({ data: recipes });
     } catch (error) {
@@ -13,4 +17,4 @@ const reciveRecipesFromStore = async (req: NextApiRequest, res: NextApiResponse)
 
 }
 
-export default reciveRecipesFromStore;
+export default reciveRecipes;

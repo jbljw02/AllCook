@@ -3,11 +3,13 @@ import { Menu, RootState } from "@/redux/store";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RecipeThumbnail from "./RecipeThumbnail";
+import sendNewFolder from "@/utils/sendNewFolder";
 
 export default function FolderList() {
     const dispatch = useDispatch();
 
     const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
+    const user = useSelector((state: RootState) => state.user);
 
     const [isAddFolder, setIsAddFolder] = useState<boolean>(false); // 현재 새 폴더를 추가중인지
     const [newFolderName, setNewFolderName] = useState<string>(''); // 새 폴더의 이름
@@ -18,14 +20,20 @@ export default function FolderList() {
         setNewFolderName(e.target.value);
     }
 
+    console.log("푸푸푸 : ", favoriteRecipe);
     // 새 폴더의 이름을 state에 push
     const newFolderSave = (e: { key: string; }) => {
         // 이름을 입력하고 엔터키를 누른 경우, 폴더가 추가됨
         if (e.key == 'Enter') {
             if (newFolderName.trim() !== '') {
-                dispatch(addFavoriteRecipeFolder({ name: newFolderName, recipes: [] }));
+                dispatch(addFavoriteRecipeFolder({ folderName: newFolderName, recipes: [] }));
                 setNewFolderName('');
                 setIsAddFolder(false);
+
+                // ex)현재 배열에 요소가 2개 있다면 다음 id는 3, 0개 있다면 다음 id는 1
+                const nextFolderId = favoriteRecipe.length > 0 ? favoriteRecipe[favoriteRecipe.length - 1].folderId + 1 : 1;
+                // DB에 새로운 폴더를 추가
+                sendNewFolder(user.email, nextFolderId, newFolderName, []);
             }
         }
         // ESC 키를 누를 경우, 폴더 추가 작업이 취소
@@ -53,7 +61,6 @@ export default function FolderList() {
         }
     }, [isAddFolder]);
 
-
     return (
         <>
             <div className="folder-list-section">
@@ -65,7 +72,7 @@ export default function FolderList() {
                                     <div className="folder-thumbnail">
                                         <RecipeThumbnail recipes={item.recipes} />
                                     </div>
-                                    <div className="title">{item.name}</div>
+                                    <div className="title">{item.folderName}</div>
                                 </div>
                             </>
                         )
