@@ -47,14 +47,16 @@ export default function favoriteRecipe() {
     // 컴포넌트가 마운트되기 전, DB로부터 사용자의 관심 레시피 정보를 받아옴
     useEffect(() => {
         (async () => {
-            const response = await axios.post('/api/reciveFavRecipes', {
-                email: user.email,
-            });
-
-            const favRecipeFromStore : FavoriteRecipe[] = response.data.favoriteRecipe;
-            dispatch(setFavoriteRecipe(favRecipeFromStore));
+            if(user.email) {
+                const response = await axios.post('/api/reciveFavRecipes', {
+                    email: user.email,
+                });
+                
+                const favRecipeFromStore : FavoriteRecipe[] = response.data.favoriteRecipe;
+                dispatch(setFavoriteRecipe(favRecipeFromStore));
+            } 
         })();
-    }, []);
+    }, [user]);
 
     return (
         <>

@@ -79,6 +79,16 @@ export const addedRecipeInfoSlice = createSlice({
     }
 })
 
+export const prevFolderIdSlice = createSlice({
+    name: 'prevFolderId',
+    initialState: null,
+    reducers: {
+        setPrevFolder: (state, action) => {
+            
+        }
+    }
+})
+
 export const recipeMoveModalSlice = createSlice({
     name: 'recipeMoveModal',
     initialState: false,
@@ -89,14 +99,26 @@ export const recipeMoveModalSlice = createSlice({
     }
 })
 
+export const recipeAddModalSlice = createSlice({
+    name: 'recipeAddModal',
+    initialState: false,
+    reducers: {
+        setRecipeAddModal: (state, action) => {
+            return action.payload;
+        }
+    }
+})
+
 export const { setFavoriteRecipe, addFavoriteRecipeFolder, removeFavoriteRecipeFolder, addRecipeToFolder, removeRecipeFromFolder } = favoriteRecipeSlice.actions;
 export const { setAddedRecipeInfo } = addedRecipeInfoSlice.actions;
 export const { setRecipeMoveModal } = recipeMoveModalSlice.actions;
+export const { setRecipeAddModal } = recipeAddModalSlice.actions;
 
 const reducers = {
     favoriteRecipe: favoriteRecipeSlice.reducer,
     addedRecipeInfo: addedRecipeInfoSlice.reducer,
     recipeMoveModal: recipeMoveModalSlice.reducer,
+    recipeAddModal: recipeAddModalSlice.reducer,
 }
 
 export default reducers;

@@ -17,7 +17,7 @@ const sendNewFolder = async (email: string, folderId: number, folderName: string
         });
         return response;
     } catch (error) {
-        console.log("폴더 추가 실패: ", error);
+        console.error("폴더 추가 실패: ", error);
         throw Error;
     }
 }

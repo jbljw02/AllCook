@@ -1,6 +1,6 @@
 import Image from "next/image"
 import { useDispatch, useSelector } from "react-redux";
-import { setRecipeMoveModal } from "@/redux/features/favoriteRecipeSlice";
+import { setRecipeAddModal, setRecipeMoveModal } from "@/redux/features/favoriteRecipeSlice";
 
 type ParamsType = {
     imgString: string,
@@ -13,7 +13,6 @@ export default function AddCompletePopUp({ imgString, folderName }: ParamsType) 
     return (
         <>
             <div className="add-complete-container fade-in">
-
                 <Image style={{ borderRadius: '3px' }} width={42} height={42} src={imgString} alt="" />
                 <div className="add-complete-section">
                     <div className="title">
@@ -21,7 +20,10 @@ export default function AddCompletePopUp({ imgString, folderName }: ParamsType) 
                     </div>
                     <div
                         className="subtitle underline"
-                        onClick={() => dispatch(setRecipeMoveModal(true))}>
+                        onClick={() => {
+                            dispatch(setRecipeMoveModal(true))
+                            dispatch(setRecipeAddModal(false))
+                        }}>
                         다른 폴더에 저장하기
                     </div>
                 </div>

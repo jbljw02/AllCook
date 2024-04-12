@@ -23,6 +23,7 @@ export type RootState = {
     favoriteRecipe: FavoriteRecipe[],
     addedRecipeInfo: AddedRecipeInfo,
     recipeMoveModal: boolean,
+    recipeAddModal: boolean,
 }
 
 export type Menu = {
@@ -77,6 +78,7 @@ const combinedReducer = combineReducers({
     favoriteRecipe: FavoriteRecipeReducers.favoriteRecipe,
     addedRecipeInfo: FavoriteRecipeReducers.addedRecipeInfo,
     recipeMoveModal: FavoriteRecipeReducers.recipeMoveModal,
+    recipeAddModal: FavoriteRecipeReducers.recipeAddModal,
 });
 
 // 전체 리듀서를 관리
