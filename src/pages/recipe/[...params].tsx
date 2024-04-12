@@ -13,7 +13,7 @@ import { setRecipe } from "@/redux/features/recipeSlice";
 import { setAllMenu, setDisplayedMenu } from "@/redux/features/menuSlice";
 import AddFolderModal from "@/components/modal/AddFolderModal";
 import AddCompletePopUp from "@/components/favoriteRecipe/AddCompletePopUp";
-import { setAddedRecipeInfo, setRecipeMoveModal } from "@/redux/features/favoriteRecipeSlice";
+import { setAddedRecipeInfo, setRecipeAddModal, setRecipeMoveModal } from "@/redux/features/favoriteRecipeSlice";
 
 export default function RecipeDetail() {
     const dispatch = useDispatch();
@@ -232,9 +232,10 @@ export default function RecipeDetail() {
     }
 
     const [isAddFolderModal, setIsAddFolderModal] = useState<boolean>(false);
+    const recipeAddModal = useSelector((state: RootState) => state.recipeAddModal);
 
     const saveRecipe = () => {
-        setIsAddFolderModal(true);
+        dispatch(setRecipeAddModal(true));
     }
 
     const addedRecipeInfo = useSelector((state: RootState) => state.addedRecipeInfo);
@@ -243,17 +244,17 @@ export default function RecipeDetail() {
 
     // 레시피 추가 완료 팝업을 관리
     const handleCompletePopUp = () => {
-        // 레시피 추가 정보가 존재하는 경우에만 팝업 띄우도록
+    // 레시피 추가 정보가 존재하는 경우에만 팝업 띄우도록
         if (addedRecipeInfo.folderName !== '') {
             setIsShowPopUp(true);
 
             // 5초 후에 팝업을 제거, state도 초기 상태로 돌려놓아 레시피가 추가됐을 때만 팝업이 올라오도록
             setTimeout(() => {
-                dispatch(setAddedRecipeInfo({
-                    folderId: null,
-                    imgString: '',
-                    folderName: '',
-                }))
+                // dispatch(setAddedRecipeInfo({
+                //     folderId: null,
+                //     imgString: '',
+                //     folderName: '',
+                // }))
                 setIsShowPopUp(false);
             }, 4000);
         }
@@ -281,7 +282,10 @@ export default function RecipeDetail() {
                     isModalOpen={recipeMoveModal}
                     setIsModalOpen={(isOpen) => dispatch(setRecipeMoveModal(isOpen))}
                     isMoving={true}
-                    prevFolderId={addedRecipeInfo.folderId}
+                />
+                <AddFolderModal
+                    isModalOpen={recipeAddModal}
+                    setIsModalOpen={(isOpen) => dispatch(setRecipeAddModal(isOpen))}
                 />
                 <div className="header-container">
                     {
@@ -321,10 +325,6 @@ export default function RecipeDetail() {
                             <div
                                 className="recipe-button-div"
                                 onClick={saveRecipe}>
-                                <AddFolderModal
-                                    isModalOpen={isAddFolderModal}
-                                    setIsModalOpen={setIsAddFolderModal}
-                                />
                                 <div className="recipe-button">
                                     <svg className="bookmark-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                         <path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="m15 16-5-3.333L5 16V5.333c0-.353.15-.692.418-.942S6.05 4 6.428 4h7.143c.38 0 .743.14 1.01.39.269.25.419.59.419.943V16z" />

@@ -1,27 +1,45 @@
-import { addFavoriteRecipeFolder, addRecipeToFolder, removeRecipeFromFolder, setAddedRecipeInfo, setRecipeMoveModal } from '@/redux/features/favoriteRecipeSlice';
+import { FavoriteRecipe, addFavoriteRecipeFolder, addRecipeToFolder, removeRecipeFromFolder, setAddedRecipeInfo, setFavoriteRecipe, setRecipeAddModal, setRecipeMoveModal } from '@/redux/features/favoriteRecipeSlice';
 import { RootState } from '@/redux/store';
 import { useState, useEffect, useRef } from 'react';
 import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import RecipeThumbnail from '../favoriteRecipe/RecipeThumbnail';
+import sendNewFolder from '@/utils/sendNewFolder';
+import axios from 'axios';
+import sendNewRecipe from '@/utils/sendNewRecipe';
+import recipeDeleteRequest from '@/utils/recipeDeleteRequest';
 
 interface modalProps {
     isModalOpen: boolean,
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
     isMoving?: boolean,
-    prevFolderId?: number,
 }
 
-export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving, prevFolderId }: modalProps) {
+export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }: modalProps) {
     const dispatch = useDispatch();
 
     const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
+    const user = useSelector((state: RootState) => state.user);
     const recipe = useSelector((state: RootState) => state.recipe);
+
+    // 컴포넌트가 마운트되기 전, DB로부터 사용자의 관심 레시피 정보를 받아옴
+    useEffect(() => {
+        (async () => {
+            if (user.email) {
+                const response = await axios.post('/api/reciveFavRecipes', {
+                    email: user.email,
+                });
+
+                const favRecipeFromStore: FavoriteRecipe[] = response.data.favoriteRecipe;
+                dispatch(setFavoriteRecipe(favRecipeFromStore));
+            }
+        })();
+    }, [user]);
 
     // 폴더 내에 동일한 레시피가 존재하는지 판별
     const isDuplicatedRecipe = (id: number) => {
         const targetFolder = favoriteRecipe.find(folder => folder.folderId === id);
-        const targetRecipe = targetFolder?.recipes.find(item => item === recipe);
+        const targetRecipe = targetFolder?.recipes.find(item => item.RCP_SEQ === recipe.RCP_SEQ);
 
         // 폴더 내에 중복된 레시피가 없는 경우
         if (targetRecipe === undefined) {
@@ -33,21 +51,35 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving, 
         }
     }
 
+    // N번 폴더에 이미 레시피가 존재하는지 여부
+    const [isRecipeDuplicated, setIsRecipeDuplicated] = useState({
+        folderId: 0,
+        duplicated: false,
+    });
+
+    const addedRecipeInfo = useSelector((state: RootState) => state.addedRecipeInfo);
+
     // 레시피를 다른 폴더로 이동시킴
     const moveRecipeToAnotherFolder = async (newFolderId: number) => {
         const isDuplicated = isDuplicatedRecipe(newFolderId);
-
         if (!isDuplicated) {
-            // 레시피를 추가한 이전 폴더에서 레시피를 삭제
-            await dispatch(removeRecipeFromFolder({
-                forderId: prevFolderId,
+            // 레시피를 추가한 이전 폴더에서 레시피를 삭제하는 요청 전송
+            await recipeDeleteRequest(user.email, addedRecipeInfo.folderId, recipe);
+            // 레시피를 state에서 삭제
+            dispatch(removeRecipeFromFolder({
+                forderId: addedRecipeInfo.folderId,
                 recipeNum: recipe.RCP_SEQ,
-            }))
+            }));
+
+            // 레시피 추가를 요청 
+            await sendNewRecipe(user.email, newFolderId, recipe);
             // 이동시킬 폴더에 레시피를 추가
-            await dispatch(addRecipeToFolder({
+            dispatch(addRecipeToFolder({
                 folderId: newFolderId,
                 recipe: recipe
             }))
+
+            // 레시피 위치 변경 모달을 닫음
             dispatch(setRecipeMoveModal(false));
         }
         else {
@@ -63,22 +95,28 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving, 
         const isDuplicated = isDuplicatedRecipe(id);
 
         if (!isDuplicated) {
-            await dispatch(addRecipeToFolder({
+            // 레시피 추가를 요청 
+            await sendNewRecipe(user.email, id, recipe);
+            // 이동시킬 폴더에 레시피를 추가
+            dispatch(addRecipeToFolder({
                 folderId: id,
                 recipe: recipe
             }));
+
             // 추가한 레시피의 상세 정보를 업데이트(팝업을 띄우기 위해)
-            await dispatch(setAddedRecipeInfo({
+            dispatch(setAddedRecipeInfo({
                 folderId: id,
                 imgString: recipe.ATT_FILE_NO_MAIN,
                 folderName: folderName,
             }))
+
+            // 중복값 없이 레시피가 추가되었으므로 중복 제거
             setIsRecipeDuplicated({
                 folderId: id,
                 duplicated: false,
             });
-            setIsModalOpen(false);
-            dispatch(setRecipeMoveModal(false));
+            // 레시피를 추가하는 모달을 닫음
+            dispatch(setRecipeAddModal(false));
         }
         else {
             setIsRecipeDuplicated({
@@ -87,12 +125,6 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving, 
             });
         }
     }
-
-    // N번 폴더에 이미 레시피가 존재하는지 여부
-    const [isRecipeDuplicated, setIsRecipeDuplicated] = useState({
-        folderId: 0,
-        duplicated: false,
-    });
 
     const [isAddFolder, setIsAddFolder] = useState<boolean>(false); // 현재 새 폴더를 추가중인지
     const [newFolderName, setNewFolderName] = useState<string>(''); // 새 폴더의 이름
@@ -108,9 +140,14 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving, 
         // 이름을 입력하고 엔터키를 누른 경우, 폴더가 추가됨
         if (e.key == 'Enter') {
             if (newFolderName.trim() !== '') {
-                dispatch(addFavoriteRecipeFolder({ name: newFolderName, recipes: [] }));
-                setIsAddFolder(false);
+                dispatch(addFavoriteRecipeFolder({ folderName: newFolderName, recipes: [] }));
                 setNewFolderName('');
+                setIsAddFolder(false);
+
+                // ex)현재 배열에 요소가 2개 있다면 다음 id는 3, 0개 있다면 다음 id는 1
+                const nextFolderId = favoriteRecipe.length > 0 ? favoriteRecipe[favoriteRecipe.length - 1].folderId + 1 : 1;
+                // DB에 새로운 폴더를 추가
+                sendNewFolder(user.email, nextFolderId, newFolderName, []);
             }
         }
         // ESC 키를 누를 경우, 폴더 추가 작업이 취소
@@ -183,7 +220,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving, 
                                             onClick={() => {
                                                 isMoving ?
                                                     moveRecipeToAnotherFolder(item.folderId) :
-                                                    addFavoriteRecipe(item.folderId, item.name)
+                                                    addFavoriteRecipe(item.folderId, item.folderName)
                                             }}
                                             key={item.folderId}>
                                             <div className='folder-thumbnail'>
@@ -191,7 +228,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving, 
                                             </div>
                                             <div className='folder-title-section'>
                                                 <div className='folder-title'>
-                                                    {item.name}
+                                                    {item.folderName}
                                                 </div>
                                                 <div className='folder-subtitle'>
                                                     {Array.isArray(item.recipes) && item.recipes.length}개의 항목

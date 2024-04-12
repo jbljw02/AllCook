@@ -3,7 +3,7 @@ import { Menu, RootState } from "../store";
 
 export type FavoriteRecipe = {
     folderId: number,
-    name: string,
+    folderName: string,
     recipes: Menu[],
 }
 
@@ -16,7 +16,7 @@ export type AddedRecipeInfo = {
 const folderInitialState: FavoriteRecipe[] = [
     {
         folderId: 0,
-        name: `최근 저장한 레시피`,
+        folderName: `최근 저장한 레시피`,
         recipes: [],
     }
 ];
@@ -31,6 +31,9 @@ export const favoriteRecipeSlice = createSlice({
     name: 'favoriteRecipe',
     initialState: folderInitialState,
     reducers: {
+        setFavoriteRecipe: (state, action) => {
+            return action.payload;
+        },
         // 레시피 폴더를 추가
         addFavoriteRecipeFolder: (state, action) => {
             // ex)현재 배열에 요소가 2개 있다면 다음 id는 3, 0개 있다면 다음 id는 1
@@ -76,6 +79,16 @@ export const addedRecipeInfoSlice = createSlice({
     }
 })
 
+export const prevFolderIdSlice = createSlice({
+    name: 'prevFolderId',
+    initialState: null,
+    reducers: {
+        setPrevFolder: (state, action) => {
+            
+        }
+    }
+})
+
 export const recipeMoveModalSlice = createSlice({
     name: 'recipeMoveModal',
     initialState: false,
@@ -86,14 +99,26 @@ export const recipeMoveModalSlice = createSlice({
     }
 })
 
-export const { addFavoriteRecipeFolder, removeFavoriteRecipeFolder, addRecipeToFolder, removeRecipeFromFolder } = favoriteRecipeSlice.actions;
+export const recipeAddModalSlice = createSlice({
+    name: 'recipeAddModal',
+    initialState: false,
+    reducers: {
+        setRecipeAddModal: (state, action) => {
+            return action.payload;
+        }
+    }
+})
+
+export const { setFavoriteRecipe, addFavoriteRecipeFolder, removeFavoriteRecipeFolder, addRecipeToFolder, removeRecipeFromFolder } = favoriteRecipeSlice.actions;
 export const { setAddedRecipeInfo } = addedRecipeInfoSlice.actions;
 export const { setRecipeMoveModal } = recipeMoveModalSlice.actions;
+export const { setRecipeAddModal } = recipeAddModalSlice.actions;
 
 const reducers = {
     favoriteRecipe: favoriteRecipeSlice.reducer,
     addedRecipeInfo: addedRecipeInfoSlice.reducer,
     recipeMoveModal: recipeMoveModalSlice.reducer,
+    recipeAddModal: recipeAddModalSlice.reducer,
 }
 
 export default reducers;

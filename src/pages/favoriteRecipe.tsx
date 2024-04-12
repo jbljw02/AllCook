@@ -3,11 +3,14 @@ import Seo from "@/components/Seo";
 import FolderList from "@/components/favoriteRecipe/FolderList";
 import Header from "@/components/header/Header";
 import HeaderOnContents from "@/components/header/HeaderOnContents";
+import { FavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";
 import { RootState } from "@/redux/store";
-import { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { setFavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";
 
-export default function SavedRecipe() {
+export default function favoriteRecipe() {
     const dispatch = useDispatch();
 
     const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
@@ -37,6 +40,23 @@ export default function SavedRecipe() {
             window.removeEventListener('scroll', checkScrollLocation);
         };
     }, [scrollPassContent]);
+
+    const user = useSelector((state: RootState) => state.user);
+    const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe)
+
+    // 컴포넌트가 마운트되기 전, DB로부터 사용자의 관심 레시피 정보를 받아옴
+    useEffect(() => {
+        (async () => {
+            if(user.email) {
+                const response = await axios.post('/api/reciveFavRecipes', {
+                    email: user.email,
+                });
+                
+                const favRecipeFromStore : FavoriteRecipe[] = response.data.favoriteRecipe;
+                dispatch(setFavoriteRecipe(favRecipeFromStore));
+            } 
+        })();
+    }, [user]);
 
     return (
         <>

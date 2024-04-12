@@ -11,7 +11,6 @@ import searchSvg from '../../../public/svgs/search.svg'
 import userDark from '../../../public/svgs/user-dark.svg';
 import { signOut } from 'firebase/auth';
 import { auth } from "@/firebase/firebasedb";
-import { setUser } from '@/redux/features/userSlice';
 import UserDropdown from '../UserDropdown';
 
 export default function Header({ className }: { className: string }) {
@@ -60,18 +59,6 @@ export default function Header({ className }: { className: string }) {
     }
 
     const user = useSelector((state: RootState) => state.user);
-
-    const logout = () => {
-        signOut(auth).then(() => {
-            // 로그아웃 성공 시 실행될 로직
-            console.log("로그아웃 성공");
-            dispatch(setUser(null));
-        }).catch((error) => {
-            // 로그아웃 시 오류가 발생한 경우
-            console.error("로그아웃 중 오류 발생", error);
-        });
-    };
-
     const [userDetail, setUserDetail] = useState<boolean>(false);
 
     return (
@@ -129,13 +116,13 @@ export default function Header({ className }: { className: string }) {
                                 src={userDark}
                                 alt={''} />
                             {
-                                user === null ?
+                                !user.email && !user.name ?
                                     <span className='logIn' onClick={() => router.push('/signIn')}>
                                         로그인
                                     </span> :
                                     <>
                                         <span className='logIn'>
-                                            {user}
+                                            {user.name}
                                         </span>
                                         <svg
                                             width='17'
@@ -152,9 +139,9 @@ export default function Header({ className }: { className: string }) {
                             }
                         </div>
                         {
-                            userDetail && user ?
+                            userDetail && user.name && user.email ?
                                 <UserDropdown
-                                    category='header-on-contents'
+                                    category='header'
                                 /> :
                                 null
                         }

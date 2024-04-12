@@ -162,9 +162,12 @@ export default function login() {
 
     const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
 
-    const googleLogin = () => {
-        const userName = googleAuth(favoriteRecipe);
-        dispatch(setUser(userName));
+    const googleLogin = async () => {
+        const user = await googleAuth(favoriteRecipe);
+        dispatch(setUser({
+            email: user.email,
+            name: user.name,
+        }));
     }
 
     // form을 전송함

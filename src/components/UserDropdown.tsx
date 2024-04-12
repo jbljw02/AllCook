@@ -12,7 +12,10 @@ export default function UserDropdown({ category}: { category: string }) {
 
     const signOut = () => {
         logout();
-        dispatch(setUser(null));
+        dispatch(setUser({
+            name: '',
+            email: '',
+        }));
     }
 
     return (
