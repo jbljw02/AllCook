@@ -28,7 +28,7 @@ function App({ Component, pageProps }: AppProps) {
                 // console.log("로그인중 + 이메일 미인증");
             }
             else if (user.emailVerified) {
-                // console.log("로그인중 + 이메일 인증 O", user);
+                console.log("로그인중 + 이메일 인증 O", user);
                 dispatch(setUser({
                     name: user.displayName,
                     email: user.email,
@@ -67,7 +67,7 @@ function App({ Component, pageProps }: AppProps) {
     return (
         <>
             <style jsx global>{`
-                html {
+                html, textarea {
                     font-family: ${noto.style.fontFamily};
                 }
             `}</style>

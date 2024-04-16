@@ -13,6 +13,7 @@ import userLight from '../../../public/svgs/user-light.svg';
 import userDark from '../../../public/svgs/user-dark.svg';
 import Image from 'next/image';
 import UserDropdown from '../UserDropdown';
+import ProfileImgage from './ProfileImage';
 
 const titleFont = Anek_Tamil({
     subsets: ['latin'],
@@ -131,6 +132,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                         </div>
                         <div className='user-container no-drag' onClick={() => setUserDetail(!userDetail)}>
                             {
+
                                 lightLogo ?
                                     <>
                                         <Image

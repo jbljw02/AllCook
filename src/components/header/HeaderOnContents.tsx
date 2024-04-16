@@ -77,7 +77,7 @@ export default function Header({ className }: { className: string }) {
                         <span className='recipe'>
                             <Link
                                 style={{ textDecoration: 'none', color: 'inherit' }}
-                                href={'/recipe'}>
+                                href={'/recipe'}> 
                                 Recipe
                             </Link>
                         </span>
