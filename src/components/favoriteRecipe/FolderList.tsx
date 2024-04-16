@@ -20,7 +20,6 @@ export default function FolderList() {
         setNewFolderName(e.target.value);
     }
 
-    console.log("푸푸푸 : ", favoriteRecipe);
     // 새 폴더의 이름을 state에 push
     const newFolderSave = (e: { key: string; }) => {
         // 이름을 입력하고 엔터키를 누른 경우, 폴더가 추가됨

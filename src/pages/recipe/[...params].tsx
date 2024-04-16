@@ -14,6 +14,7 @@ import { setAllMenu, setDisplayedMenu } from "@/redux/features/menuSlice";
 import AddFolderModal from "@/components/modal/AddFolderModal";
 import AddCompletePopUp from "@/components/favoriteRecipe/AddCompletePopUp";
 import { setAddedRecipeInfo, setRecipeAddModal, setRecipeMoveModal } from "@/redux/features/favoriteRecipeSlice";
+import ReviewContainer from "@/components/recipeDetail/ReviewContainer";
 
 export default function RecipeDetail() {
     const dispatch = useDispatch();
@@ -231,7 +232,6 @@ export default function RecipeDetail() {
         dispatch(setRecipe(selectedMenu));
     }
 
-    const [isAddFolderModal, setIsAddFolderModal] = useState<boolean>(false);
     const recipeAddModal = useSelector((state: RootState) => state.recipeAddModal);
 
     const saveRecipe = () => {
@@ -244,7 +244,7 @@ export default function RecipeDetail() {
 
     // 레시피 추가 완료 팝업을 관리
     const handleCompletePopUp = () => {
-    // 레시피 추가 정보가 존재하는 경우에만 팝업 띄우도록
+        // 레시피 추가 정보가 존재하는 경우에만 팝업 띄우도록
         if (addedRecipeInfo.folderName !== '') {
             setIsShowPopUp(true);
 
@@ -505,6 +505,7 @@ export default function RecipeDetail() {
                             </table>
                         </div>
                     </div>
+                    <ReviewContainer />
                 </div>
                 <Footer />
             </div>

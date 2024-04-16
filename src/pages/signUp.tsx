@@ -396,8 +396,8 @@ export default function login() {
                                 </div>
                                 <div
                                     className="already-account"
-                                    onClick={() => router.push('/signIn')}
-                                >이미 계정이 있으신가요?</div>
+                                    onClick={() => router.push('/signIn')}>
+                                    이미 계정이 있으신가요?</div>
                             </div>
                             <button
                                 type="submit"
@@ -538,7 +538,7 @@ export default function login() {
                     justify-content: center;
                     padding: 16px 30px;
                     color: #fff;
-                    border: 1px solid black;
+                    border: 1px solid transparent;
                     background-color: #002312;
                     border-radius: 10px;
                     cursor: pointer;

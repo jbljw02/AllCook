@@ -1,67 +1,90 @@
 ::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 body {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
+
 .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-    min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 100vh;
 }
+
 .container-float-top {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .no-drag {
-    user-select: none;
+  user-select: none;
 }
+
 .underline {
-    text-decoration: underline;
+  text-decoration: underline;
 }
+
 .rotate-clockwise {
-    transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }
 
 /* 진동 효과 */
 @keyframes vibrate {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-1.5px); }
-    50% { transform: translateX(1.5px); }
-    75% { transform: translateX(-1.5px); }
-    100% { transform: translateX(1.5px); }
-  }
-  .vibrate {
-    display: inline-block;
-    animation: vibrate 0.3s infinite;
+  0% {
+    transform: translateX(0);
   }
 
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+  25% {
+    transform: translateX(-1.5px);
   }
-  @keyframes fade-out {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
+
+  50% {
+    transform: translateX(1.5px);
   }
-  
-  .fade-in {
-    animation: fade-in 0.3s ease-out;
+
+  75% {
+    transform: translateX(-1.5px);
   }
-  .fade-out {
-    animation: fade-out 0.3s ease-out;
+
+  100% {
+    transform: translateX(1.5px);
   }
+}
+
+.vibrate {
+  display: inline-block;
+  animation: vibrate 0.3s infinite;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.fade-out {
+  animation: fade-out 0.3s ease-out;
+}

@@ -1,4 +1,10 @@
 import { Form } from "@/pages/contact";
+import { Noto_Sans_KR } from "next/font/google";
+
+const noto = Noto_Sans_KR({
+    subsets: ['latin'],
+    weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+});
 
 export default function ContactInput({ form, name, height, placeholder, msgWhether, onChange, emailValid }: { form: Form, name: keyof Form, height: string, placeholder: string, msgWhether: boolean, onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void, emailValid?: boolean, }) {
 
@@ -23,7 +29,7 @@ export default function ContactInput({ form, name, height, placeholder, msgWheth
     return (
         <>
             <div className={inputClass(name)}>
-                <textarea name={name} className="search-input" style={{ height: height }} placeholder={placeholder} onChange={onChange} />
+                <textarea name={name} className='search-input' style={{ height: height }} placeholder={placeholder} onChange={onChange} />
             </div>
             <style jsx>{`
                 .input-div {
@@ -35,12 +41,13 @@ export default function ContactInput({ form, name, height, placeholder, msgWheth
                     border-radius: 5px;
                     border: 1px solid #787878;
                     margin-top: 10px;
+                    padding: 3px;
                 }
                 .search-input {
                     background-color: transparent;
                     padding-left: 6px;
                     font-size: 14px;
-                    width: 98%;
+                    width: 100%;
                     resize: none;
                 }
                 .input-warning {

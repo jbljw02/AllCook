@@ -79,16 +79,6 @@ export const addedRecipeInfoSlice = createSlice({
     }
 })
 
-export const prevFolderIdSlice = createSlice({
-    name: 'prevFolderId',
-    initialState: null,
-    reducers: {
-        setPrevFolder: (state, action) => {
-            
-        }
-    }
-})
-
 export const recipeMoveModalSlice = createSlice({
     name: 'recipeMoveModal',
     initialState: false,
