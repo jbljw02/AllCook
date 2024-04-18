@@ -29,6 +29,10 @@ body {
   text-decoration: underline;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .rotate-clockwise {
   transform: rotate(-90deg);
 }

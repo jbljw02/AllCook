@@ -9,7 +9,7 @@ const reciveRecipes = async (req: NextApiRequest, res: NextApiResponse) => {
         const recipesSnap = await getDocs(recipesRef);
 
         const recipes = recipesSnap.docs.map(doc => doc.data());
-
+        
         return res.status(200).json({ data: recipes });
     } catch (error) {
         return res.status(500).json({ error: "DB 데이터 수신 실패" })
