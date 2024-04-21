@@ -163,13 +163,10 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
         setNewFolderName('');
     }
 
-
     // 폴더 추가 작업을 시작
     const addNewFolder = () => {
         setIsAddFolder(true);
     }
-
-    console.log("추가 : ", favoriteRecipe);
 
     // 폴더 추가 작업이 실행되면, 입력 포커스를 새 폴더의 input으로 이동
     useEffect(() => {

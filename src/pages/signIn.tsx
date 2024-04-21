@@ -53,7 +53,7 @@ export default function login() {
         }
     }
 
-    const [formData, setFormdata] = useState<loginForm>({
+    const [formData, setFormData] = useState<loginForm>({
         email: '',
         password: '',
         isSave: false,
@@ -69,7 +69,7 @@ export default function login() {
 
     // input의 바뀌는 값을 감지 
     const formChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormdata({
+        setFormData({
             ...formData,
             [e.target.name]: e.target.value,
         })
@@ -115,7 +115,8 @@ export default function login() {
     // form을 전송함
     const formSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault(); // form의 기본 동작을 막음(조건이 만족해야 전송되도록)
-        setFormdata({
+        
+        setFormData({
             ...formData,
             submitted: true,
         })
@@ -227,7 +228,7 @@ export default function login() {
                             <div className="login-footer-div">
                                 <div
                                     className="checkbox-div no-drag"
-                                    onClick={() => setFormdata({
+                                    onClick={() => setFormData({
                                         ...formData,
                                         isSave: !formData.isSave,
                                     })}>
