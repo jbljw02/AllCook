@@ -163,7 +163,6 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
         setNewFolderName('');
     }
 
-
     // 폴더 추가 작업을 시작
     const addNewFolder = () => {
         setIsAddFolder(true);

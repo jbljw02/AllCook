@@ -22,23 +22,25 @@ const noto = Noto_Sans_KR({
 function App({ Component, pageProps }: AppProps) {
     const dispatch = useDispatch();
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            if (!user.emailVerified) {
-                // console.log("로그인중 + 이메일 미인증");
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (!user.emailVerified) {
+                    // console.log("로그인중 + 이메일 미인증");
+                }
+                else if (user.emailVerified) {
+                    console.log("로그인중 + 이메일 인증 O", user);
+                    dispatch(setUser({
+                        name: user.displayName,
+                        email: user.email,
+                    }));
+                }
             }
-            else if (user.emailVerified) {
-                console.log("로그인중 + 이메일 인증 O", user);
-                dispatch(setUser({
-                    name: user.displayName,
-                    email: user.email,
-                }));
+            else {
+                console.log("로그인 X");
             }
-        }
-        else {
-            console.log("로그인 X");
-        }
-    });
+        });
+    }, [])
 
     useEffect(() => {
         // 사용자가 페이지를 떠나기 전에 이메일 인증 여부를 확인하고, 미인증 상태라면 강제 로그아웃
