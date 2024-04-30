@@ -108,7 +108,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                 folderId: id,
                 imgString: recipe.ATT_FILE_NO_MAIN,
                 folderName: folderName,
-            }))
+            }));
 
             // 중복값 없이 레시피가 추가되었으므로 중복 제거
             setIsRecipeDuplicated({

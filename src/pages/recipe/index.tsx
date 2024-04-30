@@ -531,7 +531,9 @@ export default function Recipe() {
                                                                     return (
                                                                         <td>
                                                                             <div>
-                                                                                <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)} className="td-content">
+                                                                                <div
+                                                                                    onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)}
+                                                                                    className="td-content">
                                                                                     <Image
                                                                                         src={`${item.ATT_FILE_NO_MK}`}
                                                                                         style={{

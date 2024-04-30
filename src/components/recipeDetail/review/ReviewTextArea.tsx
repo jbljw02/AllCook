@@ -127,8 +127,6 @@ export default function () {
         reciveRecipeOpinion(user.email, recipe.RCP_SEQ);
     }, [user, recipe]);
 
-    console.log("폼 : ", formData);
-
     return (
         <>
             <div className={`review-write-div ${recipeOpinion.length === 0 ? 'no-comments' : ''}`}>

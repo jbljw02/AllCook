@@ -1,7 +1,6 @@
-import { Menu, RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
+import { Menu } from "@/redux/store";
 
-export default function RecipeThumbnail({ recipes }: { recipes: Menu[] }) {
+export default function RecipeThumbnail({ recipes, size }: { recipes: Menu[], size: number }) {
     let thumbnailClass = '';
 
     // 이미지의 개수에 따라 다른 클래스 속성을 지정
@@ -24,9 +23,12 @@ export default function RecipeThumbnail({ recipes }: { recipes: Menu[] }) {
 
     return (
         <>
-            <div className={`thumbnail-div ${thumbnailClass}`}>
+            <div
+                className={`thumbnail-div ${thumbnailClass}`}
+                style={{ width: size, height: size }}>
                 {
                     Array.isArray(recipes) && recipes.map((recipe: Menu, index: number) => (
+                        index <= 3 &&
                         // recipes.length가 3이고 index가 2인 경우(즉, 세 번째 이미지)를 제외하고 이미지를 표시
                         (recipes.length !== 3 || index < 2) && (
                             <div
@@ -45,8 +47,6 @@ export default function RecipeThumbnail({ recipes }: { recipes: Menu[] }) {
                     justify-content: center;
                     align-items: center;
                     gap: 3px;
-                    width: 100%;
-                    height: 100%;
                 }
                 .thumbnail-image {
                     background-size: cover; /* 이미지를 여백 없이(가능한 크게) */
@@ -67,6 +67,7 @@ export default function RecipeThumbnail({ recipes }: { recipes: Menu[] }) {
                 .four-images .thumbnail-image {
                     width: calc(50% - 3px);
                     height: calc(50% - 3px);
+                    {/* height: 50%; */}
                 }
             `}</style>
         </>

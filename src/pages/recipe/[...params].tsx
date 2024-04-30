@@ -15,6 +15,7 @@ import AddFolderModal from "@/components/modal/AddFolderModal";
 import AddCompletePopUp from "@/components/favoriteRecipe/AddCompletePopUp";
 import { setAddedRecipeInfo, setRecipeAddModal, setRecipeMoveModal } from "@/redux/features/favoriteRecipeSlice";
 import ReviewContainer from "@/components/recipeDetail/review/ReviewContainer";
+import MenuTable from "@/components/MenuTable";
 
 export default function RecipeDetail() {
     const dispatch = useDispatch();
@@ -187,25 +188,6 @@ export default function RecipeDetail() {
         setRecipeManual(manuals)
     }
 
-    const [isHovered, setIsHovered] = useState(new Array(displayedMenu.length).fill(false));  // 페이지 전체에 있는 이미지의 hover 여부를 관리
-
-    const imgMouseEnter = (globalIndex: number) => {
-        setIsHovered(prev => {
-            // state의 이전 상태를 그대로 가져와서, 마우스가 들어온 인덱스만 true로 변경
-            const newHoverState = [...prev];
-            newHoverState[globalIndex] = true;
-            return newHoverState;
-        });
-    }
-    const imgMouseOut = (globalIndex: number) => {
-        setIsHovered(prev => {
-            const newHoverState = [...prev];
-            // state의 이전 상태를 그대로 가져와서, 마우스가 나간 인덱스만 false로 변경
-            newHoverState[globalIndex] = false;
-            return newHoverState;
-        });
-    };
-
     const [nutritionVisible, setNutritionVisible] = useState<boolean>(false);
     const nutritionRef = useRef<HTMLDivElement | null>(null);
 
@@ -245,16 +227,16 @@ export default function RecipeDetail() {
     // 레시피 추가 완료 팝업을 관리
     const handleCompletePopUp = () => {
         // 레시피 추가 정보가 존재하는 경우에만 팝업 띄우도록
-        if (addedRecipeInfo.folderName !== '') {
+        if (addedRecipeInfo.folderId) {
             setIsShowPopUp(true);
 
             // 5초 후에 팝업을 제거, state도 초기 상태로 돌려놓아 레시피가 추가됐을 때만 팝업이 올라오도록
             setTimeout(() => {
-                // dispatch(setAddedRecipeInfo({
-                //     folderId: null,
-                //     imgString: '',
-                //     folderName: '',
-                // }))
+                dispatch(setAddedRecipeInfo({
+                    folderId: null,
+                    imgString: '',
+                    folderName: '',
+                }));
                 setIsShowPopUp(false);
             }, 4000);
         }
@@ -263,6 +245,11 @@ export default function RecipeDetail() {
     useEffect(() => {
         handleCompletePopUp();
     }, [addedRecipeInfo, recipeMoveModal]);
+
+    // 컴포넌트가 마운트 되기 전, 혹시 팝업이 열려있을 수 있으니 닫음
+    useEffect(() => {
+        setIsShowPopUp(false)
+    }, []);
 
     return (
         <>
@@ -467,42 +454,11 @@ export default function RecipeDetail() {
                         {/* 관련 레시피를 보여주는 영역 */}
                         <div className="related-recipe-section">
                             <div className="related-title">유사한 재료를 사용한 레시피</div>
-                            <table className="menu-table">
-                                <tbody>
-                                    <tr>
-                                        {
-                                            relatedRecipe.map((item, index) => {
-                                                return (
-                                                    <td>
-                                                        <div>
-                                                            <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)} className="td-content">
-                                                                <Image
-                                                                    src={`${item.ATT_FILE_NO_MK}`}
-                                                                    style={{
-                                                                        borderRadius: 8,
-                                                                        cursor: "pointer",
-                                                                        transition: "transform 0.3s ease",
-                                                                        transform: isHovered[index]
-                                                                            ? "scale(1.05)"
-                                                                            : "scale(1)",
-                                                                    }}
-                                                                    width={250}
-                                                                    height={250}
-                                                                    alt={""}
-                                                                    onMouseEnter={() => imgMouseEnter(index)}
-                                                                    onMouseLeave={() => imgMouseOut(index)}
-                                                                />
-                                                            </div>
-                                                            <div className="RCP_NM">{item.RCP_NM}</div>
-                                                            <div className="RCP_PAT2">{item.RCP_PAT2}</div>
-                                                        </div>
-                                                    </td>
-                                                )
-                                            })
-                                        }
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <MenuTable
+                                menu={relatedRecipe}
+                                category=""
+                                menuClick={menuClick}
+                            />
                         </div>
                     </div>
                     <ReviewContainer />

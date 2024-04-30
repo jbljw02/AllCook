@@ -1,12 +1,18 @@
 .menu-table {
-    display: flex;
-    flex-direction: column;
+    /* display: flex; */
+    /* flex-direction: column; */
+    display: table;
     border-collapse: separate;
+    width: 100%;
     border-spacing: 0 25px;
     margin-top: -25px;
     color: #111111;
 }
+.menu-table tr {
+    display: table-row;
+}
 .menu-table tr td {
+    display: table-cell;
     max-width: 250px;
     vertical-align: top;
     align-self: start;
