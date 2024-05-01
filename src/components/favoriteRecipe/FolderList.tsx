@@ -96,7 +96,7 @@ export default function FolderList() {
                     // 폴더를 추가하려는 상태일 때만 보이도록 함
                     isAddFolder &&
                     <div className="folder">
-                        <div className="folder-thumbnail" />
+                        <div className="folder-thumbnail add-thumbnail" />
                         <div className="title">
                             <input
                                 className="new-folder-input"
@@ -106,7 +106,7 @@ export default function FolderList() {
                                 onChange={newFolderNameChange}
                                 onKeyDown={newFolderSave}
                                 onBlur={newFolderBlur}
-                                placeholder="폴더의 이름을 정해주세요!"
+                                placeholder="폴더의 이름을 정해주세요"
                             />
                         </div>
                     </div>
@@ -138,6 +138,10 @@ export default function FolderList() {
                     background-color: #f4f5f6;
                     border-radius: 3px;
                 }
+                .add-thumbnail {
+                    width: 280px;
+                    height: 280px;
+                }
                 .title {
                     margin-top: 12px;
                     font-size: 17px;
@@ -149,8 +153,8 @@ export default function FolderList() {
                     border: 1.5px dotted #d7d7d7;
                     background-color: #ffffff;
                     transition: border-color 0.2s ease;
-                    width: 280px;
-                    height: 280px;
+                    width: 277px;
+                    height: 277px;
                 }
                 .add-folder-btn:hover {
                     border-color: #111111;

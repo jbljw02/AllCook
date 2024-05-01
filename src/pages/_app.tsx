@@ -69,7 +69,7 @@ function App({ Component, pageProps }: AppProps) {
     return (
         <>
             <style jsx global>{`
-                html, textarea {
+                html, textarea, input {
                     font-family: ${noto.style.fontFamily};
                 }
             `}</style>

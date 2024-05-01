@@ -138,7 +138,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
     // 새 폴더의 이름을 state에 push
     const newFolderSave = (e: { key: string; }) => {
         // 이름을 입력하고 엔터키를 누른 경우, 폴더가 추가됨
-        if (e.key == 'Enter') {
+        if (e.key === 'Enter') {
             if (newFolderName.trim() !== '') {
                 dispatch(addFavoriteRecipeFolder({ folderName: newFolderName, recipes: [] }));
                 setNewFolderName('');
@@ -223,7 +223,10 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                                             }}
                                             key={item.folderId}>
                                             <div className='folder-thumbnail'>
-                                                <RecipeThumbnail recipes={item.recipes} />
+                                                <RecipeThumbnail
+                                                    recipes={item.recipes}
+                                                    size={44}
+                                                />
                                             </div>
                                             <div className='folder-title-section'>
                                                 <div className='folder-title'>
