@@ -18,7 +18,6 @@ body {
 .container-float-top {
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 .no-drag {

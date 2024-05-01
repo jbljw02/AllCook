@@ -7,6 +7,6 @@ export default function moveToDetail(name: string, seq: string, displayedMenu: M
     router.push({
         pathname: `/recipe/${seq}`,
         query: { name: name, seq: seq },
-    })
+    });
     return selectedMenu;
 }

@@ -47,14 +47,14 @@ export default function favoriteRecipe() {
     // 컴포넌트가 마운트되기 전, DB로부터 사용자의 관심 레시피 정보를 받아옴
     useEffect(() => {
         (async () => {
-            if(user.email) {
+            if (user.email) {
                 const response = await axios.post('/api/reciveFavRecipes', {
                     email: user.email,
                 });
-                
-                const favRecipeFromStore : FavoriteRecipe[] = response.data.favoriteRecipe;
+
+                const favRecipeFromStore: FavoriteRecipe[] = response.data.favoriteRecipe;
                 dispatch(setFavoriteRecipe(favRecipeFromStore));
-            } 
+            }
         })();
     }, [user]);
 
@@ -106,18 +106,19 @@ export default function favoriteRecipe() {
                 .contents-container {
                     display: flex;
                     flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
                     color: #111111;
                     margin-top: 80px;
-                    margin-left: 270px;
+                    margin-left: auto;
                     margin-right: auto;
-                    width: auto;
+                    width: 1180px;
                     height: 100%;
                 }
                 .title {
                     display: flex;
-                    justify-content: flex-start;
                     flex-direction: row;
-                    align-items: flex-start;
+                    align-self: flex-start;
                     font-size: 28px;
                     margin-bottom: 25px;
                 }

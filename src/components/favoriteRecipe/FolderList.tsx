@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RecipeThumbnail from "./RecipeThumbnail";
 import sendNewFolder from "@/utils/sendNewFolder";
+import { useRouter } from "next/router";
 
 export default function FolderList() {
     const dispatch = useDispatch();
+    const router = useRouter();
 
     const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
     const user = useSelector((state: RootState) => state.user);
@@ -60,6 +62,14 @@ export default function FolderList() {
         }
     }, [isAddFolder]);
 
+    // 클릭한 폴더의 상세 페이지로 이동
+    const moveToFolderDetail = (folderId: number) => {
+        router.push({
+            pathname: `/favoriteRecipe/${folderId}`,
+            query: { folderId: folderId },
+        });
+    }
+
     return (
         <>
             <div className="folder-list-section">
@@ -67,9 +77,14 @@ export default function FolderList() {
                     favoriteRecipe.map((item: FavoriteRecipe, index: number) => {
                         return (
                             <>
-                                <div className="folder">
+                                <div
+                                    className="folder"
+                                    onClick={() => moveToFolderDetail(item.folderId)}>
                                     <div className="folder-thumbnail">
-                                        <RecipeThumbnail recipes={item.recipes} />
+                                        <RecipeThumbnail
+                                            recipes={item.recipes}
+                                            size={280}
+                                        />
                                     </div>
                                     <div className="title">{item.folderName}</div>
                                 </div>
@@ -81,7 +96,7 @@ export default function FolderList() {
                     // 폴더를 추가하려는 상태일 때만 보이도록 함
                     isAddFolder &&
                     <div className="folder">
-                        <div className="folder-thumbnail" />
+                        <div className="folder-thumbnail add-thumbnail" />
                         <div className="title">
                             <input
                                 className="new-folder-input"
@@ -91,7 +106,7 @@ export default function FolderList() {
                                 onChange={newFolderNameChange}
                                 onKeyDown={newFolderSave}
                                 onBlur={newFolderBlur}
-                                placeholder="폴더의 이름을 정해주세요!"
+                                placeholder="폴더의 이름을 정해주세요"
                             />
                         </div>
                     </div>
@@ -120,10 +135,12 @@ export default function FolderList() {
                     cursor: pointer;
                 }
                 .folder-thumbnail {
-                    width: 280px;
-                    height: 280px;
                     background-color: #f4f5f6;
                     border-radius: 3px;
+                }
+                .add-thumbnail {
+                    width: 280px;
+                    height: 280px;
                 }
                 .title {
                     margin-top: 12px;
@@ -136,6 +153,8 @@ export default function FolderList() {
                     border: 1.5px dotted #d7d7d7;
                     background-color: #ffffff;
                     transition: border-color 0.2s ease;
+                    width: 277px;
+                    height: 277px;
                 }
                 .add-folder-btn:hover {
                     border-color: #111111;

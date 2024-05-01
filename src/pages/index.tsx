@@ -12,7 +12,7 @@ import Seo from "../components/Seo";
 import moveToDetail from "@/utils/moveToDetail";
 import { setRecipe } from "@/redux/features/recipeSlice";
 import 'react-loading-skeleton/dist/skeleton.css'
-import { RecomMenu } from "@/components/RecomMenu";
+import MenuTable from "@/components/MenuTable";
 import SkeletonUI from "../components/Skeleton";
 import shuffleArray from "@/utils/shuffleArray";
 import filterDessert from "@/utils/filterDessert";
@@ -145,41 +145,41 @@ export default function Home() {
 
     // }, [titleText1, titleText2]);
 
-    const [recomHovered, setRecomHovered] = useState<boolean[]>([]);
-    const [dessertHovered, setDessertHovered] = useState<boolean[]>([]);
+    // const [recomHovered, setRecomHovered] = useState<boolean[]>([]);
+    // const [dessertHovered, setDessertHovered] = useState<boolean[]>([]);
 
-    const imgMouseEnter = (index: number, param: string) => {
-        if (param === "recom") {
-            setRecomHovered((prev) => {
-                const newHoverState = [...prev];
-                newHoverState[index] = true;
-                return newHoverState;
-            });
-        }
-        if (param === "dessert") {
-            setDessertHovered((prev) => {
-                const newHoverState = [...prev];
-                newHoverState[index] = true;
-                return newHoverState;
-            });
-        }
-    };
-    const imgMouseOut = (index: number, param: string) => {
-        if (param === "recom") {
-            setRecomHovered((prev) => {
-                const newHoverState = [...prev];
-                newHoverState[index] = false;
-                return newHoverState;
-            });
-        }
-        if (param === "dessert") {
-            setDessertHovered((prev) => {
-                const newHoverState = [...prev];
-                newHoverState[index] = false;
-                return newHoverState;
-            });
-        }
-    };
+    // const imgMouseEnter = (index: number, param: string) => {
+    //     if (param === "recom") {
+    //         setRecomHovered((prev) => {
+    //             const newHoverState = [...prev];
+    //             newHoverState[index] = true;
+    //             return newHoverState;
+    //         });
+    //     }
+    //     if (param === "dessert") {
+    //         setDessertHovered((prev) => {
+    //             const newHoverState = [...prev];
+    //             newHoverState[index] = true;
+    //             return newHoverState;
+    //         });
+    //     }
+    // };
+    // const imgMouseOut = (index: number, param: string) => {
+    //     if (param === "recom") {
+    //         setRecomHovered((prev) => {
+    //             const newHoverState = [...prev];
+    //             newHoverState[index] = false;
+    //             return newHoverState;
+    //         });
+    //     }
+    //     if (param === "dessert") {
+    //         setDessertHovered((prev) => {
+    //             const newHoverState = [...prev];
+    //             newHoverState[index] = false;
+    //             return newHoverState;
+    //         });
+    //     }
+    // };
 
     // 특정 메뉴를 클릭하면 해당 메뉴의 레시피 페이지로 이동
     const menuClick = (name: string, seq: string) => {
@@ -320,13 +320,10 @@ export default function Home() {
                         </div>
                         {
                             Array.isArray(recomMenu) ?
-                                <RecomMenu
+                                <MenuTable
                                     menu={recomMenu}
-                                    menuHovered={recomHovered}
                                     category={'recom'}
                                     menuClick={menuClick}
-                                    imgMouseEnter={imgMouseEnter}
-                                    imgMouseOut={imgMouseOut}
                                 /> :
                                 <SkeletonUI length={4} />
                         }
@@ -341,13 +338,10 @@ export default function Home() {
                         </div>
                         {
                             Array.isArray(dessertMenu) ?
-                                <RecomMenu
+                                <MenuTable
                                     menu={dessertMenu}
-                                    menuHovered={dessertHovered}
-                                    category={'dessert'}
+                                    category={'recom'}
                                     menuClick={menuClick}
-                                    imgMouseEnter={imgMouseEnter}
-                                    imgMouseOut={imgMouseOut}
                                 /> :
                                 <SkeletonUI length={4} />
                         }
