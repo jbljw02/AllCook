@@ -90,9 +90,19 @@ export default function FolderDetail() {
         // 이름을 입력하고 엔터키를 누른 경우, 폴더가 추가됨
         if (e.key === 'Enter') {
             if (newFolderName !== '') {
-                // DB에서 동일한 폴더를 찾아 폴더명을 변경
                 if (user.email && selectedFolder) {
-                    sendNewFolderName(user.email, selectedFolder?.folderId, newFolderName)
+                    // DB에서 동일한 폴더를 찾아 폴더명을 변경
+                    const resFolderName = await sendNewFolderName(user.email, selectedFolder?.folderId, newFolderName)
+                    setNewFolderName(resFolderName.data.newFolderName);
+
+                    // 폴더명이 변경됐으므로 배열 전체 업데이트
+                    const resFavRecipe = await axios.post('/api/reciveFavRecipes', {
+                        email: user.email,
+                    });
+                    const favRecipeFromStore: FavoriteRecipe[] = resFavRecipe.data.favoriteRecipe;
+                    dispatch(setFavoriteRecipe(favRecipeFromStore));
+
+                    // 모든 작업이 완료된 후 작업 마침
                     setIsAddFolder(false);
                 }
             }
@@ -112,19 +122,19 @@ export default function FolderDetail() {
         setIsAddFolder(true);
     }
 
-    useEffect(() => {
-        (async () => {
-            if (user.email) {
-                const response = await axios.post('/api/reciveFavRecipes', {
-                    email: user.email,
-                });
+    // useEffect(() => {
+    //     (async () => {
+    //         if (user.email) {
+    //             const response = await axios.post('/api/reciveFavRecipes', {
+    //                 email: user.email,
+    //             });
 
-                const favRecipeFromStore: FavoriteRecipe[] = response.data.favoriteRecipe;
-                console.log("악: ", favRecipeFromStore);
-                dispatch(setFavoriteRecipe(favRecipeFromStore));
-            }
-        })();
-    }, [isAddFolder]);
+    //             const favRecipeFromStore: FavoriteRecipe[] = response.data.favoriteRecipe;
+    //             // console.log("악: ", favRecipeFromStore   );
+    //             dispatch(setFavoriteRecipe(favRecipeFromStore));
+    //         }
+    //     })();
+    // }, [isAddFolder]);
 
     return (
         <>
