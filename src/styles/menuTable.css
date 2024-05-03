@@ -1,16 +1,22 @@
-.menu-table {
-    /* display: flex; */
-    /* flex-direction: column; */
-    display: table;
-    border-collapse: separate;
+.menu-table-container {
+    display: flex;
+    flex-direction: column;
     width: 100%;
+}
+
+.menu-table {
+    display: flex;
+    width: auto;
+    border-collapse: separate;
     border-spacing: 0 25px;
     margin-top: -25px;
     color: #111111;
 }
+
 .menu-table tr {
     display: table-row;
 }
+
 .menu-table tr td {
     display: table-cell;
     max-width: 250px;
@@ -18,12 +24,15 @@
     align-self: start;
     padding: 0 10.5px;
 }
+
 .menu-table tr td:first-child {
     padding-left: 0px;
 }
+
 .menu-table tr td:last-child {
     padding-right: 0px;
 }
+
 .td-content {
     overflow: hidden;
     border-radius: 8px;
@@ -31,6 +40,14 @@
     height: 250px;
     margin-bottom: 6px;
 }
+
+.recipe-delete-checkbox {
+    position: absolute;
+    margin-top: 8px;
+    margin-left: 8px;
+    z-index: 1000;
+}
+
 .RCP_NM {
     text-align: left;
     font-size: 15px;
@@ -38,6 +55,7 @@
     word-wrap: break-word;
     word-break: break-all;
 }
+
 .RCP_PAT2 {
     font-size: 13px;
     color: #5c5c5c;

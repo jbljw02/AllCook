@@ -1,7 +1,7 @@
 import { Menu } from "@/redux/store";
 import axios from "axios";
 
-const recipeDeleteRequest = async (email: string, id: number, recipe: Menu) => {
+const recipeDeleteRequest = async (email: string, id: number, recipe: Menu | string[]) => {
     try {
         const data = {
             email: email,
