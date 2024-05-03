@@ -27,6 +27,8 @@ const infoInitialState = {
     folderName: '',
 }
 
+const isCheckedInitialState: string[] = [];
+
 export const favoriteRecipeSlice = createSlice({
     name: 'favoriteRecipe',
     initialState: folderInitialState,
@@ -99,16 +101,69 @@ export const recipeAddModalSlice = createSlice({
     }
 })
 
+// 선택된 폴더를 관리
+export const selectedFolderSlice = createSlice({
+    name: 'selectedFolder',
+    initialState: folderInitialState,
+    reducers: {
+        setSelectedFolder: (state, action) => {
+            return action.payload;
+        }
+    }
+})
+
+// 레시피를 삭제중인지 여부
+export const isFavRecipeDeleteSlice = createSlice({
+    name: 'isFavRecipeDelete',
+    initialState: false,
+    reducers: {
+        setIsFavRecipeDelete: (state, action) => {
+            return !state;
+        }
+    }
+})
+
+// 삭제할 레시피들의 체크 여부를 저장
+export const isCheckedRecipeSlice = createSlice({
+    name: 'isCheckedRecipe',
+    initialState: isCheckedInitialState,
+    reducers: {
+        setIsCheckedRecipe: (state, action) => {
+            const param = action.payload;
+            const index = state.findIndex(item => item === param);
+
+            // 인덱스를 찾지 못하면 -1을 반환함. 즉, 요소가 존재하지 않는다면 요소를 배열에 추가
+            if (index === -1) {
+                state.push(param);
+            }
+            else {
+                // 요소가 이미 존재한다면 요소를 제거(index부터 1개를 제거, 즉 index와 일치하는 요소 제거)
+                state.splice(index, 1)
+            }
+        },
+        resetIsCheckedRecipe: () => {
+            return [];
+        }
+    }
+})
+
 export const { setFavoriteRecipe, addFavoriteRecipeFolder, removeFavoriteRecipeFolder, addRecipeToFolder, removeRecipeFromFolder } = favoriteRecipeSlice.actions;
 export const { setAddedRecipeInfo } = addedRecipeInfoSlice.actions;
 export const { setRecipeMoveModal } = recipeMoveModalSlice.actions;
 export const { setRecipeAddModal } = recipeAddModalSlice.actions;
+export const { setSelectedFolder } = selectedFolderSlice.actions;
+export const { setIsFavRecipeDelete } = isFavRecipeDeleteSlice.actions;
+export const { setIsCheckedRecipe } = isCheckedRecipeSlice.actions;
+export const { resetIsCheckedRecipe } = isCheckedRecipeSlice.actions;
 
 const reducers = {
     favoriteRecipe: favoriteRecipeSlice.reducer,
     addedRecipeInfo: addedRecipeInfoSlice.reducer,
     recipeMoveModal: recipeMoveModalSlice.reducer,
     recipeAddModal: recipeAddModalSlice.reducer,
+    selectedFolder: selectedFolderSlice.reducer,
+    isFavRecipeDelete: isFavRecipeDeleteSlice.reducer,
+    isCheckedRecipe: isCheckedRecipeSlice.reducer,
 }
 
 export default reducers;

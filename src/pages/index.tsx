@@ -305,8 +305,7 @@ export default function Home() {
                         <div className="learn-more">
                             <Link
                                 style={{ textDecoration: "none", color: "inherit" }}
-                                href={"/recipe"}
-                            >
+                                href={"/recipe"}>
                                 레시피 보기
                             </Link>
                         </div>

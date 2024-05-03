@@ -26,7 +26,10 @@ export type RootState = {
     addedRecipeInfo: AddedRecipeInfo,
     recipeMoveModal: boolean,
     recipeAddModal: boolean,
+    selectedFolder: FavoriteRecipe,
     recipeOpinion: RecipeOpinion[],
+    isFavRecipeDelete: boolean,
+    isCheckedRecipe: string[],
 }
 
 export type Menu = {
@@ -82,7 +85,10 @@ const combinedReducer = combineReducers({
     addedRecipeInfo: FavoriteRecipeReducers.addedRecipeInfo,
     recipeMoveModal: FavoriteRecipeReducers.recipeMoveModal,
     recipeAddModal: FavoriteRecipeReducers.recipeAddModal,
+    selectedFolder: FavoriteRecipeReducers.selectedFolder,
     recipeOpinion: RecipeOpinionReducers.recipeOpinion,
+    isFavRecipeDelete: FavoriteRecipeReducers.isFavRecipeDelete,
+    isCheckedRecipe: FavoriteRecipeReducers.isCheckedRecipe,
 });
 
 // 전체 리듀서를 관리

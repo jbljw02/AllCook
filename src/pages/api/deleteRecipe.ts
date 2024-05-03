@@ -14,19 +14,29 @@ const deleteRecipe = async (req: NextApiRequest, res: NextApiResponse) => {
         if (userDocSnap.exists()) {
             const favoriteRecipes = userDocSnap.data().FavoriteRecipe;
             const targetFolderIndex = favoriteRecipes.findIndex((folder: FavoriteRecipe) => folder.folderId === id);
-            console.log("타겟 : ", targetFolderIndex);
+
+            let updatedRecipes;
             if (targetFolderIndex >= 0) {
-                
-                // 일련번호가 일치하는 레시피만 걸러냄
-                const updatedRecipes = favoriteRecipes[targetFolderIndex].recipes.filter((item: Menu) => item.RCP_SEQ !== recipe.RCP_SEQ);
-                console.log("원본 : ", favoriteRecipes[targetFolderIndex].recipes);
-                console.log("upd: ", updatedRecipes);
+                // 인자가 일련번호만 가지고 있는 배열인 경우(여러 레시피를 동시에 삭제)
+                if (Array.isArray(recipe)) {
+                    updatedRecipes = favoriteRecipes[targetFolderIndex].recipes.filter((item: Menu) =>
+                        !recipe.includes(item.RCP_SEQ)
+                    );
+                }
+                // 인자가 Menu 형태의 한 레시피인 경우(하나의 레시피만 삭제) 
+                else {
+                    updatedRecipes = favoriteRecipes[targetFolderIndex].recipes.filter((item: Menu) =>
+                        item.RCP_SEQ !== recipe.RCP_SEQ
+                    );
+                }
+
                 favoriteRecipes[targetFolderIndex].recipes = updatedRecipes;
+
                 await updateDoc(userDocRef, {
                     FavoriteRecipe: favoriteRecipes,
-                })
+                });
             }
-            return res.status(200).json({success: "레시피 삭제 완료"})
+            return res.status(200).json({ success: "레시피 삭제 완료" })
         }
         else {
             return res.status(404).json({ error: "사용자 존재 X" })
