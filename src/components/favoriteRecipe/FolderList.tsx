@@ -1,4 +1,4 @@
-import { FavoriteRecipe, addFavoriteRecipeFolder } from "@/redux/features/favoriteRecipeSlice";
+import { FavoriteRecipe, addFavoriteRecipeFolder, setIsCheckedFolder } from "@/redux/features/favoriteRecipeSlice";
 import { Menu, RootState } from "@/redux/store";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -70,6 +70,15 @@ export default function FolderList() {
         });
     }
 
+    const isFavFolderDelete = useSelector((state: RootState) => state.isFavFolderDelete);
+    const isCheckedFolder = useSelector((state: RootState) => state.isCheckedFolder);
+
+    const checkFolder = (folderId: number) => {
+        console.log("A");
+        dispatch(setIsCheckedFolder(folderId));
+    }
+    console.log("금: ", isCheckedFolder);
+
     return (
         <>
             <div className="folder-list-section">
@@ -79,7 +88,19 @@ export default function FolderList() {
                             <>
                                 <div
                                     className="folder"
-                                    onClick={() => moveToFolderDetail(item.folderId)}>
+                                    onClick={() => {
+                                        !isFavFolderDelete ?
+                                            moveToFolderDetail(item.folderId) :
+                                            checkFolder(item.folderId);
+                                        }}>
+                                    {
+                                        (isFavFolderDelete && item.folderId !== 0) &&
+                                        <input
+                                            className="recipe-delete-checkbox cursor-pointer"
+                                            type="checkbox"
+                                            // find의 결과가 undefined인지 여부에 따라 체크박스의 상태 설정
+                                            checked={isCheckedFolder.some(element => element === item.folderId)} />
+                                    }
                                     <div className="folder-thumbnail">
                                         <RecipeThumbnail
                                             recipes={item.recipes}
@@ -128,6 +149,7 @@ export default function FolderList() {
                     flex-direction: row;
                     flex-wrap: wrap;
                     margin-bottom: 130px;
+                    width: 100%;
                 }
                 .folder {
                     margin-right: 15px;

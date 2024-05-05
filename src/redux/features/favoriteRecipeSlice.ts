@@ -27,7 +27,9 @@ const infoInitialState = {
     folderName: '',
 }
 
-const isCheckedInitialState: string[] = [];
+const isCheckedRecipeInit: string[] = [];
+
+const isCheckedFolderInit: number[] = [];
 
 export const favoriteRecipeSlice = createSlice({
     name: 'favoriteRecipe',
@@ -118,7 +120,7 @@ export const isFavRecipeDeleteSlice = createSlice({
     initialState: false,
     reducers: {
         setIsFavRecipeDelete: (state, action) => {
-            return !state;
+            return action.payload;
         }
     }
 })
@@ -126,7 +128,7 @@ export const isFavRecipeDeleteSlice = createSlice({
 // 삭제할 레시피들의 체크 여부를 저장
 export const isCheckedRecipeSlice = createSlice({
     name: 'isCheckedRecipe',
-    initialState: isCheckedInitialState,
+    initialState: isCheckedRecipeInit,
     reducers: {
         setIsCheckedRecipe: (state, action) => {
             const param = action.payload;
@@ -147,6 +149,41 @@ export const isCheckedRecipeSlice = createSlice({
     }
 })
 
+// 폴더를 삭제중인지 여부
+export const isFavFolderDeleteSlice = createSlice({
+    name: 'isFavFolderDelete',
+    initialState: false,
+    reducers: {
+        setIsFavFolderDelete: (state, action) => {
+            return action.payload;
+        }
+    }
+})
+
+// 삭제할 폴더들의 체크 여부를 저장
+export const isCheckedFolderSlice = createSlice({
+    name: 'isCheckedFolder',
+    initialState: isCheckedFolderInit,
+    reducers: {
+        setIsCheckedFolder: (state, action) => {
+            const param = action.payload;
+            const index = state.findIndex(item => item === param);
+
+            // 인덱스를 찾지 못하면 -1을 반환함. 즉, 요소가 존재하지 않는다면 요소를 배열에 추가
+            if (index === -1) {
+                state.push(param);
+            }
+            else {
+                // 요소가 이미 존재한다면 요소를 제거(index부터 1개를 제거, 즉 index와 일치하는 요소 제거)
+                state.splice(index, 1)
+            }
+        },
+        resetIsCheckedFolder: () => {
+            return [];
+        }
+    }
+})
+
 export const { setFavoriteRecipe, addFavoriteRecipeFolder, removeFavoriteRecipeFolder, addRecipeToFolder, removeRecipeFromFolder } = favoriteRecipeSlice.actions;
 export const { setAddedRecipeInfo } = addedRecipeInfoSlice.actions;
 export const { setRecipeMoveModal } = recipeMoveModalSlice.actions;
@@ -155,6 +192,9 @@ export const { setSelectedFolder } = selectedFolderSlice.actions;
 export const { setIsFavRecipeDelete } = isFavRecipeDeleteSlice.actions;
 export const { setIsCheckedRecipe } = isCheckedRecipeSlice.actions;
 export const { resetIsCheckedRecipe } = isCheckedRecipeSlice.actions;
+export const { setIsFavFolderDelete } = isFavFolderDeleteSlice.actions;
+export const { setIsCheckedFolder } = isCheckedFolderSlice.actions;
+export const { resetIsCheckedFolder } = isCheckedFolderSlice.actions;
 
 const reducers = {
     favoriteRecipe: favoriteRecipeSlice.reducer,
@@ -164,6 +204,8 @@ const reducers = {
     selectedFolder: selectedFolderSlice.reducer,
     isFavRecipeDelete: isFavRecipeDeleteSlice.reducer,
     isCheckedRecipe: isCheckedRecipeSlice.reducer,
+    isFavFolderDelete: isFavFolderDeleteSlice.reducer,
+    isCheckedFolder: isCheckedFolderSlice.reducer,
 }
 
 export default reducers;

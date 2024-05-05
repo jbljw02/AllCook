@@ -5,7 +5,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const deleteRecipe = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { email, id, recipe } = req.body;
+    const { email, folderId, recipe } = req.body;
 
     try {
         const userDocRef = doc(firestore, 'users', email);
@@ -13,7 +13,7 @@ const deleteRecipe = async (req: NextApiRequest, res: NextApiResponse) => {
 
         if (userDocSnap.exists()) {
             const favoriteRecipes = userDocSnap.data().FavoriteRecipe;
-            const targetFolderIndex = favoriteRecipes.findIndex((folder: FavoriteRecipe) => folder.folderId === id);
+            const targetFolderIndex = favoriteRecipes.findIndex((folder: FavoriteRecipe) => folder.folderId === folderId);
 
             let updatedRecipes;
             if (targetFolderIndex >= 0) {

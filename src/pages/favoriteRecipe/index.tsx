@@ -9,6 +9,7 @@ import axios from "axios";
 import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";
+import ModifyNav from "@/components/favoriteRecipe/ModifyNav";
 
 export default function favoriteRecipe() {
     const dispatch = useDispatch();
@@ -43,6 +44,7 @@ export default function favoriteRecipe() {
 
     const user = useSelector((state: RootState) => state.user);
     const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe)
+    const isFavRecipeDelete = useSelector((state: RootState) => state.isFavRecipeDelete);
 
     // 컴포넌트가 마운트되기 전, DB로부터 사용자의 관심 레시피 정보를 받아옴
     useEffect(() => {
@@ -57,6 +59,8 @@ export default function favoriteRecipe() {
             }
         })();
     }, [user]);
+
+    const isFavFolderDelete = useSelector((state: RootState) => state.isFavFolderDelete);
 
     return (
         <>
@@ -96,7 +100,19 @@ export default function favoriteRecipe() {
                         }
                     </div>
                     <div className="contents-container">
-                        <div className="title">내가 저장한 레시피</div>
+                        {
+                            !isFavFolderDelete ?
+                                <div className="nav">
+                                    <div className="title">내가 저장한 레시피</div>
+                                    <ModifyNav category="folder" />
+                                </div> :
+                                <>
+                                    <div className="title">내가 저장한 레시피</div>
+                                    <div className="nav-modify-on">
+                                        <ModifyNav category="folder" />
+                                    </div>
+                                </>
+                        }
                         <FolderList />
                     </div>
                 </div>
@@ -115,12 +131,25 @@ export default function favoriteRecipe() {
                     width: 1180px;
                     height: 100%;
                 }
+                .nav {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    width: 100%;
+                    margin-bottom: 15px;
+                }
+                .nav-modify-on {
+                    display: flex;
+                    flex-direction: row;
+                    width: 100%;
+                    margin-bottom: 15px;
+                }
                 .title {
                     display: flex;
                     flex-direction: row;
                     align-self: flex-start;
                     font-size: 28px;
-                    margin-bottom: 25px;
+                    width: 100%;
                 }
             `}</style>
         </>

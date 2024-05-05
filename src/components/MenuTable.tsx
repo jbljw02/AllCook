@@ -49,6 +49,7 @@ export const MenuTable: React.FC<paramsType> = ({ menu, category, menuClick, isM
         splitMenu();
     }, [menu]);
 
+    const selectedFolder = useSelector((state: RootState) => state.selectedFolder);
     const isFavRecipeDelete = useSelector((state: RootState) => state.isFavRecipeDelete);
     const isCheckedRecipe = useSelector((state: RootState) => state.isCheckedRecipe);
 
@@ -56,18 +57,19 @@ export const MenuTable: React.FC<paramsType> = ({ menu, category, menuClick, isM
     const checkRecipe = (RCP_SEQ: string) => {
         dispatch(setIsCheckedRecipe(RCP_SEQ));
     }
-
     return (
         <>
             <div className="menu-table-container">
                 {
                     category === 'modify' &&
-                    <ModifyNav />
+                    <div style={{ marginBottom: '14px' }}>
+                        <ModifyNav category="recipe" />
+                    </div>
                 }
                 <table className="menu-table">
                     <tbody>
                         {
-                            splitedMenu && category !== 'recom' ?
+                            splitedMenu && category === 'modify' ?
                                 splitedMenu.map((rowMenu, rowIndex) => (
                                     <tr>
                                         {
@@ -90,7 +92,7 @@ export const MenuTable: React.FC<paramsType> = ({ menu, category, menuClick, isM
                                                                         className="recipe-delete-checkbox cursor-pointer"
                                                                         type="checkbox"
                                                                         // find의 결과가 undefined인지 여부에 따라 체크박스의 상태 설정
-                                                                        checked={!!isCheckedRecipe.find(element => element === item.RCP_SEQ)} />
+                                                                        checked={isCheckedRecipe.some(element => element === item.RCP_SEQ)} />
                                                                 }
                                                                 <Image
                                                                     src={`${item.ATT_FILE_NO_MK}`}
