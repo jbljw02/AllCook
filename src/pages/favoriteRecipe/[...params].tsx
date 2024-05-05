@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import MenuTable from "@/components/MenuTable";
+import EmptyFolder from "@/components/favoriteRecipe/EmptyFolder";
 import RecipeThumbnail from "@/components/favoriteRecipe/RecipeThumbnail";
 import Header from "@/components/header/Header";
 import HeaderOnContents from "@/components/header/HeaderOnContents";
@@ -68,6 +69,7 @@ export default function FolderDetail() {
 
     const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
     const selectedFolder = useSelector((state: RootState) => state.selectedFolder);
+    console.log("셀: ", selectedFolder.recipes);
 
     const { folderId } = router.query;
     const numericFolderId = Number(folderId);
@@ -226,13 +228,16 @@ export default function FolderDetail() {
                         </div>
                         <div className="folder-recipes-section">
                             {
-                                Array.isArray(selectedFolder.recipes) &&
-                                <MenuTable
-                                    menu={selectedFolder.recipes}
-                                    category="modify"
-                                    menuClick={menuClick}
-                                    isModify={true}
-                                />
+                                selectedFolder.recipes && (
+                                    selectedFolder.recipes.length > 0 ?
+                                        <MenuTable
+                                            menu={selectedFolder.recipes}
+                                            category="modify"
+                                            menuClick={menuClick}
+                                            isModify={true}
+                                        /> :
+                                        <EmptyFolder />
+                                )
 
                             }
                         </div>

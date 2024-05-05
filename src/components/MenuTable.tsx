@@ -49,6 +49,7 @@ export const MenuTable: React.FC<paramsType> = ({ menu, category, menuClick, isM
         splitMenu();
     }, [menu]);
 
+    const selectedFolder = useSelector((state: RootState) => state.selectedFolder);
     const isFavRecipeDelete = useSelector((state: RootState) => state.isFavRecipeDelete);
     const isCheckedRecipe = useSelector((state: RootState) => state.isCheckedRecipe);
 
@@ -56,7 +57,6 @@ export const MenuTable: React.FC<paramsType> = ({ menu, category, menuClick, isM
     const checkRecipe = (RCP_SEQ: string) => {
         dispatch(setIsCheckedRecipe(RCP_SEQ));
     }
-
     return (
         <>
             <div className="menu-table-container">
