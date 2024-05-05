@@ -1,6 +1,5 @@
 import { useRouter } from "next/router"
 
-
 export default function EmptyFolder() {
     const router = useRouter();
     return (
@@ -24,7 +23,7 @@ export default function EmptyFolder() {
                     border: 1px solid rgb(232, 232, 232);
                 }
                 .title {
-                    font-size: 17px;
+                    font-size: 18px;
                     margin-bottom: 20px;
                 }
                 button {
