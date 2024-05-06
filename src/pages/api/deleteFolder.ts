@@ -8,7 +8,6 @@ const deleteFolder = async (req: NextApiRequest, res: NextApiResponse) => {
     const { email, folderIds } = req.body;
 
     try {
-        console.log("아딩: ", folderIds);
         const userDocRef = doc(firestore, 'users', email);
         const userDocSnap = await getDoc(userDocRef);
 
