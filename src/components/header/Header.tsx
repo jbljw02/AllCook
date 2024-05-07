@@ -148,7 +148,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                                     </>
                             }
                             {
-                                !user.name ?
+                                !user || (user.name === '' && user.email === '') ?
                                     <span className='logIn' onClick={() => router.push('/signIn')}>
                                         로그인
                                     </span> :
@@ -168,7 +168,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                             }
                         </div>
                         {
-                            userDetail && user.name && user.email ?
+                            userDetail && user && user.name !== '' && user.email !== '' ?
                                 <UserDropdown
                                     category='header'
                                 /> :

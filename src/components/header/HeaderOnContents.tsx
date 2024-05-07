@@ -77,7 +77,7 @@ export default function Header({ className }: { className: string }) {
                         <span className='recipe'>
                             <Link
                                 style={{ textDecoration: 'none', color: 'inherit' }}
-                                href={'/recipe'}> 
+                                href={'/recipe'}>
                                 Recipe
                             </Link>
                         </span>
@@ -139,7 +139,7 @@ export default function Header({ className }: { className: string }) {
                             }
                         </div>
                         {
-                            userDetail && user.name && user.email ?
+                            userDetail && user && user.name !== '' && user.email !== '' ?
                                 <UserDropdown
                                     category='header'
                                 /> :

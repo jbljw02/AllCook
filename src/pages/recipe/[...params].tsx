@@ -23,32 +23,6 @@ export default function RecipeDetail() {
     const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
 
-    // DB에 매번 요청을 보내지 않고, 접속 이력이 있는 사용자는 로컬 스토리지에서 값을 가져오도록 함
-    useEffect(() => {
-        (async () => {
-            const cachedRecipes = localStorage.getItem('recipes');
-            const recipes = JSON.parse(cachedRecipes as string);
-
-            // 로컬 스토리지에 이미 레시피가 존재하면 DB에 값을 요청하지 않고 가져옴
-            if (cachedRecipes) {
-                console.log("로컬 스토리지에 메뉴 존재");
-                dispatch(setAllMenu(recipes));
-                dispatch(setDisplayedMenu(recipes))
-            }
-            // 로컬 스토리지에 레시피가 없다면 DB에서 데이터를 요청하고, 로컬 스토리지에 담음
-            else {
-                console.log("로컬 스토리지에 메뉴 X");
-                const response = await fetch('/api/reciveRecipes');
-                const jsonResponse = await response.json();
-                const recipes = await jsonResponse.data;
-                dispatch(setAllMenu(jsonResponse.data));
-                dispatch(setDisplayedMenu(recipes))
-
-                localStorage.setItem('recipes', JSON.stringify(recipes));
-            }
-        })()
-    }, []);
-
     const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
     const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
     const contentsRef = useRef<HTMLDivElement>(null);
@@ -226,8 +200,9 @@ export default function RecipeDetail() {
 
     // 레시피 추가 완료 팝업을 관리
     const handleCompletePopUp = () => {
+
         // 레시피 추가 정보가 존재하는 경우에만 팝업 띄우도록
-        if (addedRecipeInfo.folderId) {
+        if (addedRecipeInfo.folderId !== null) {
             setIsShowPopUp(true);
 
             // 5초 후에 팝업을 제거, state도 초기 상태로 돌려놓아 레시피가 추가됐을 때만 팝업이 올라오도록
@@ -250,8 +225,6 @@ export default function RecipeDetail() {
     useEffect(() => {
         setIsShowPopUp(false)
     }, []);
-
-    console.log("폼폼: ", addedRecipeInfo);
 
     return (
         <>
