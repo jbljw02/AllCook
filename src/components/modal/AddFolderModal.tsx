@@ -11,7 +11,7 @@ import recipeDeleteRequest from '@/utils/recipeDeleteRequest';
 
 interface modalProps {
     isModalOpen: boolean,
-    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
     isMoving?: boolean,
 }
 

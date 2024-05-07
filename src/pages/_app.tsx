@@ -72,6 +72,7 @@ function App({ Component, pageProps }: AppProps) {
                 html, textarea, input {
                     font-family: ${noto.style.fontFamily};
                 }
+                
             `}</style>
             <Component {...pageProps} />
         </>

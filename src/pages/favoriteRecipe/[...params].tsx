@@ -261,7 +261,6 @@ export default function FolderDetail() {
                     margin-left: auto;
                     margin-right: auto;
                     width: 1080px;
-                    height: 100%;
                 }
                 .folder-top-section {
                     display: flex;

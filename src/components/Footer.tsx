@@ -96,7 +96,6 @@ export default function Footer() {
                     display: flex;
                     flex-direction: column;
                     margin-right: 50px;
-                    height: 100%;
                     margin-top: 25px;
                     margin-bottom: 20px;
                 }
