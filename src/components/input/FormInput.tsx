@@ -1,13 +1,14 @@
 import { emailForm } from "@/pages/resetPassword";
 import { loginForm } from "@/pages/signIn"
 import { signUpForm } from "@/pages/signUp"
+import { UserForm } from "@/pages/userDetail";
 
 export type ParamsType = {
-    formData: loginForm | signUpForm | emailForm,
+    formData: loginForm | signUpForm | emailForm | UserForm,
     formChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     type: string,
     name: string,
-    value: any,
+    value: string,
     inputFocus: (e: React.ChangeEvent<HTMLInputElement>) => void,
     inputBlur: (e: React.ChangeEvent<HTMLInputElement>) => void,
     placeholder: string,
@@ -22,8 +23,6 @@ export default function FormInput({
     inputFocus,
     inputBlur,
     placeholder }: ParamsType) {
-        
-    const inputValue = (formData as any)[value];
 
     return (
         <>
@@ -33,7 +32,7 @@ export default function FormInput({
                 name={name}
                 onFocus={inputFocus}
                 onBlur={inputBlur}
-                value={inputValue}
+                value={value}
                 placeholder={placeholder} />
             <style jsx>{`
                 input {

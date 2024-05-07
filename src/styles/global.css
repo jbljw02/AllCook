@@ -12,12 +12,14 @@ body {
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 .container-float-top {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
 }
 
 .no-drag {
@@ -34,6 +36,10 @@ body {
 
 .rotate-clockwise {
   transform: rotate(-90deg);
+}
+
+#warning-border {
+  border-color: #FF0000 !important;
 }
 
 /* 진동 효과 */

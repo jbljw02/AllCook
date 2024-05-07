@@ -33,4 +33,4 @@ const firestore = getFirestore(firebaseApp);
 
 const auth = getAuth(firebaseApp);
 
-export { firestore, auth };
+export { firestore, auth, firebaseApp };
