@@ -280,7 +280,8 @@ export default function login() {
                     flex-direction: column;
                     justify-content: center;
                     align-items: center;
-                    margin-top: 110px;
+                    height: 100%;
+                    margin-bottom: 80px;
                     color: #111111;
                 }
                 .title-container {
@@ -324,17 +325,6 @@ export default function login() {
                     transition: 0.15s ease border-color;
                     margin-right: 0px;
                 }
-                .input-div input {
-                    outline: none;
-                    width: 100%;
-                    height: 42px;
-                    font-size: 14px;
-                    padding-left: 12px;
-                    padding-top: 3px;
-                    padding-bottom: 3px;
-                    border-radius: 10px;
-                    border: none;
-                }
                 .password {
                     margin-top: 15px;
                 }
@@ -344,9 +334,6 @@ export default function login() {
                     margin-left: 2px;
                     font-size: 11.5px;
                     color: #FF0000;
-                }
-                #warning-border {
-                    border-color: #FF0000 !important;
                 }
                 .login-footer-div {
                     display: flex;
