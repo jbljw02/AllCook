@@ -13,7 +13,6 @@ import userLight from '../../../public/svgs/user-light.svg';
 import userDark from '../../../public/svgs/user-dark.svg';
 import Image from 'next/image';
 import UserDropdown from '../UserDropdown';
-import ProfileImgage from './ProfileImage';
 
 const titleFont = Anek_Tamil({
     subsets: ['latin'],
@@ -70,15 +69,15 @@ export default function Header({ position, backgroundColor, color, borderColor, 
 
     return (
         <>
-            <header
-                style={{
-                    position: position,
-                    backgroundColor: backgroundColor,
-                    color: color,
-                    borderColor: borderColor,
-                }}
-                className='header'>
-                <div className='header-div'>
+            <div className='header-container'>
+                <header
+                    style={{
+                        position: position,
+                        backgroundColor: backgroundColor,
+                        color: color,
+                        borderColor: borderColor,
+                    }}
+                    className='header'>
                     {/* 메뉴 네비게이션 바 */}
                     <div className='left-nav'>
                         <span className='home'>
@@ -175,15 +174,18 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                                 null
                         }
                     </div>
-                </div>
-            </header>
+                </header>
+            </div>
             <style jsx>{`
                 .header {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: space-between;
                     width: 100%;
                     height: auto;
-                    padding-top: 20px;
-                    padding-bottom: 10px;
-                    top: 0;
+                    padding-top: 36px;
+                    padding-bottom: 30px;
                     border-bottom: 0.8px solid;
                 }
                 .left-nav {
@@ -192,6 +194,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                     font-size: 17px;
                     font-weight: 300;
                     margin-top: -10px;
+                    margin-left: 180px;
                 }
                 .left-nav span {
                     margin-right: 22px;
@@ -201,14 +204,17 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                     margin-right: 0px;
                 }
                 .title-logo-div {
-                    margin-left: 435px;
-                    margin-right: 297px;
+                    position: absolute;
+                    left: 50%;
+                    transform: translateX(-50%); 
                 }
                 .right-nav {
                     display: flex;
                     flex-direction: row;
                     align-items: center;
+                    width: auto;
                     margin-top: -11px;
+                    margin-right: 150px;
                 }
         `}</style>
         </>

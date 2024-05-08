@@ -76,67 +76,6 @@ export default function Home() {
         };
     }, [scrollPassContent]);
 
-    // 홈 화면에 글자에 split 효과를 주기 위함
-    const titleText1 = "환영합니다! 우리는 All Cook,";
-    const titleText2 = "당신의 요리 파트너입니다.";
-    const [displayedText1, setDisplayedText1] = useState("");
-    const [displayedText2, setDisplayedText2] = useState("");
-
-    // const testMenu = useSelector((state: RootState) => state.testMenu);
-    // let results = testMenu.filter((item) => item.RCP_NM.includes('돼지'))
-
-    // useEffect(() => {
-    //     // titleText를 배열로 만든 후 setTimeout을 이용해 화면의 차례로 출력
-    //     titleText1.split("").forEach((str, index) => {
-    //         setTimeout(() => {
-    //             setDisplayedText1((prev) => prev + str);
-    //         }, index * 60);
-    //     });
-    //     // titleText1이 전부 출력된 후 실행되도록 설정
-    //     titleText2.split("").forEach((str, index) => {
-    //         setTimeout(() => {
-    //             setDisplayedText2((prev) => prev + str);
-    //         }, (index + titleText1.length) * 60);
-    //     });
-
-    // }, [titleText1, titleText2]);
-
-    // const [recomHovered, setRecomHovered] = useState<boolean[]>([]);
-    // const [dessertHovered, setDessertHovered] = useState<boolean[]>([]);
-
-    // const imgMouseEnter = (index: number, param: string) => {
-    //     if (param === "recom") {
-    //         setRecomHovered((prev) => {
-    //             const newHoverState = [...prev];
-    //             newHoverState[index] = true;
-    //             return newHoverState;
-    //         });
-    //     }
-    //     if (param === "dessert") {
-    //         setDessertHovered((prev) => {
-    //             const newHoverState = [...prev];
-    //             newHoverState[index] = true;
-    //             return newHoverState;
-    //         });
-    //     }
-    // };
-    // const imgMouseOut = (index: number, param: string) => {
-    //     if (param === "recom") {
-    //         setRecomHovered((prev) => {
-    //             const newHoverState = [...prev];
-    //             newHoverState[index] = false;
-    //             return newHoverState;
-    //         });
-    //     }
-    //     if (param === "dessert") {
-    //         setDessertHovered((prev) => {
-    //             const newHoverState = [...prev];
-    //             newHoverState[index] = false;
-    //             return newHoverState;
-    //         });
-    //     }
-    // };
-
     // 특정 메뉴를 클릭하면 해당 메뉴의 레시피 페이지로 이동
     const menuClick = (name: string, seq: string) => {
         const selectedMenu = moveToDetail(name, seq, displayedMenu);

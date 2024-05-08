@@ -63,7 +63,7 @@ export default function Footer() {
                 {/* footer 영역의 컨테이너 */}
                 .footer-container { 
                     display: flex;
-                    justify-content: center;
+                    justify-content: space-between;
                     font-size: 14px;
                     color: #212529;
                     background-color: #f9f7f5;
@@ -73,7 +73,6 @@ export default function Footer() {
                 .footer-left {
                     margin-left: 45px;
                     margin-top: 15px;
-                    margin-right: 790px;
                 }
                 .footer-title {
                     margin-top: 10px;
