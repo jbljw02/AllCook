@@ -1,5 +1,5 @@
 import Footer from "@/components/Footer";
-import MenuTable from "@/components/MenuTable";
+import MenuTable from "@/components/table/MenuTable";
 import EmptyFolder from "@/components/favoriteRecipe/EmptyFolder";
 import RecipeThumbnail from "@/components/favoriteRecipe/RecipeThumbnail";
 import Header from "@/components/header/Header";

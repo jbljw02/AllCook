@@ -15,7 +15,7 @@ import AddFolderModal from "@/components/modal/AddFolderModal";
 import AddCompletePopUp from "@/components/favoriteRecipe/AddCompletePopUp";
 import { setAddedRecipeInfo, setRecipeAddModal, setRecipeMoveModal } from "@/redux/features/favoriteRecipeSlice";
 import ReviewContainer from "@/components/recipeDetail/review/ReviewContainer";
-import MenuTable from "@/components/MenuTable";
+import MenuTable from "@/components/table/MenuTable";
 
 export default function RecipeDetail() {
     const dispatch = useDispatch();

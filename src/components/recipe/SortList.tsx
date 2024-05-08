@@ -1,16 +1,13 @@
 import { setSortRule } from "@/redux/features/sortSlice";
-import { RootState } from "../redux/store";
+import { RootState } from "../../redux/store";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setDisplayedMenu } from "@/redux/features/menuSlice";
+import { setCurrentPage } from "@/redux/features/recipePageSlice";
 
-interface SortListProps {
-    currentPage: number,
-    setCurrentPage: Dispatch<SetStateAction<number>>;
-}
-
-export default function SortList({ currentPage, setCurrentPage }: SortListProps) {
+export default function SortList() {
     const dispatch = useDispatch();
+    const currentPage = useSelector((state: RootState) => state.currentPage);
 
     const [isSortClicked, setIsSortClicked] = useState<boolean>();
 
@@ -25,32 +22,32 @@ export default function SortList({ currentPage, setCurrentPage }: SortListProps)
             // localeCompare = 사전 순서에 따라 정렬
             let newDisplayedMenu = [...displayedMenu].sort((a, b) => a.RCP_NM.localeCompare(b.RCP_NM));
             dispatch(setDisplayedMenu(newDisplayedMenu));
-            setCurrentPage(1);
+            dispatch(setCurrentPage(1));
         }
         else if (sortRule === '추천순') {
             dispatch(setDisplayedMenu(allMenu));
-            setCurrentPage(1);
+            dispatch(setCurrentPage(1));
         }
         else if (sortRule === '저열량순') {
             // 비교함수의 반환 값이 0보다 작으면 a가 앞, 0보다 크면 b가 앞, 0이면 위치를 변경하지 않음
             let newDisplayedMenu = [...displayedMenu].sort((a, b) => a.INFO_ENG - b.INFO_ENG);
             dispatch(setDisplayedMenu(newDisplayedMenu));
-            setCurrentPage(1);
+            dispatch(setCurrentPage(1));
         }
         else if (sortRule === '저지방순') {
             let newDisplayedMenu = [...displayedMenu].sort((a, b) => a.INFO_FAT - b.INFO_FAT);
             dispatch(setDisplayedMenu(newDisplayedMenu));
-            setCurrentPage(1);
+            dispatch(setCurrentPage(1));
         }
         else if (sortRule === '저나트륨순') {
             let newDisplayedMenu = [...displayedMenu].sort((a, b) => a.INFO_NA - b.INFO_NA);
             dispatch(setDisplayedMenu(newDisplayedMenu));
-            setCurrentPage(1);
+            dispatch(setCurrentPage(1));
         }
         else if (sortRule === '고단백질순') {
             let newDisplayedMenu = [...displayedMenu].sort((a, b) => b.INFO_PRO - a.INFO_PRO);
             dispatch(setDisplayedMenu(newDisplayedMenu));
-            setCurrentPage(1);
+            dispatch(setCurrentPage(1));
         }
     }, [sortRule])
 

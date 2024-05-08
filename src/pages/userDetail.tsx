@@ -1,5 +1,6 @@
 
 import Footer from "@/components/Footer";
+import Seo from "@/components/Seo";
 import Header from "@/components/header/Header";
 import HeaderOnContents from "@/components/header/HeaderOnContents";
 import FormInput from "@/components/input/FormInput";
@@ -127,6 +128,7 @@ export default function userDetail() {
 
     return (
         <>
+        <Seo title="회원 정보"  />
             <div className="container">
                 <div className="header-container">
                     {

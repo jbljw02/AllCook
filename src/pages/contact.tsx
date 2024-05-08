@@ -5,7 +5,7 @@ import HeaderOnContents from "@/components/header/HeaderOnContents";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import contactImage from "/public/images/contact-img.jpg";
-import ContactInput from "@/components/ContactInput";
+import ContactInput from "@/components/input/ContactInput";
 import { fetchForm } from "@/utils/nodemailer/fetchForm";
 import Modal from 'react-modal';
 import { addDoc, collection } from "firebase/firestore";

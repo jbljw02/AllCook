@@ -11,7 +11,7 @@ import searchSvg from '../../../public/svgs/search.svg'
 import userDark from '../../../public/svgs/user-dark.svg';
 import { signOut } from 'firebase/auth';
 import { auth } from "@/firebase/firebasedb";
-import UserDropdown from '../UserDropdown';
+import UserDropdown from './UserDropdown';
 
 export default function Header({ className }: { className: string }) {
     const dispatch = useDispatch();
@@ -114,7 +114,7 @@ export default function Header({ className }: { className: string }) {
                             src={userDark}
                             alt={''} />
                         {
-                            !user.email && !user.name ?
+                            !user || (!user.email && !user.name) ?
                                 <span className='logIn' onClick={() => router.push('/signIn')}>
                                     로그인
                                 </span> :

@@ -12,10 +12,8 @@ import Seo from "../components/Seo";
 import moveToDetail from "@/utils/moveToDetail";
 import { setRecipe } from "@/redux/features/recipeSlice";
 import 'react-loading-skeleton/dist/skeleton.css'
-import MenuTable from "@/components/MenuTable";
+import MenuTable from "@/components/table/MenuTable";
 import SkeletonUI from "../components/Skeleton";
-import shuffleArray from "@/utils/shuffleArray";
-import filterDessert from "@/utils/filterDessert";
 import explainImg from "../../public/svgs/explain.svg";
 
 export default function Home() {
