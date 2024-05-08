@@ -2,7 +2,7 @@ import { setAllMenu, setDessertMenu } from "@/redux/features/menuSlice";
 import { Menu, RootState, wrapper } from "@/redux/store";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import ModifyNav from "./favoriteRecipe/ModifyNav";
+import ModifyNav from "../favoriteRecipe/ModifyNav";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsCheckedRecipe } from "@/redux/features/favoriteRecipeSlice";
 import { update } from "firebase/database";
@@ -49,7 +49,6 @@ export const MenuTable: React.FC<paramsType> = ({ menu, category, menuClick, isM
         splitMenu();
     }, [menu]);
 
-    const selectedFolder = useSelector((state: RootState) => state.selectedFolder);
     const isFavRecipeDelete = useSelector((state: RootState) => state.isFavRecipeDelete);
     const isCheckedRecipe = useSelector((state: RootState) => state.isCheckedRecipe);
 
@@ -57,6 +56,28 @@ export const MenuTable: React.FC<paramsType> = ({ menu, category, menuClick, isM
     const checkRecipe = (RCP_SEQ: string) => {
         dispatch(setIsCheckedRecipe(RCP_SEQ));
     }
+
+    const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
+
+    /* recipe/index에 사용되는 변수 및 메소드 */
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 번호
+    const trPerPage = 6; // 한 페이지에 출력할 tr의 개수
+    const tdPerPage = 24; // 한 페이지에 출력할 td의 개수
+    const [currentBlock, setCurrentBlock] = useState(1); // 현재 페이지 블록의 번호
+    const pagesPerBlock = 10; // 한 블록에 출력할 페이지 번호의 개수
+    const totalPagecount = Math.ceil(displayedMenu.length / tdPerPage); // 전체 페이지의 수의 올림값
+    const startPage = (currentBlock - 1) * pagesPerBlock + 1; // 페이지의 시작 인덱스
+    // 마지막 페이지는 10, 20, 30.. 등등이 마지막 페이지 번호가 아닐 수 있음
+    // 그렇기 때문에 전체 페이지의 개수와 현재 블록의 마지막 인덱스중 더 작은 값을 endPage로 설정
+    // ex) 23이 마지막 페이지 번호라고 한다면, 30과 23중엔 23이 작은 값이므로 23 할당
+    const endPage = Math.min(currentBlock * pagesPerBlock, totalPagecount);
+
+    // 현재 페이지 번호가 변경될 때마다 블록번호를 업데이트
+    // currentPage가 1~10일 때, currentBlock은 1, 11~20일 때 2...
+    useEffect(() => {
+        setCurrentBlock(Math.ceil(currentPage / pagesPerBlock));
+    }, [currentPage]);
+
     return (
         <>
             <div className="menu-table-container">
@@ -122,41 +143,46 @@ export const MenuTable: React.FC<paramsType> = ({ menu, category, menuClick, isM
                                         }
                                     </tr>
                                 )) :
-                                // 추천 메뉴일 경우 4개만 출력
-                                <tr>
-                                    {
-                                        menu.slice(0, 4).map((item, index) => {
-                                            return (
-                                                <td>
-                                                    <div>
-                                                        <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)} className="td-content">
-                                                            <Image
-                                                                src={`${item.ATT_FILE_NO_MK}`}
-                                                                style={{
-                                                                    borderRadius: 8,
-                                                                    cursor: "pointer",
-                                                                    transition: "transform 0.3s ease",
-                                                                    // ex) 첫번째 행의 두번째 요소 -> 1+0=1
-                                                                    // 두번째 행의 첫번째 요소 -> 1+1*4=5
-                                                                    transform: menuHovered[index]
-                                                                        ? "scale(1.05)"
-                                                                        : "scale(1)"
-                                                                }}
-                                                                width={250}
-                                                                height={250}
-                                                                alt={""}
-                                                                onMouseEnter={() => imgMouseEnter(index)}
-                                                                onMouseLeave={() => imgMouseOut(index)}
-                                                            />
+                                (
+                                    category === 'recipe' ?
+                                    null 
+                                    :
+                                    // 추천 메뉴일 경우 4개만 출력
+                                    <tr>
+                                        {
+                                            menu.slice(0, 4).map((item, index) => {
+                                                return (
+                                                    <td>
+                                                        <div>
+                                                            <div onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)} className="td-content">
+                                                                <Image
+                                                                    src={`${item.ATT_FILE_NO_MK}`}
+                                                                    style={{
+                                                                        borderRadius: 8,
+                                                                        cursor: "pointer",
+                                                                        transition: "transform 0.3s ease",
+                                                                        // ex) 첫번째 행의 두번째 요소 -> 1+0=1
+                                                                        // 두번째 행의 첫번째 요소 -> 1+1*4=5
+                                                                        transform: menuHovered[index]
+                                                                            ? "scale(1.05)"
+                                                                            : "scale(1)"
+                                                                    }}
+                                                                    width={250}
+                                                                    height={250}
+                                                                    alt={""}
+                                                                    onMouseEnter={() => imgMouseEnter(index)}
+                                                                    onMouseLeave={() => imgMouseOut(index)}
+                                                                />
+                                                            </div>
+                                                            <div className="RCP_NM">{item.RCP_NM}</div>
+                                                            <div className="RCP_PAT2">{item.RCP_PAT2}</div>
                                                         </div>
-                                                        <div className="RCP_NM">{item.RCP_NM}</div>
-                                                        <div className="RCP_PAT2">{item.RCP_PAT2}</div>
-                                                    </div>
-                                                </td>
-                                            );
-                                        })
-                                    }
-                                </tr>
+                                                    </td>
+                                                );
+                                            })
+                                        }
+                                    </tr>
+                                )
                         }
                     </tbody>
                 </table>

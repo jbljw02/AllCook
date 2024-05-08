@@ -129,7 +129,6 @@ export default function favoriteRecipe() {
                     margin-left: auto;
                     margin-right: auto;
                     width: 1180px;
-                    height: 100%;
                 }
                 .nav {
                     display: flex;

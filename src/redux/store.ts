@@ -8,6 +8,7 @@ import UserReducers, { User } from './features/userSlice';
 import FavoriteRecipeReducers, { FavoriteRecipe, AddedRecipeInfo } from './features/favoriteRecipeSlice';
 import RecipeOpinionReducers from './features/recipeOpinionSlice';
 import { RecipeOpinion } from "./features/recipeOpinionSlice";
+import RecipePageSlice from './features/recipePageSlice';
 
 export type RootState = {
     recomMenu: Menu[],
@@ -32,6 +33,7 @@ export type RootState = {
     isCheckedRecipe: string[],
     isFavFolderDelete: boolean,
     isCheckedFolder: number[],
+    currentPage: number,
 }
 
 export type Menu = {
@@ -93,6 +95,7 @@ const combinedReducer = combineReducers({
     isCheckedRecipe: FavoriteRecipeReducers.isCheckedRecipe,
     isFavFolderDelete: FavoriteRecipeReducers.isFavFolderDelete,
     isCheckedFolder: FavoriteRecipeReducers.isCheckedFolder,
+    currentPage: RecipePageSlice.currentPage,
 });
 
 // 전체 리듀서를 관리

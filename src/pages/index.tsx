@@ -12,10 +12,8 @@ import Seo from "../components/Seo";
 import moveToDetail from "@/utils/moveToDetail";
 import { setRecipe } from "@/redux/features/recipeSlice";
 import 'react-loading-skeleton/dist/skeleton.css'
-import MenuTable from "@/components/MenuTable";
+import MenuTable from "@/components/table/MenuTable";
 import SkeletonUI from "../components/Skeleton";
-import shuffleArray from "@/utils/shuffleArray";
-import filterDessert from "@/utils/filterDessert";
 import explainImg from "../../public/svgs/explain.svg";
 
 export default function Home() {
@@ -38,50 +36,6 @@ export default function Home() {
     //         console.log("결과 : ", response);
     //     })();
     // }, [])
-
-    // DB에 매번 요청을 보내지 않고, 접속 이력이 있는 사용자는 로컬 스토리지에서 값을 가져오도록 함
-    useEffect(() => {
-        (async () => {
-            const cachedRecipes = localStorage.getItem('recipes');
-            const recipes = JSON.parse(cachedRecipes as string);
-
-            // 로컬 스토리지에 이미 레시피가 존재하면 DB에 값을 요청하지 않고 가져옴
-            if (cachedRecipes) {
-                console.log("로컬 스토리지에 메뉴 존재");
-                dispatch(setAllMenu(recipes));
-                dispatch(setDisplayedMenu(recipes))
-
-                const dessertRecipes = filterDessert(recipes, '후식');
-                if (dessertRecipes !== undefined) {
-                    dispatch(setDessertMenu(shuffleArray(dessertRecipes)));
-                }
-                const recomRecipes = filterDessert(recipes, '');
-                if (recomRecipes !== undefined) {
-                    dispatch(setRecomMenu(shuffleArray(recomRecipes)));
-                }
-            }
-            // 로컬 스토리지에 레시피가 없다면 DB에서 데이터를 요청하고, 로컬 스토리지에 담음
-            else {
-                console.log("로컬 스토리지에 메뉴 X");
-                const response = await fetch('/api/reciveRecipes');
-                const jsonResponse = await response.json();
-                const recipes = await jsonResponse.data;
-                dispatch(setAllMenu(jsonResponse.data));
-                dispatch(setDisplayedMenu(recipes))
-
-                const dessertRecipes = filterDessert(recipes, '후식');
-                if (dessertRecipes !== undefined) {
-                    dispatch(setDessertMenu(shuffleArray(dessertRecipes)));
-                }
-                const recomRecipes = filterDessert(recipes, '');
-                if (recomRecipes !== undefined) {
-                    dispatch(setRecomMenu(shuffleArray(recomRecipes)))
-                }
-
-                localStorage.setItem('recipes', JSON.stringify(recipes));
-            }
-        })()
-    }, [])
 
     useEffect(() => {
         // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
@@ -119,67 +73,6 @@ export default function Home() {
             window.removeEventListener("scroll", checkScrollLocation);
         };
     }, [scrollPassContent]);
-
-    // 홈 화면에 글자에 split 효과를 주기 위함
-    const titleText1 = "환영합니다! 우리는 All Cook,";
-    const titleText2 = "당신의 요리 파트너입니다.";
-    const [displayedText1, setDisplayedText1] = useState("");
-    const [displayedText2, setDisplayedText2] = useState("");
-
-    // const testMenu = useSelector((state: RootState) => state.testMenu);
-    // let results = testMenu.filter((item) => item.RCP_NM.includes('돼지'))
-
-    // useEffect(() => {
-    //     // titleText를 배열로 만든 후 setTimeout을 이용해 화면의 차례로 출력
-    //     titleText1.split("").forEach((str, index) => {
-    //         setTimeout(() => {
-    //             setDisplayedText1((prev) => prev + str);
-    //         }, index * 60);
-    //     });
-    //     // titleText1이 전부 출력된 후 실행되도록 설정
-    //     titleText2.split("").forEach((str, index) => {
-    //         setTimeout(() => {
-    //             setDisplayedText2((prev) => prev + str);
-    //         }, (index + titleText1.length) * 60);
-    //     });
-
-    // }, [titleText1, titleText2]);
-
-    // const [recomHovered, setRecomHovered] = useState<boolean[]>([]);
-    // const [dessertHovered, setDessertHovered] = useState<boolean[]>([]);
-
-    // const imgMouseEnter = (index: number, param: string) => {
-    //     if (param === "recom") {
-    //         setRecomHovered((prev) => {
-    //             const newHoverState = [...prev];
-    //             newHoverState[index] = true;
-    //             return newHoverState;
-    //         });
-    //     }
-    //     if (param === "dessert") {
-    //         setDessertHovered((prev) => {
-    //             const newHoverState = [...prev];
-    //             newHoverState[index] = true;
-    //             return newHoverState;
-    //         });
-    //     }
-    // };
-    // const imgMouseOut = (index: number, param: string) => {
-    //     if (param === "recom") {
-    //         setRecomHovered((prev) => {
-    //             const newHoverState = [...prev];
-    //             newHoverState[index] = false;
-    //             return newHoverState;
-    //         });
-    //     }
-    //     if (param === "dessert") {
-    //         setDessertHovered((prev) => {
-    //             const newHoverState = [...prev];
-    //             newHoverState[index] = false;
-    //             return newHoverState;
-    //         });
-    //     }
-    // };
 
     // 특정 메뉴를 클릭하면 해당 메뉴의 레시피 페이지로 이동
     const menuClick = (name: string, seq: string) => {

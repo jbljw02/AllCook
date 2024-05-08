@@ -9,7 +9,7 @@ type ParamsType = {
 
 export default function AddCompletePopUp({ imgString, folderName }: ParamsType) {
     const dispatch = useDispatch();
-
+    
     return (
         <>
             <div className="add-complete-container fade-in">

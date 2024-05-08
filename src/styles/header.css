@@ -2,28 +2,26 @@
     display: flex;
     align-items: center;
     flex-direction: column;
-}
-.header-div {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
     width: 100%;
-    justify-content: center;
 }
+
 .title-logo {
     width: 85px;
     cursor: pointer;
 }
+
 .title-logo-small {
     width: 24px;
     cursor: pointer;
 }
+
 .input-div {
     display: flex;
     border: none;
     margin-top: 6px;
     margin-right: 25px;
 }
+
 .search-input {
     outline: none;
     width: 220px;
@@ -35,13 +33,15 @@
     border-radius: 10px;
     border: none;
 }
+
 .search-svg {
     position: absolute;
     margin-top: 7px;
     margin-left: 203px;
     color: #111111;
     cursor: pointer;
-} 
+}
+
 .user-container {
     display: flex;
     flex-direction: row;
@@ -50,24 +50,29 @@
     margin-top: 1px;
     margin-left: 5px;
 }
+
 .user-img-span {
     position: absolute;
     margin-top: 6px;
 }
+
 .user-svg {
     position: relative;
     margin-right: -22px;
 }
+
 .sort-svg-header {
     position: relative;
     top: 0.5px;
     left: 3px;
     transition: transform 0.15s ease-in-out;
 }
+
 .on-contents {
     margin-top: 2px;
     margin-right: -23px;
 }
+
 .logIn {
     font-size: 15.5px;
     font-weight: 300;

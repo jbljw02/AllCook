@@ -1,5 +1,5 @@
 import Footer from "@/components/Footer";
-import MenuTable from "@/components/MenuTable";
+import MenuTable from "@/components/table/MenuTable";
 import EmptyFolder from "@/components/favoriteRecipe/EmptyFolder";
 import RecipeThumbnail from "@/components/favoriteRecipe/RecipeThumbnail";
 import Header from "@/components/header/Header";
@@ -261,7 +261,6 @@ export default function FolderDetail() {
                     margin-left: auto;
                     margin-right: auto;
                     width: 1080px;
-                    height: 100%;
                 }
                 .folder-top-section {
                     display: flex;

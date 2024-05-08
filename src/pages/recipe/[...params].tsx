@@ -15,39 +15,13 @@ import AddFolderModal from "@/components/modal/AddFolderModal";
 import AddCompletePopUp from "@/components/favoriteRecipe/AddCompletePopUp";
 import { setAddedRecipeInfo, setRecipeAddModal, setRecipeMoveModal } from "@/redux/features/favoriteRecipeSlice";
 import ReviewContainer from "@/components/recipeDetail/review/ReviewContainer";
-import MenuTable from "@/components/MenuTable";
+import MenuTable from "@/components/table/MenuTable";
 
 export default function RecipeDetail() {
     const dispatch = useDispatch();
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
-
-    // DB에 매번 요청을 보내지 않고, 접속 이력이 있는 사용자는 로컬 스토리지에서 값을 가져오도록 함
-    useEffect(() => {
-        (async () => {
-            const cachedRecipes = localStorage.getItem('recipes');
-            const recipes = JSON.parse(cachedRecipes as string);
-
-            // 로컬 스토리지에 이미 레시피가 존재하면 DB에 값을 요청하지 않고 가져옴
-            if (cachedRecipes) {
-                console.log("로컬 스토리지에 메뉴 존재");
-                dispatch(setAllMenu(recipes));
-                dispatch(setDisplayedMenu(recipes))
-            }
-            // 로컬 스토리지에 레시피가 없다면 DB에서 데이터를 요청하고, 로컬 스토리지에 담음
-            else {
-                console.log("로컬 스토리지에 메뉴 X");
-                const response = await fetch('/api/reciveRecipes');
-                const jsonResponse = await response.json();
-                const recipes = await jsonResponse.data;
-                dispatch(setAllMenu(jsonResponse.data));
-                dispatch(setDisplayedMenu(recipes))
-
-                localStorage.setItem('recipes', JSON.stringify(recipes));
-            }
-        })()
-    }, []);
 
     const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
     const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
@@ -226,8 +200,9 @@ export default function RecipeDetail() {
 
     // 레시피 추가 완료 팝업을 관리
     const handleCompletePopUp = () => {
+
         // 레시피 추가 정보가 존재하는 경우에만 팝업 띄우도록
-        if (addedRecipeInfo.folderId) {
+        if (addedRecipeInfo.folderId !== null) {
             setIsShowPopUp(true);
 
             // 5초 후에 팝업을 제거, state도 초기 상태로 돌려놓아 레시피가 추가됐을 때만 팝업이 올라오도록
@@ -305,166 +280,169 @@ export default function RecipeDetail() {
                             </>
                     }
                 </div>
-                {/* 헤더와 풋터를 제외한 영역 */}
-                <div className="contents-container">
-                    <div className="recipe-top-section">
-                        <div className="recipe-img-section">
-                            <div
-                                className="recipe-button-div"
-                                onClick={saveRecipe}>
-                                <div className="recipe-button">
-                                    <svg className="bookmark-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="m15 16-5-3.333L5 16V5.333c0-.353.15-.692.418-.942S6.05 4 6.428 4h7.143c.38 0 .743.14 1.01.39.269.25.419.59.419.943V16z" />
-                                    </svg>
-                                    <span>저장</span>
+                <div className="container-float-top">
+                    {/* 헤더와 풋터를 제외한 영역 */}
+                    <div className="contents-container">
+                        <div className="recipe-top-section">
+                            <div className="recipe-img-section">
+                                <div
+                                    className="recipe-button-div"
+                                    onClick={saveRecipe}>
+                                    <div className="recipe-button">
+                                        <svg className="bookmark-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="m15 16-5-3.333L5 16V5.333c0-.353.15-.692.418-.942S6.05 4 6.428 4h7.143c.38 0 .743.14 1.01.39.269.25.419.59.419.943V16z" />
+                                        </svg>
+                                        <span>저장</span>
+                                    </div>
                                 </div>
+                                <Image
+                                    src={recipe.ATT_FILE_NO_MK}
+                                    style={{
+                                        borderRadius: 5,
+                                    }}
+                                    width={320}
+                                    height={320}
+                                    alt={''}
+                                />
                             </div>
-                            <Image
-                                src={recipe.ATT_FILE_NO_MK}
-                                style={{
-                                    borderRadius: 5,
-                                }}
-                                width={320}
-                                height={320}
-                                alt={''}
-                            />
-                        </div>
-                        {/* <div className="recipe-title">
+                            {/* <div className="recipe-title">
                                 {recipe.RCP_NM}
                                 <span>{recipe.RCP_PAT2}</span>
                             </div>
                             <div className="recipe-ingredients">{recipeIngredients}</div> */}
-                        <div className="recipe-intro">
-                            <div className="recipe-title-div">
-                                <div className="recipe-title">{recipe.RCP_NM}</div>
-                                <div className="recipe-subtitle">{recipe.RCP_PAT2}</div>
-                            </div>
-                            <div className="recipe-serv-ingred-div">
-                                <div className="per-person-div">
-                                    <div>인분</div>
-                                    <div
-                                        onMouseEnter={() => setInputHover(!inputHover)}
-                                        onMouseLeave={() => setInputHover(!inputHover)}
-                                        className="per-person-box">
-                                        <input value={servings}></input>
-                                        <span className={`${!inputHover ? "" : 'visible'} cal-svg`}>
-                                            <svg onClick={() => { calculateServings('plus') }} className="minus" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
-                                                <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                    <g id="Desktop-1920-/-1080" stroke="#111111">
-                                                        <g id="qty" transform="translate(3.000000, 5.000000)">
-                                                            <polyline id="Rectangle-3-Copy" transform="translate(5.000000, 5.000000) rotate(-225.000000) translate(-5.000000, -5.000000) " points="8 8 2 8 2 2" /></g>
-                                                    </g></g>
-                                            </svg>
-                                            <svg onClick={() => { calculateServings('minus') }} className="plus" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
-                                                <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                    <g id="Desktop-1920-/-1080" stroke={`${servings === 1 ? '#c3c3c3' : '#111111'}`}>
-                                                        <g id="qty" transform="translate(8.000000, 6.000000) rotate(-180.000000) translate(-8.000000, -6.000000) translate(3.000000, 1.000000)">
-                                                            <polyline id="Rectangle-3-Copy" transform="translate(5.000000, 5.000000) rotate(-225.000000) translate(-5.000000, -5.000000) " points="8 8 2 8 2 2" />
-                                                        </g></g></g>
-                                            </svg>
-                                        </span>
-                                    </div>
+                            <div className="recipe-intro">
+                                <div className="recipe-title-div">
+                                    <div className="recipe-title">{recipe.RCP_NM}</div>
+                                    <div className="recipe-subtitle">{recipe.RCP_PAT2}</div>
                                 </div>
-                                <div ref={nutritionRef} className="nutrition-button-div">
-                                    <div
-                                        onClick={() => setNutritionVisible(!nutritionVisible)}
-                                        className="nutrition-check-button no-drag"
-                                        style={{ backgroundColor: nutritionVisible ? '#f2f2f2' : '' }}>
-                                        <svg className="nutrition-check-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M11 19c4.4183 0 8-3.5817 8-8 0-4.41828-3.5817-8-8-8-4.41828 0-8 3.58172-8 8 0 4.4183 3.58172 8 8 8ZM20.9984 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
-                                        <span>영양성분</span>
-                                    </div>
-                                    {
-                                        nutritionVisible &&
-                                        <div className="nutrition-detail">
-                                            <div className="nutrition-detail-nav">
-                                                <div className="nutrition-detail-title">레시피 영양정보</div>
-                                            </div>
-                                            <div className="nutrition-detail-contents-div">
-                                                <div className="nutrition-detail-content">
-                                                    <div className="nutrition-name">탄수화물</div>
-                                                    <div className="nutrition-amount">
-                                                        {Number.isInteger(recipe.INFO_CAR * servings)
-                                                            ? (recipe.INFO_CAR * servings).toFixed(0)
-                                                            : (recipe.INFO_CAR * servings).toFixed(1)} g
-                                                    </div>
-                                                </div>
-                                                <div className="nutrition-detail-content">
-                                                    <div className="nutrition-name">열량</div>
-                                                    <div className="nutrition-amount">
-                                                        {Number.isInteger(recipe.INFO_ENG * servings)
-                                                            ? (recipe.INFO_ENG * servings).toFixed(0)
-                                                            : (recipe.INFO_ENG * servings).toFixed(1)} kcal
-                                                    </div>
-                                                </div>
-                                                <div className="nutrition-detail-content">
-                                                    <div className="nutrition-name">지방</div>
-                                                    <div className="nutrition-amount">
-                                                        {Number.isInteger(recipe.INFO_FAT * servings)
-                                                            ? (recipe.INFO_FAT * servings).toFixed(0)
-                                                            : (recipe.INFO_FAT * servings).toFixed(1)} g
-                                                    </div>
-                                                </div>
-                                                <div className="nutrition-detail-content">
-                                                    <div className="nutrition-name">나트륨</div>
-                                                    <div className="nutrition-amount">
-                                                        {Number.isInteger(recipe.INFO_NA * servings)
-                                                            ? (recipe.INFO_NA * servings).toFixed(0)
-                                                            : (recipe.INFO_NA * servings).toFixed(1)} g
-                                                    </div>
-                                                </div>
-                                                <div className="nutrition-detail-content">
-                                                    <div className="nutrition-name">단백질</div>
-                                                    <div className="nutrition-amount">
-                                                        {Number.isInteger(recipe.INFO_PRO * servings)
-                                                            ? (recipe.INFO_PRO * servings).toFixed(0)
-                                                            : (recipe.INFO_PRO * servings).toFixed(1)} g
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <p className="nutrition-detail-footer">
-                                                해당 정보는 {servings}인분을 기준으로 예상되는 영양정보이며, 식재료의 생산방법, 사용량 등 기타 변수에 의해 차이가 발생할 수 있습니다.
-                                            </p>
+                                <div className="recipe-serv-ingred-div">
+                                    <div className="per-person-div">
+                                        <div>인분</div>
+                                        <div
+                                            onMouseEnter={() => setInputHover(!inputHover)}
+                                            onMouseLeave={() => setInputHover(!inputHover)}
+                                            className="per-person-box">
+                                            <input value={servings}></input>
+                                            <span className={`${!inputHover ? "" : 'visible'} cal-svg`}>
+                                                <svg onClick={() => { calculateServings('plus') }} className="minus" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+                                                    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                        <g id="Desktop-1920-/-1080" stroke="#111111">
+                                                            <g id="qty" transform="translate(3.000000, 5.000000)">
+                                                                <polyline id="Rectangle-3-Copy" transform="translate(5.000000, 5.000000) rotate(-225.000000) translate(-5.000000, -5.000000) " points="8 8 2 8 2 2" /></g>
+                                                        </g></g>
+                                                </svg>
+                                                <svg onClick={() => { calculateServings('minus') }} className="plus" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+                                                    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                        <g id="Desktop-1920-/-1080" stroke={`${servings === 1 ? '#c3c3c3' : '#111111'}`}>
+                                                            <g id="qty" transform="translate(8.000000, 6.000000) rotate(-180.000000) translate(-8.000000, -6.000000) translate(3.000000, 1.000000)">
+                                                                <polyline id="Rectangle-3-Copy" transform="translate(5.000000, 5.000000) rotate(-225.000000) translate(-5.000000, -5.000000) " points="8 8 2 8 2 2" />
+                                                            </g></g></g>
+                                                </svg>
+                                            </span>
                                         </div>
-                                    }
-                                </div>
-                            </div>
-                            <div className="recipe-ingredients">{recipeIngredients}</div>
-                        </div>
-                    </div>
-                    {/* 요리 방법, 관련 레시피를 보여주는 영역 */}
-                    <div className="recipe-middle-section">
-                        {/* 요리 방법을 알려주는 영역 */}
-                        <div className="manual-section">
-                            <div className="manual-title">요리 방법</div>
-                            <>
-                                {
-                                    recipeManual.map((item, index) => {
-                                        return (
-                                            <div className="manual-main">
-                                                <div className="manual-index">0{index + 1}/0{recipeManual.length}</div>
-                                                <div className="manual-detail">{item.replace(/[a-zA-Z]$/, '')}</div>
+                                    </div>
+                                    <div ref={nutritionRef} className="nutrition-button-div">
+                                        <div
+                                            onClick={() => setNutritionVisible(!nutritionVisible)}
+                                            className="nutrition-check-button no-drag"
+                                            style={{ backgroundColor: nutritionVisible ? '#f2f2f2' : '' }}>
+                                            <svg className="nutrition-check-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M11 19c4.4183 0 8-3.5817 8-8 0-4.41828-3.5817-8-8-8-4.41828 0-8 3.58172-8 8 0 4.4183 3.58172 8 8 8ZM20.9984 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                            <span>영양성분</span>
+                                        </div>
+                                        {
+                                            nutritionVisible &&
+                                            <div className="nutrition-detail">
+                                                <div className="nutrition-detail-nav">
+                                                    <div className="nutrition-detail-title">레시피 영양정보</div>
+                                                </div>
+                                                <div className="nutrition-detail-contents-div">
+                                                    <div className="nutrition-detail-content">
+                                                        <div className="nutrition-name">탄수화물</div>
+                                                        <div className="nutrition-amount">
+                                                            {Number.isInteger(recipe.INFO_CAR * servings)
+                                                                ? (recipe.INFO_CAR * servings).toFixed(0)
+                                                                : (recipe.INFO_CAR * servings).toFixed(1)} g
+                                                        </div>
+                                                    </div>
+                                                    <div className="nutrition-detail-content">
+                                                        <div className="nutrition-name">열량</div>
+                                                        <div className="nutrition-amount">
+                                                            {Number.isInteger(recipe.INFO_ENG * servings)
+                                                                ? (recipe.INFO_ENG * servings).toFixed(0)
+                                                                : (recipe.INFO_ENG * servings).toFixed(1)} kcal
+                                                        </div>
+                                                    </div>
+                                                    <div className="nutrition-detail-content">
+                                                        <div className="nutrition-name">지방</div>
+                                                        <div className="nutrition-amount">
+                                                            {Number.isInteger(recipe.INFO_FAT * servings)
+                                                                ? (recipe.INFO_FAT * servings).toFixed(0)
+                                                                : (recipe.INFO_FAT * servings).toFixed(1)} g
+                                                        </div>
+                                                    </div>
+                                                    <div className="nutrition-detail-content">
+                                                        <div className="nutrition-name">나트륨</div>
+                                                        <div className="nutrition-amount">
+                                                            {Number.isInteger(recipe.INFO_NA * servings)
+                                                                ? (recipe.INFO_NA * servings).toFixed(0)
+                                                                : (recipe.INFO_NA * servings).toFixed(1)} g
+                                                        </div>
+                                                    </div>
+                                                    <div className="nutrition-detail-content">
+                                                        <div className="nutrition-name">단백질</div>
+                                                        <div className="nutrition-amount">
+                                                            {Number.isInteger(recipe.INFO_PRO * servings)
+                                                                ? (recipe.INFO_PRO * servings).toFixed(0)
+                                                                : (recipe.INFO_PRO * servings).toFixed(1)} g
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p className="nutrition-detail-footer">
+                                                    해당 정보는 {servings}인분을 기준으로 예상되는 영양정보이며, 식재료의 생산방법, 사용량 등 기타 변수에 의해 차이가 발생할 수 있습니다.
+                                                </p>
                                             </div>
-                                        )
-                                    })
-                                }
-                            </>
+                                        }
+                                    </div>
+                                </div>
+                                <div className="recipe-ingredients">{recipeIngredients}</div>
+                            </div>
                         </div>
-                        {/* 관련 레시피를 보여주는 영역 */}
-                        <div className="related-recipe-section">
-                            <div className="related-title">유사한 재료를 사용한 레시피</div>
-                            <MenuTable
-                                menu={relatedRecipe}
-                                category=""
-                                menuClick={menuClick}
-                            />
+                        {/* 요리 방법, 관련 레시피를 보여주는 영역 */}
+                        <div className="recipe-middle-section">
+                            {/* 요리 방법을 알려주는 영역 */}
+                            <div className="manual-section">
+                                <div className="manual-title">요리 방법</div>
+                                <>
+                                    {
+                                        recipeManual.map((item, index) => {
+                                            return (
+                                                <div className="manual-main">
+                                                    <div className="manual-index">0{index + 1}/0{recipeManual.length}</div>
+                                                    <div className="manual-detail">{item.replace(/[a-zA-Z]$/, '')}</div>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </>
+                            </div>
+                            {/* 관련 레시피를 보여주는 영역 */}
+                            <div className="related-recipe-section">
+                                <div className="related-title">유사한 재료를 사용한 레시피</div>
+                                <MenuTable
+                                    menu={relatedRecipe}
+                                    category=""
+                                    menuClick={menuClick}
+                                />
+                            </div>
                         </div>
+                        <ReviewContainer />
                     </div>
-                    <ReviewContainer />
                 </div>
+
                 <Footer />
-            </div>
+            </div >
             <style jsx>{`
                 .contents-container {
                     display: flex;
@@ -475,6 +453,7 @@ export default function RecipeDetail() {
                     color: #111111;
                     margin-left: auto;
                     margin-right: auto;
+                    height: 100%;
                 }
                 .recipe-top-section {
                     display: flex;
