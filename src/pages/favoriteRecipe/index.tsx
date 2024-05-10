@@ -10,6 +10,7 @@ import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";
 import ModifyNav from "@/components/favoriteRecipe/ModifyNav";
+import { GetServerSideProps, GetServerSidePropsContext, GetStaticPropsContext } from "next";
 
 export default function favoriteRecipe() {
     const dispatch = useDispatch();
@@ -155,8 +156,11 @@ export default function favoriteRecipe() {
     )
 }
 
-export const getStaticProps = () => {
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+    const token = context.req.cookies.token
+    console.log("토큰: ", token);
+
     return {
-        props: {}
-    }
+        props: {},
+    };
 }
