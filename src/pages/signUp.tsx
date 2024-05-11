@@ -164,11 +164,14 @@ export default function login() {
     const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
 
     const googleLogin = async () => {
-        const user = await googleAuth(favoriteRecipe);
+        const { user, token } = await googleAuth(favoriteRecipe);
         dispatch(setUser({
             email: user.email,
             name: user.name,
         }));
+
+        // 인증이 완료된 토큰을 쿠키에 저장(제한시간: 1시간)
+        document.cookie = `authToken=${token}; path=/; max-age=3600; samesite=strict`;
     }
 
     // form을 전송함

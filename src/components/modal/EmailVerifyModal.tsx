@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '@/redux/features/userSlice';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 interface modalProps {
     isSubmitted: boolean,
@@ -44,6 +45,26 @@ export default function EmailVerifyModal({ isSubmitted, setIsSubmitted, name }: 
                 if (user.emailVerified) {
                     console.log("이메일 인증 성공");
                     setIsSubmitted(false);
+
+                    await user.getIdToken().then(async (token) => {
+                        console.log("JWT 토큰 : ", token);
+                        const response = await axios.post('/api/auth/emailToken', { token: token }, {
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Accept": "application/json"
+                            },
+                        });
+                        const jwtToken = response.data;
+
+                        dispatch(setUser({
+                            name: user.displayName,
+                            email: user.email,
+                        }))
+
+                        // JWT를 쿠키에 저장
+                        document.cookie = `authToken=${jwtToken}; path=/; max-age=3600; samesite=strict`;
+                    });
+
                     router.push('/');
                 }
                 else {
