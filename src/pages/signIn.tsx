@@ -14,6 +14,7 @@ import Seo from "@/components/Seo";
 import googleAuth from "@/utils/googleAuth";
 import { RootState } from "@/redux/store";
 import FormInput from "@/components/input/FormInput";
+import axios from "axios";
 
 export type loginForm = {
     email: string,
@@ -97,6 +98,21 @@ export default function login() {
                 console.log("이메일 인증 완료, 로그인");
                 setIsSucceess(true);
                 setIsVerifyFail(false);
+
+                user.getIdToken().then(async (token) => {
+                    console.log("JWT 토큰 : ", token);
+                    const response = await axios.post('/api/auth/emailToken', { token: token }, {
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                    });
+                    const jwtToken = response.data;
+
+                    // JWT를 쿠키에 저장
+                    document.cookie = `authToken=${jwtToken}; path=/; max-age=3600; samesite=strict`;
+                });
+
                 router.push('/');
             }
             // 이메일 인증이 완료되지 않았을 경우, 인증 모달 팝업

@@ -13,8 +13,8 @@ const googleToken = async (req: NextApiRequest, res: NextApiResponse) => {
         console.log("토큰 인증 성공");
         res.status(200).json({ uid: decodedToken.uid, email: decodedToken.email });
     } catch (error) {
-        console.error("인증 실패: ", error);
-        res.status(401).json({ error: '인증 실패' });
+        console.error("토큰 인증 실패: ", error);
+        res.status(401).json({ error: '토큰 인증 실패' });
     }
 };
 
