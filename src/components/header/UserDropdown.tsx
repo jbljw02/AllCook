@@ -56,13 +56,13 @@ export default function UserDropdown({ category}: { category: string }) {
             </div>
             <style jsx>{`
                 .user-detail-dropdown, .on-contents-dropdown {
-                    position: absolute;
+                    position: fixed;
                     display: flex;
                     flex-direction: column;
-                    justify-content: flex-start;
+                    justify-content: center;
                     font-size: 13px;
                     top: 80px;
-                    margin-left: 185px;
+                    right: 147px;
                     color: #111111;
                     border: 1px solid #e8e8e8;
                     background-color: #ffffff;
@@ -70,7 +70,6 @@ export default function UserDropdown({ category}: { category: string }) {
                     width: 160px;
                     z-index: 1000;
                     border-bottom: none;
-                    {/* font-weight: 300; */}
                 }
                 .on-contents-dropdown {
                     top: 60px !important;

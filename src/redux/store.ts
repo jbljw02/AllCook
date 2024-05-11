@@ -10,6 +10,8 @@ import RecipeOpinionReducers from './features/recipeOpinionSlice';
 import { RecipeOpinion } from "./features/recipeOpinionSlice";
 import RecipePageSlice from './features/recipePageSlice';
 import scrollReducers from './features/scrollSlice';
+import cookWayReducers, { CookWay } from './features/cookWaySlice';
+import foodTypeReducers, { FoodType } from './features/foodTypeSlice';
 
 export type RootState = {
     recomMenu: Menu[],
@@ -37,6 +39,8 @@ export type RootState = {
     currentPage: number,
     scrollPassContent: false,
     headerSlide: false,
+    foodType: FoodType,
+    cookWay: CookWay,
 }
 
 export type Menu = {
@@ -101,6 +105,8 @@ const combinedReducer = combineReducers({
     currentPage: RecipePageSlice.currentPage,
     scrollPassContent: scrollReducers.scrollPassContent,
     headerSlide: scrollReducers.headerSlide,
+    foodType: foodTypeReducers.foodType,
+    cookWay: cookWayReducers.cookWay,
 });
 
 // 전체 리듀서를 관리
