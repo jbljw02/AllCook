@@ -22,34 +22,9 @@ export default function userDetail() {
     const dispatch = useDispatch();
     const router = useRouter();
 
-    const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
-    const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
-    const contentsRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
-        const checkScrollLocation = () => {
-            const margin = 50;
-            if (contentsRef.current !== null) {
-                if (!scrollPassContent && window.scrollY > contentsRef.current.offsetTop + margin) {
-                    setScrollPassContent(true);
-                    setHeaderSlide(false)
-                }
-                else if (scrollPassContent && window.scrollY <= contentsRef.current.offsetTop - margin) {
-                    setHeaderSlide(true)
-                    setTimeout(() => {
-                        setScrollPassContent(false);
-                    }, 300);
-                }
-            }
-        };
-
-        window.addEventListener('scroll', checkScrollLocation);
-        return () => {
-            window.removeEventListener('scroll', checkScrollLocation);
-        };
-    }, [scrollPassContent]);
-
+    const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
+    const headerSlide = useSelector((state: RootState) => state.headerSlide);
+    
     const user = useSelector((state: RootState) => state.user);
 
     const [formData, setFormData] = useState<UserForm>({

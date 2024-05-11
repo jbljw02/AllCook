@@ -22,36 +22,10 @@ import { setCurrentPage } from "@/redux/features/recipePageSlice";
 export default function Recipe() {
     const dispatch = useDispatch();
 
-    const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
-    const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
-    const contentsRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
-        const checkScrollLocation = () => {
-            const margin = 50;
-            if (contentsRef.current !== null) {
-                if (!scrollPassContent && window.scrollY > contentsRef.current.offsetTop + margin) {
-                    setScrollPassContent(true);
-                    setHeaderSlide(false)
-                }
-                else if (scrollPassContent && window.scrollY <= contentsRef.current.offsetTop - margin) {
-                    setHeaderSlide(true)
-                    setTimeout(() => {
-                        setScrollPassContent(false);
-                    }, 300);
-                }
-            }
-        };
-
-        window.addEventListener('scroll', checkScrollLocation);
-        return () => {
-            window.removeEventListener('scroll', checkScrollLocation);
-        };
-    }, [scrollPassContent]);
-
+    const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
+    const headerSlide = useSelector((state: RootState) => state.headerSlide);
+    
     const allMenu = useSelector((state: RootState) => state.allMenu);
-    const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
 
     // 화면이 첫 렌더링 될 때 보일 메뉴를 allMenu와 동일하게 업데이트
     useEffect(() => {
@@ -204,7 +178,6 @@ export default function Recipe() {
     return (
         <>
             <Seo title="메뉴" />
-            <div ref={contentsRef} className="contents-ref" />
             <div className="container">
                 <div className="container-float-top">
                     <div className="header-container">

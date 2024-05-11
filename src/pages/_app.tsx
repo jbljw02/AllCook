@@ -1,21 +1,22 @@
 import { AppProps } from 'next/app'
 import { Noto_Sans_KR } from 'next/font/google'
-import { wrapper } from '@/redux/store';
+import { RootState, wrapper } from '@/redux/store';
 import '../styles/global.css'
 import '../styles/menuTable.css'
 import '../styles/scrollStyle.css'
 import '../styles/header.css'
 import '../styles/svgStyle.css'
 import '../styles/modal.css'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { auth } from '@/firebase/firebasedb';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { setUser } from '@/redux/features/userSlice';
 import logout from '@/utils/logout';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { setAllMenu, setDisplayedMenu, setDessertMenu, setRecomMenu } from '@/redux/features/menuSlice';
 import filterDessert from '@/utils/filterDessert';
 import shuffleArray from '@/utils/shuffleArray';
+import { setHeaderSlide, setScrollPassContent } from '@/redux/features/scrollSlice';
 
 const noto = Noto_Sans_KR({
     subsets: ['latin'],
@@ -24,6 +25,57 @@ const noto = Noto_Sans_KR({
 
 function App({ Component, pageProps }: AppProps) {
     const dispatch = useDispatch();
+
+    // 스크롤이 컨텐츠를 지나쳤는지 여부
+    const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
+    // 헤더의 스타일을 관리하기 위해
+    const headerSlide = useSelector((state: RootState) => state.headerSlide);
+    const contentsRef = useRef<HTMLDivElement>(null);
+
+    // Firebase 스토어에 모든 메뉴를 저장
+    // useEffect(() => {
+    //     (async () => {
+    //         const response = await fetch('/api/fetchRecipe');
+    //         console.log("결과 : ", response);
+    //     })();
+    // }, [])
+
+    useEffect(() => {
+        // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
+        const checkScrollLocation = () => {
+            const margin = 50;
+            if (contentsRef.current !== null) {
+                // scrollPassContent가 false이며, 스크롤의 위치가 contents-container보다 낮을 경우
+                if (
+                    !scrollPassContent &&
+                    window.scrollY > contentsRef.current.offsetTop + margin
+                ) {
+                    dispatch(setHeaderSlide(false));
+                    dispatch(setScrollPassContent(true));
+                }
+                // scrollPassContent false이며, 스크롤의 위치가 contents-container보다 높을 경우
+                else if (
+                    scrollPassContent &&
+                    window.scrollY <= contentsRef.current.offsetTop - margin
+                ) {
+                    /* scrollPassContent가 바로 false로 변경되면 unmount animation을 적용할 수 없음(애니메이션이 적용되기도 전에 컴포넌트가 사라지기 때문). 
+                    그렇기 때문에 headerSlide를 통해 애니메이션을 미리 제어하고, 0.5초 뒤에 상태를 변경 */
+                    dispatch(setHeaderSlide(true));
+                    setTimeout(() => {
+                        dispatch(setScrollPassContent(false));
+                    }, 300);
+                }
+            }
+        };
+
+        // 스크롤 이벤트 발생시에 함수 호출('이벤트 타입', 이벤트 발생시 실행할 함수)
+        window.addEventListener("scroll", checkScrollLocation);
+
+        // 컴포넌트 언마운트시, 혹은 useEffect 재실행 전에 이벤트 리스너 제거
+        return () => {
+            window.removeEventListener("scroll", checkScrollLocation);
+        };
+    }, [scrollPassContent]);
 
     // 사용자의 로그인 상태가 변경될 때마다 실행
     useEffect(() => {
@@ -117,11 +169,16 @@ function App({ Component, pageProps }: AppProps) {
 
     return (
         <>
+            <div ref={contentsRef} className='contents-ref'>
+            </div>
             <style jsx global>{`
                 html, textarea, input {
                     font-family: ${noto.style.fontFamily};
                 }
-                
+                .contents-ref {
+                    position: absolute;
+                    top: 50%;
+                }
             `}</style>
             <Component {...pageProps} />
         </>

@@ -15,37 +15,10 @@ import { GetServerSideProps, GetServerSidePropsContext, GetStaticPropsContext } 
 export default function favoriteRecipe() {
     const dispatch = useDispatch();
 
-    const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
-    const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
-    const contentsRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
-        const checkScrollLocation = () => {
-            const margin = 50;
-            if (contentsRef.current !== null) {
-                if (!scrollPassContent && window.scrollY > contentsRef.current.offsetTop + margin) {
-                    setScrollPassContent(true);
-                    setHeaderSlide(false)
-                }
-                else if (scrollPassContent && window.scrollY <= contentsRef.current.offsetTop - margin) {
-                    setHeaderSlide(true)
-                    setTimeout(() => {
-                        setScrollPassContent(false);
-                    }, 300);
-                }
-            }
-        };
-
-        window.addEventListener('scroll', checkScrollLocation);
-        return () => {
-            window.removeEventListener('scroll', checkScrollLocation);
-        };
-    }, [scrollPassContent]);
+    const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
+    const headerSlide = useSelector((state: RootState) => state.headerSlide);
 
     const user = useSelector((state: RootState) => state.user);
-    const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe)
-    const isFavRecipeDelete = useSelector((state: RootState) => state.isFavRecipeDelete);
 
     // 컴포넌트가 마운트되기 전, DB로부터 사용자의 관심 레시피 정보를 받아옴
     useEffect(() => {
@@ -67,7 +40,6 @@ export default function favoriteRecipe() {
         <>
             <Seo title="관심 레시피" />
             <div className="container">
-                <div ref={contentsRef} className="contents-ref" />
                 <div className="container-float-top">
                     <div className="header-container">
                         {

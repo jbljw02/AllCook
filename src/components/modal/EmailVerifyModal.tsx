@@ -47,7 +47,6 @@ export default function EmailVerifyModal({ isSubmitted, setIsSubmitted, name }: 
                     setIsSubmitted(false);
 
                     await user.getIdToken().then(async (token) => {
-                        console.log("JWT 토큰 : ", token);
                         const response = await axios.post('/api/auth/emailToken', { token: token }, {
                             headers: {
                                 "Content-Type": "application/json",
