@@ -1,8 +1,7 @@
-import { useDispatch, useSelector } from "react-redux";
-import { Menu, RootState } from "../redux/store";
-import { Nutrition } from "../redux/store";
+import { Menu, Nutrition } from "@/redux/store";
 
 type Key = 'sideDish' | 'specialDish' | 'stew' | 'dessert' | 'steam' | 'boil' | 'grill' | 'stir' | 'fry' | 'etc';
+
 const keyToKorean = {
     rice: '밥',
     sideDish: '반찬',

@@ -165,14 +165,14 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                                         </svg>
                                     </>
                             }
+                            {
+                                userDetail && user && user.name !== '' && user.email !== '' ?
+                                    <UserDropdown
+                                        category='header'
+                                    /> :
+                                    null
+                            }
                         </div>
-                        {
-                            userDetail && user && user.name !== '' && user.email !== '' ?
-                                <UserDropdown
-                                    category='header'
-                                /> :
-                                null
-                        }
                     </div>
                 </header>
             </div>

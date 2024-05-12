@@ -15,6 +15,8 @@ import mailSvg from '../../public/svgs/mail.svg';
 import PiNoticeModal from "@/components/modal/PiNoticeModal";
 import PiModal from "@/components/modal/PiModal";
 import SubmitModal from "@/components/modal/SubmitModal";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 export type Form = {
     id: string,
@@ -26,34 +28,8 @@ export type Form = {
 }
 
 export default function Contact() {
-    const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
-    const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
-    const contentsRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
-        const checkScrollLocation = () => {
-            const margin = 50;
-            if (contentsRef.current !== null) {
-                if (!scrollPassContent && window.scrollY > contentsRef.current.offsetTop + margin) {
-                    setScrollPassContent(true);
-                    setHeaderSlide(false)
-                }
-                else if (scrollPassContent && window.scrollY <= contentsRef.current.offsetTop - margin) {
-                    setHeaderSlide(true)
-                    setTimeout(() => {
-                        setScrollPassContent(false);
-                    }, 300);
-                }
-            }
-        };
-
-        window.addEventListener('scroll', checkScrollLocation);
-        return () => {
-            window.removeEventListener('scroll', checkScrollLocation);
-        };
-    }, [scrollPassContent]);
-
+    const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
+    const headerSlide = useSelector((state: RootState) => state.headerSlide);
 
     // 회원의 문의 내용을 담는 state
     const [formData, setFormData] = useState<Form>({
@@ -137,7 +113,6 @@ export default function Contact() {
     return (
         <>
             <Seo title="문의" />
-            <div ref={contentsRef} className="contents-ref" />
             <div className="container">
                 <div className="header-container">
                     {

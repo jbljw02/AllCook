@@ -1,6 +1,7 @@
 import React, { ChangeEvent, FC, useCallback, useEffect, useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import { NutritionKey, resetNutritionInfo, setNutritionInfo } from '@/redux/features/nutritionSlice';
 
 interface MultiRangeSliderProps {
     min: number;
@@ -10,18 +11,17 @@ interface MultiRangeSliderProps {
 }
 
 const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange }) => {
+    const dispatch = useDispatch();
+    
     const [minVal, setMinVal] = useState<number>(min);
     const [maxVal, setMaxVal] = useState<number>(max);
     const minValRef = useRef(min);
     const maxValRef = useRef(max);
     const range = useRef<HTMLDivElement>(null);
 
-    const sliderReset = useSelector((state: RootState) => state.sliderReset);
-
-    // useEffect(() => {
-    //     setMinVal(0);
-    //     setMaxVal(1000);
-    // }, [sliderReset]);
+    useEffect(() => {
+        dispatch(resetNutritionInfo());
+    }, []);
 
     // 퍼센테이지로 변경
     const getPercent = useCallback((value: number) =>

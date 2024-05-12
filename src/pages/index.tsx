@@ -19,15 +19,12 @@ import explainImg from "../../public/svgs/explain.svg";
 export default function Home() {
     const dispatch = useDispatch();
 
-    const [scrollPassContent, setScrollPassContent] = useState(false); // 스크롤이 컨텐츠 영역을 지났는지
-    const [headerSlide, setHeaderSlide] = useState(false); // 헤더의 슬라이드를 처리하기 위함
-    const contentsRef = useRef<HTMLDivElement>(null);
-
-    const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
-
     const recomMenu = useSelector((state: RootState) => state.recomMenu);
     const dessertMenu = useSelector((state: RootState) => state.dessertMenu);
+
+    const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
+    const headerSlide = useSelector((state: RootState) => state.headerSlide);
 
     // Firebase 스토어에 모든 메뉴를 저장
     // useEffect(() => {
@@ -36,43 +33,6 @@ export default function Home() {
     //         console.log("결과 : ", response);
     //     })();
     // }, [])
-
-    useEffect(() => {
-        // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
-        const checkScrollLocation = () => {
-            const margin = 50;
-            if (contentsRef.current !== null) {
-                // scrollPassContent가 false이며, 스크롤의 위치가 contents-container보다 낮을 경우
-                if (
-                    !scrollPassContent &&
-                    window.scrollY > contentsRef.current.offsetTop + margin
-                ) {
-                    setHeaderSlide(false);
-                    setScrollPassContent(true);
-                }
-                // scrollPassContent false이며, 스크롤의 위치가 contents-container보다 높을 경우
-                else if (
-                    scrollPassContent &&
-                    window.scrollY <= contentsRef.current.offsetTop - margin
-                ) {
-                    /* scrollPassContent가 바로 false로 변경되면 unmount animation을 적용할 수 없음(애니메이션이 적용되기도 전에 컴포넌트가 사라지기 때문). 
-                    그렇기 때문에 headerSlide를 통해 애니메이션을 미리 제어하고, 0.5초 뒤에 상태를 변경 */
-                    setHeaderSlide(true);
-                    setTimeout(() => {
-                        setScrollPassContent(false);
-                    }, 300);
-                }
-            }
-        };
-
-        // 스크롤 이벤트 발생시에 함수 호출('이벤트 타입', 이벤트 발생시 실행할 함수)
-        window.addEventListener("scroll", checkScrollLocation);
-
-        // 컴포넌트 언마운트시, 혹은 useEffect 재실행 전에 이벤트 리스너 제거
-        return () => {
-            window.removeEventListener("scroll", checkScrollLocation);
-        };
-    }, [scrollPassContent]);
 
     // 특정 메뉴를 클릭하면 해당 메뉴의 레시피 페이지로 이동
     const menuClick = (name: string, seq: string) => {
@@ -111,23 +71,6 @@ export default function Home() {
                             환영합니다! 우리는 All Cook, <br />
                             당신의 요리 파트너입니다
                         </div>
-                        {/* {
-                            // 화면에 글자가 모두 출력된 후 fade in 효과를 적용하며 출력
-                            displayedText2.length === 14 ?
-                                <div className='search-section'>
-                                    <div>당신을 위한 모든 레시피</div>
-                                    <div className='input-container'>
-                                        <div className='learn-more'>
-                                            <Link
-                                                style={{ textDecoration: 'none', color: 'inherit' }}
-                                                href={'/recipe'}>
-                                                레시피 보기
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </div> :
-                                ''
-                        } */}
                         <div className="search-section">
                             <div>당신을 위한 모든 레시피를 찾아보세요!</div>
                             <div className="banner-button">
@@ -147,7 +90,7 @@ export default function Home() {
                 </div>
 
                 {/* 헤더,풋터 및 배너 컨테이너를 제외한 컨텐츠의 영역 */}
-                <div ref={contentsRef} className="contents-container">
+                <div className="contents-container">
                     {/* 서비스에 대해 설명하는 영역을 차지하는 컨테이너 */}
                     <div className="explain-container">
                         <Image src={explainImg} alt={''} />
@@ -268,9 +211,6 @@ export default function Home() {
                     margin-top: 25px;
                     margin-left: 7px;
                     color: #ffffff;
-                    {
-                    /* animation: fade-in 2s ease-out; */
-                    }
                 }
                 .search-section div:nth-child(1) {
                     font-size: 18px;

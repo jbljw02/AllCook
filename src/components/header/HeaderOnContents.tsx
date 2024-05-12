@@ -139,7 +139,7 @@ export default function Header({ className }: { className: string }) {
                     {
                         userDetail && user && user.name !== '' && user.email !== '' ?
                             <UserDropdown
-                                category='header'
+                                category='header-on-contents'
                             /> :
                             null
                     }

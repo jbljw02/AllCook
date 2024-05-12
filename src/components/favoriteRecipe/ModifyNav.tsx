@@ -1,8 +1,8 @@
 import favoriteRecipe from "@/pages/favoriteRecipe";
 import { FavoriteRecipe, resetIsCheckedFolder, resetIsCheckedRecipe, setFavoriteRecipe, setIsCheckedFolder, setIsCheckedRecipe, setIsFavFolderDelete, setIsFavRecipeDelete, setSelectedFolder } from "@/redux/features/favoriteRecipeSlice";
 import { RootState } from "@/redux/store";
-import folderDeleteRequest from "@/utils/folderDeleteRequest";
-import recipeDeleteRequest from "@/utils/recipeDeleteRequest";
+import folderDeleteRequest from "@/utils/fetch/folderDeleteRequest";
+import recipeDeleteRequest from "@/utils/fetch/recipeDeleteRequest";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"

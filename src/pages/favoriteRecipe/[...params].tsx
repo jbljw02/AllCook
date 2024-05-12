@@ -8,7 +8,7 @@ import { FavoriteRecipe, setFavoriteRecipe, setSelectedFolder } from "@/redux/fe
 import { setRecipe } from "@/redux/features/recipeSlice";
 import { RootState } from "@/redux/store";
 import moveToDetail from "@/utils/moveToDetail";
-import sendNewFolderName from "@/utils/sendNewFolderName";
+import sendNewFolderName from "@/utils/fetch/sendNewFolderName";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useState, useRef, useEffect } from "react";
@@ -18,33 +18,8 @@ export default function FolderDetail() {
     const dispatch = useDispatch();
     const router = useRouter();
 
-    const [scrollPassContent, setScrollPassContent] = useState(false);  // 스크롤이 컨텐츠 영역을 지났는지
-    const [headerSlide, setHeaderSlide] = useState(false);  // 헤더의 슬라이드를 처리하기 위함
-    const contentsRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        // 헤더가 배너 영역에 도달하면 스타일을 바꾸기 위한 함수
-        const checkScrollLocation = () => {
-            const margin = 50;
-            if (contentsRef.current !== null) {
-                if (!scrollPassContent && window.scrollY > contentsRef.current.offsetTop + margin) {
-                    setScrollPassContent(true);
-                    setHeaderSlide(false)
-                }
-                else if (scrollPassContent && window.scrollY <= contentsRef.current.offsetTop - margin) {
-                    setHeaderSlide(true)
-                    setTimeout(() => {
-                        setScrollPassContent(false);
-                    }, 300);
-                }
-            }
-        };
-
-        window.addEventListener('scroll', checkScrollLocation);
-        return () => {
-            window.removeEventListener('scroll', checkScrollLocation);
-        };
-    }, [scrollPassContent]);
+    const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
+    const headerSlide = useSelector((state: RootState) => state.headerSlide);
 
     const user = useSelector((state: RootState) => state.user);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
@@ -110,7 +85,9 @@ export default function FolderDetail() {
                 if (user.email && selectedFolder) {
                     // DB에서 동일한 폴더를 찾아 폴더명을 변경
                     const resFolderName = await sendNewFolderName(user.email, selectedFolder?.folderId, newFolderName)
-                    setNewFolderName(resFolderName.data.newFolderName);
+                    if(resFolderName) {
+                        setNewFolderName(resFolderName.data.newFolderName);
+                    }
 
                     // 폴더명이 변경됐으므로 배열 전체 업데이트
                     const resFavRecipe = await axios.post('/api/reciveFavRecipes', {
@@ -142,7 +119,6 @@ export default function FolderDetail() {
     return (
         <>
             <div className="container">
-                <div ref={contentsRef} className="contents-ref" />
                 <div className="container-float-top">
                     <div className="header-container">
                         {

@@ -4,10 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import RecipeThumbnail from '../favoriteRecipe/RecipeThumbnail';
-import sendNewFolder from '@/utils/sendNewFolder';
+import sendNewFolder from '@/utils/fetch/sendNewFolder';
 import axios from 'axios';
-import sendNewRecipe from '@/utils/sendNewRecipe';
-import recipeDeleteRequest from '@/utils/recipeDeleteRequest';
+import sendNewRecipe from '@/utils/fetch/sendNewRecipe';
+import recipeDeleteRequest from '@/utils/fetch/recipeDeleteRequest';
 
 interface modalProps {
     isModalOpen: boolean,

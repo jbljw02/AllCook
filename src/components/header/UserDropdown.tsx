@@ -1,10 +1,10 @@
 import { setUser } from "@/redux/features/userSlice";
-import logout from "@/utils/logout";
+import logout from "@/utils/auth/logout";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
-export default function UserDropdown({ category}: { category: string }) {
+export default function UserDropdown({ category }: { category: string }) {
     const router = useRouter();
     const dispatch = useDispatch();
 
@@ -17,6 +17,8 @@ export default function UserDropdown({ category}: { category: string }) {
             email: '',
         }));
     }
+
+    console.log("카테: ", category);
 
     return (
         <>
@@ -56,13 +58,13 @@ export default function UserDropdown({ category}: { category: string }) {
             </div>
             <style jsx>{`
                 .user-detail-dropdown, .on-contents-dropdown {
-                    position: absolute;
+                    position: fixed;
                     display: flex;
                     flex-direction: column;
-                    justify-content: flex-start;
+                    justify-content: center;
                     font-size: 13px;
                     top: 80px;
-                    margin-left: 185px;
+                    right: 147px;
                     color: #111111;
                     border: 1px solid #e8e8e8;
                     background-color: #ffffff;
@@ -70,10 +72,9 @@ export default function UserDropdown({ category}: { category: string }) {
                     width: 160px;
                     z-index: 1000;
                     border-bottom: none;
-                    {/* font-weight: 300; */}
                 }
                 .on-contents-dropdown {
-                    top: 60px !important;
+                    top: 62px !important;
                 }
                 .user-detail-dropdown::before {
                     content: "";

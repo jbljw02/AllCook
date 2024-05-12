@@ -13,8 +13,8 @@ import HeaderButton from "@/components/header/HeaderButton";
 import EmailVerifyModal from "@/components/modal/EmailVerifyModal";
 import { FirebaseError } from "firebase/app";
 import Seo from "@/components/Seo";
-import googleAuth from "@/utils/googleAuth";
-import sendUserInitialData from "@/utils/sendUserInitialData";
+import googleAuth from "@/utils/auth/googleAuth";
+import sendUserInitialData from "@/utils/auth/sendUserInitialData";
 import FormInput from "@/components/input/FormInput";
 
 export type signUpForm = {

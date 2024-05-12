@@ -14,11 +14,9 @@ const sendNewRecipe = async (email: string, id: number, recipe: Menu) => {
                 "Accept": "application/json"
             },
         })
-        console.log("새 레시피 전송 완료: ", response);
         return response;
     } catch (error) {
         console.error("레시피 추가 실패: ", error);
-        throw Error;
     }
 }
 

@@ -24,6 +24,12 @@ export const nutritionInfoSlice = createSlice({
             const { name, values } = action.payload;
             state[name] = values;
         },
+        resetNutritionInfo: (state) => {
+            (Object.keys(state) as Array<keyof typeof state>).forEach(key => {
+                state[key].min = 0;
+                state[key].max = 1000;
+            });
+        }
     },
 });
 
@@ -39,12 +45,12 @@ export const sliderResetSlice = createSlice({
 })
 
 export const { setNutritionInfo } = nutritionInfoSlice.actions;
+export const { resetNutritionInfo } = nutritionInfoSlice.actions;
 export const { setSliderReset } = sliderResetSlice.actions;
 
 const reducers = {
     nutritionInfo: nutritionInfoSlice.reducer,
     sliderReset: sliderResetSlice.reducer,
-
 }
 
 export default reducers;
