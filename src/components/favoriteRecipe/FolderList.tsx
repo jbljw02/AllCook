@@ -3,7 +3,7 @@ import { Menu, RootState } from "@/redux/store";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RecipeThumbnail from "./RecipeThumbnail";
-import sendNewFolder from "@/utils/sendNewFolder";
+import sendNewFolder from "@/utils/fetch/sendNewFolder";
 import { useRouter } from "next/router";
 
 export default function FolderList() {

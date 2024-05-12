@@ -8,7 +8,7 @@ import { FavoriteRecipe, setFavoriteRecipe, setSelectedFolder } from "@/redux/fe
 import { setRecipe } from "@/redux/features/recipeSlice";
 import { RootState } from "@/redux/store";
 import moveToDetail from "@/utils/moveToDetail";
-import sendNewFolderName from "@/utils/sendNewFolderName";
+import sendNewFolderName from "@/utils/fetch/sendNewFolderName";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useState, useRef, useEffect } from "react";
@@ -85,7 +85,9 @@ export default function FolderDetail() {
                 if (user.email && selectedFolder) {
                     // DB에서 동일한 폴더를 찾아 폴더명을 변경
                     const resFolderName = await sendNewFolderName(user.email, selectedFolder?.folderId, newFolderName)
-                    setNewFolderName(resFolderName.data.newFolderName);
+                    if(resFolderName) {
+                        setNewFolderName(resFolderName.data.newFolderName);
+                    }
 
                     // 폴더명이 변경됐으므로 배열 전체 업데이트
                     const resFavRecipe = await axios.post('/api/reciveFavRecipes', {

@@ -7,7 +7,7 @@ import FormInput from "@/components/input/FormInput";
 import WithdrawlModal from "@/components/modal/WithdrawlModal";
 import { setUser } from "@/redux/features/userSlice";
 import { RootState } from "@/redux/store";
-import logout from "@/utils/logout";
+import logout from "@/utils/auth/logout";
 import { deleteUser, getAuth, updateProfile } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useState, useRef, useEffect } from "react";

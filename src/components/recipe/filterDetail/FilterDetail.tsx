@@ -1,7 +1,7 @@
 import { NutritionKey, setNutritionInfo } from "@/redux/features/nutritionSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { searchByKey, searchByRange } from "@/utils/filterMenu";
+import { searchByKey, searchByRange } from "@/utils/filterRecomMenu/filterMenu";
 import { setDisplayedMenu } from "@/redux/features/menuSlice";
 import { setCurrentPage } from "@/redux/features/recipePageSlice";
 import { setFoodType } from "@/redux/features/foodTypeSlice";

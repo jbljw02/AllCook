@@ -27,10 +27,34 @@ export const recipeSlice = createSlice({
     }
 })
 
+export const servingsSlice = createSlice({
+    name: 'servings',
+    initialState: 1,
+    reducers: {
+        setServings: (state, action) => {
+            return action.payload;
+        }
+    }
+})
+
+export const nutritionVisibleSlice = createSlice({
+    name: 'nutritionVisible',
+    initialState: false,
+    reducers: {
+        setNutritionVisible: (state, action) => {
+            return action.payload;
+        }
+    }
+})
+
 export const { setRecipe } = recipeSlice.actions;
+export const { setServings } = servingsSlice.actions;
+export const { setNutritionVisible } = nutritionVisibleSlice.actions;
 
 const reducers = {
     recipe: recipeSlice.reducer,
+    servings: servingsSlice.reducer,
+    nutritionVisible: nutritionVisibleSlice.reducer,
 }
 
 export default reducers;

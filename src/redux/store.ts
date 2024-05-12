@@ -41,6 +41,8 @@ export type RootState = {
     headerSlide: false,
     foodType: FoodType,
     cookWay: CookWay,
+    servings: number,
+    nutritionVisible: boolean,
 }
 
 export type Menu = {
@@ -107,6 +109,8 @@ const combinedReducer = combineReducers({
     headerSlide: scrollReducers.headerSlide,
     foodType: foodTypeReducers.foodType,
     cookWay: cookWayReducers.cookWay,
+    servings: RecipeReducers.servings,
+    nutritionVisible: RecipeReducers.nutritionVisible,
 });
 
 // 전체 리듀서를 관리

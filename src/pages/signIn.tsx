@@ -8,13 +8,14 @@ import { setUser } from "@/redux/features/userSlice";
 import googleIcon from '../../public/svgs/google-icon.svg';
 import { FirebaseError } from "firebase/app";
 import HeaderButton from "@/components/header/HeaderButton";
-import logout from "@/utils/logout";
+import logout from "@/utils/auth/logout";
 import EmailVerifyModal from "@/components/modal/EmailVerifyModal";
 import Seo from "@/components/Seo";
-import googleAuth from "@/utils/googleAuth";
+import googleAuth from "@/utils/auth/googleAuth";
 import { RootState } from "@/redux/store";
 import FormInput from "@/components/input/FormInput";
 import axios from "axios";
+import getEmailToken from "@/utils/fetch/getEmailToken";
 
 export type loginForm = {
     email: string,
@@ -99,18 +100,7 @@ export default function login() {
                 setIsSucceess(true);
                 setIsVerifyFail(false);
 
-                user.getIdToken().then(async (token) => {
-                    const response = await axios.post('/api/auth/emailToken', { token: token }, {
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json"
-                        },
-                    });
-                    const jwtToken = response.data;
-
-                    // JWT를 쿠키에 저장
-                    document.cookie = `authToken=${jwtToken}; path=/; max-age=3600; samesite=strict`;
-                });
+                getEmailToken();
 
                 router.push('/');
             }
@@ -158,6 +148,7 @@ export default function login() {
 
     const googleLogin = async () => {
         const { user, token } = await googleAuth(favoriteRecipe);
+
         dispatch(setUser({
             email: user.email,
             name: user.name,

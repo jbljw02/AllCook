@@ -9,7 +9,7 @@ import Seo from "../../components/Seo";
 import MultiRangeSlider from "../../components/recipe/filterDetail/MultiRangeSlider";
 import { resetNutritionInfo, setNutritionInfo } from "../../redux/features/nutritionSlice";
 import { NutritionKey } from "../../redux/features/nutritionSlice";
-import { searchByKey, searchByRange } from "../../utils/filterMenu";
+import { searchByKey, searchByRange } from "../../utils/filterRecomMenu/filterMenu";
 import SortList from "../../components/recipe/SortList";
 import HeaderOnContents from '../../components/header/HeaderOnContents';
 import { setRecipe } from "@/redux/features/recipeSlice";

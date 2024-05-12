@@ -86,6 +86,7 @@ export default function favoriteRecipe() {
                                     </div>
                                 </>
                         }
+                        {/* 폴더 목록을 정렬 */}
                         <FolderList />
                     </div>
                 </div>
@@ -129,8 +130,6 @@ export default function favoriteRecipe() {
 }
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-    const token = context.req.cookies.token
-    console.log("토큰: ", token);
 
     return {
         props: {},

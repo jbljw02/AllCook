@@ -14,11 +14,9 @@ const sendNewFolderName = async (email: string, folderId: number, newFolderName:
                 "Accept": "application/json"
             },
         });
-        console.log("폴더명 변경 완료: ", response);
         return response;
     } catch (error) {
         console.error("폴더명 변경 실패: ", error);
-        throw Error;
     }
 }
 
