@@ -10,7 +10,11 @@ import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";
 import ModifyNav from "@/components/favoriteRecipe/ModifyNav";
-import { GetServerSideProps, GetServerSidePropsContext, GetStaticPropsContext } from "next";
+import { GetServerSidePropsContext } from "next";
+import { parseCookies } from "nookies";
+import { auth } from "@/firebase/firebasedb";
+import { onAuthStateChanged } from "firebase/auth";
+
 
 export default function favoriteRecipe() {
     const dispatch = useDispatch();
@@ -130,7 +134,6 @@ export default function favoriteRecipe() {
 }
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-
     return {
         props: {},
     };

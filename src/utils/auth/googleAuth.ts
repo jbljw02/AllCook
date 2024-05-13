@@ -10,17 +10,11 @@ interface UserInfo {
     email: string;
 }
 
-interface TokenInfo {
-    uid: string,
-    email: string,
-}
-
 interface Response {
     user: UserInfo,
-    token: TokenInfo,
 }
 
-const googleAuth = async (initialFolder: FavoriteRecipe[]): Promise<Response> => {
+const googleAuth = async (initialFolder: FavoriteRecipe[]) => {
     const provider = new GoogleAuthProvider();
 
     try {
@@ -37,23 +31,27 @@ const googleAuth = async (initialFolder: FavoriteRecipe[]): Promise<Response> =>
             sendUserInitialData(user.email, initialFolder);
             router.push('/');
 
-            // 파이어베이스를 통해 생성된 토큰의 인증을 요청
-            const tokenResponse = await axios.post('/api/auth/googleToken', { token: token }, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-            });
-            const jwtToken = tokenResponse.data;
+            try {
+                // 파이어베이스를 통해 생성된 토큰의 인증을 요청
+                await axios.post('/api/auth/googleToken', { token: token }, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                });
 
-            return { user: { name: user.displayName, email: user.email }, token: jwtToken };
+                return { user: { name: user.displayName, email: user.email } };
+            } catch (error) {
+                console.error("토큰 인증 실패: ", error);
+                return;
+            }
         }
         else {
             throw new Error("사용자 이름 혹은 이메일 존재 X");
         }
     } catch (error) {
         console.error("구글 인증 실패: ", error);
-        throw error;
+        return;
     }
 };
 

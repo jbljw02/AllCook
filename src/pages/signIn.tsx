@@ -147,15 +147,21 @@ export default function login() {
     const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
 
     const googleLogin = async () => {
-        const { user, token } = await googleAuth(favoriteRecipe);
+        try {
+            const result = await googleAuth(favoriteRecipe);
+            if (!result) {
+                throw new Error("구글 로그인/토큰 인증 실패");
+            }
 
-        dispatch(setUser({
-            email: user.email,
-            name: user.name,
-        }));
+            const { user } = result;
 
-        // 인증이 완료된 토큰을 쿠키에 저장(제한시간: 1시간)
-        document.cookie = `authToken=${token}; path=/; max-age=3600; samesite=strict`;
+            dispatch(setUser({
+                email: user.email,
+                name: user.name,
+            })); 
+        } catch (error) {
+            console.error("구글 로그인중 에러 발생", error);
+        }
     }
 
     return (
