@@ -92,7 +92,6 @@ function App({ Component, pageProps }: AppProps) {
                         name: user.displayName,
                         email: user.email,
                     }));
-
                     getEmailToken();
                 }
             }
