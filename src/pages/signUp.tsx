@@ -16,6 +16,9 @@ import Seo from "@/components/Seo";
 import googleAuth from "@/utils/auth/googleAuth";
 import sendUserInitialData from "@/utils/auth/sendUserInitialData";
 import FormInput from "@/components/input/FormInput";
+import { admin } from "@/firebase/firebaseAdmin";
+import { GetServerSidePropsContext } from "next";
+import { parseCookies } from "nookies";
 
 export type signUpForm = {
     name: string,
@@ -575,8 +578,22 @@ export default function login() {
     )
 }
 
-export const getStaticProps = () => {
-    return {
-        props: {}
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+    const cookies = parseCookies(context);
+    const authToken = cookies.authToken;
+
+    if(!authToken) {
+        return {
+            props: {},
+        }
+    }
+    // 로그인 중이라면 홈으로 redirect 시킴
+    else {
+        return {
+            redirect: {
+                destination: '/',
+                parmanent: false,
+            }
+        }
     }
 }

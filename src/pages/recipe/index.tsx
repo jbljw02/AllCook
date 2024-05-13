@@ -2,24 +2,14 @@ import Header from "../../components/header/Header"
 import Footer from "../../components/Footer"
 import { useDispatch, useSelector } from "react-redux"
 import { Menu, RootState } from "../../redux/store";
-import { setAllMenu, setDessertMenu, setDisplayedMenu, setRecomMenu } from "../../redux/features/menuSlice";
+import { setDisplayedMenu } from "../../redux/features/menuSlice";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Seo from "../../components/Seo";
-import MultiRangeSlider from "../../components/recipe/filterDetail/MultiRangeSlider";
-import { resetNutritionInfo, setNutritionInfo } from "../../redux/features/nutritionSlice";
-import { NutritionKey } from "../../redux/features/nutritionSlice";
-import { searchByKey, searchByRange } from "../../utils/filterRecomMenu/filterMenu";
 import SortList from "../../components/recipe/SortList";
 import HeaderOnContents from '../../components/header/HeaderOnContents';
-import { setRecipe } from "@/redux/features/recipeSlice";
-import moveToDetail from "@/utils/moveToDetail";
-import shuffleArray from "@/utils/shuffleArray";
 import filterSvg from '../../../public/svgs/filter.svg';
 import RecipeTable from "@/components/table/RecipeTable";
-import { setCurrentPage } from "@/redux/features/recipePageSlice";
-import FoodType from "@/components/recipe/filterDetail/checkbox/FoodType";
-import CookWay from "@/components/recipe/filterDetail/checkbox/CookWay";
 import FilterDetail from "@/components/recipe/filterDetail/FilterDetail";
 import HashTags from "@/components/recipe/HashTags";
 

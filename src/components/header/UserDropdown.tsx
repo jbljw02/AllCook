@@ -18,8 +18,6 @@ export default function UserDropdown({ category }: { category: string }) {
         }));
     }
 
-    console.log("카테: ", category);
-
     return (
         <>
             <div className={`${category === 'header' ?

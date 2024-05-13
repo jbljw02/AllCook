@@ -14,6 +14,9 @@ import MenuTable from "@/components/table/MenuTable";
 import SkeletonUI from "../components/Skeleton";
 import explainImg from "../../public/svgs/explain.svg";
 import ExplainSection from "@/components/home/ExplainSection";
+import { admin } from "@/firebase/firebaseAdmin";
+import { GetServerSidePropsContext } from "next";
+import { parseCookies } from "nookies";
 
 export default function Home() {
     const dispatch = useDispatch();
@@ -256,10 +259,4 @@ export default function Home() {
             </style>
         </>
     );
-}
-
-export const getStaticProps = () => {
-    return {
-        props: {}
-    }
 }

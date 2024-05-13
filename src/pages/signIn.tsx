@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useState } from "react";
-import { auth, firestore } from "@/firebase/firebasedb";
-import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "@/firebase/firebasedb";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/redux/features/userSlice";
@@ -14,8 +14,10 @@ import Seo from "@/components/Seo";
 import googleAuth from "@/utils/auth/googleAuth";
 import { RootState } from "@/redux/store";
 import FormInput from "@/components/input/FormInput";
-import axios from "axios";
 import getEmailToken from "@/utils/fetch/getEmailToken";
+import { admin } from "@/firebase/firebaseAdmin";
+import { GetServerSidePropsContext } from "next";
+import { parseCookies } from "nookies";
 
 export type loginForm = {
     email: string,
@@ -417,8 +419,22 @@ export default function login() {
     )
 }
 
-export const getStaticProps = () => {
-    return {
-        props: {}
-    }
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+        const cookies = parseCookies(context);
+        const authToken = cookies.authToken;
+
+        if(!authToken) {
+            return {
+                props: {},
+            }
+        }
+        // 로그인 중이라면 홈으로 redirect 시킴
+        else {
+            return {
+                redirect: {
+                    destination: '/',
+                    parmanent: false,
+                }
+            }
+        }
 }

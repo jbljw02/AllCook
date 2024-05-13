@@ -12,9 +12,7 @@ import { setFavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";
 import ModifyNav from "@/components/favoriteRecipe/ModifyNav";
 import { GetServerSidePropsContext } from "next";
 import { parseCookies } from "nookies";
-import { auth } from "@/firebase/firebasedb";
-import { onAuthStateChanged } from "firebase/auth";
-
+import { admin } from "@/firebase/firebaseAdmin";
 
 export default function favoriteRecipe() {
     const dispatch = useDispatch();
@@ -134,7 +132,22 @@ export default function favoriteRecipe() {
 }
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-    return {
-        props: {},
-    };
+    try {
+        const cookies = parseCookies(context);
+        const authToken = cookies.authToken;
+
+        // 인증 완료 시 현재 페이지를 보여줌
+        await admin.auth().verifyIdToken(authToken);
+        return {
+            props: {}
+        };
+    } catch (error) {
+        // 인증 실패 시 로그인 화면으로 이동
+        return {
+            redirect: {
+                destination: '/signIn',
+                parmanent: false,
+            }
+        }
+    }
 }
