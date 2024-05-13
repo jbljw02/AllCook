@@ -1,13 +1,18 @@
 import { auth } from "@/firebase/firebasedb";
+import axios from "axios";
 import { signOut } from "firebase/auth";
 
 export default function logout() {
-    signOut(auth).then(() => {
-        console.log("로그아웃 성공");
+    signOut(auth).then(async () => {
+        await axios.post('/api/auth/logout', {
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+        });
 
-        // 로그아웃 시에 토큰 제거
-        document.cookie = "authToken=; path=/; samesite=strict";
+        console.log("로그아웃 성공");
     }).catch((error) => {
-        console.log("로그아웃 실패 : ", error);
+        console.error("로그아웃 실패 : ", error);
     })
 }

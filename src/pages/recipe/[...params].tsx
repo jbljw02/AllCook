@@ -16,7 +16,7 @@ import { setAddedRecipeInfo, setRecipeAddModal, setRecipeMoveModal } from "@/red
 import ReviewContainer from "@/components/recipeDetail/review/ReviewContainer";
 import MenuTable from "@/components/table/MenuTable";
 import NutritionBox from "@/components/recipeDetail/nutrition/NutritionBox";
-import ServingsBox from "@/components/recipeDetail/servingsBox";
+import ServingsBox from "@/components/recipeDetail/ServingsBox";
 import RecipeImg from "@/components/recipeDetail/RecipeImg";
 import Manual from "@/components/recipeDetail/Manual";
 import RelatedRecipes from "@/components/recipeDetail/RelatedRecipes";

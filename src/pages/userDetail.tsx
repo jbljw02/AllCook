@@ -5,11 +5,14 @@ import Header from "@/components/header/Header";
 import HeaderOnContents from "@/components/header/HeaderOnContents";
 import FormInput from "@/components/input/FormInput";
 import WithdrawlModal from "@/components/modal/WithdrawlModal";
+import { admin } from "@/firebase/firebaseAdmin";
 import { setUser } from "@/redux/features/userSlice";
 import { RootState } from "@/redux/store";
 import logout from "@/utils/auth/logout";
 import { deleteUser, getAuth, updateProfile } from "firebase/auth";
+import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
+import { parseCookies } from "nookies";
 import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -315,4 +318,25 @@ export default function userDetail() {
             `}</style>
         </>
     )
+}
+
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+    try {
+        const cookies = parseCookies(context);
+        const authToken = cookies.authToken;
+
+        // 인증 완료 시 현재 페이지를 보여줌
+        await admin.auth().verifyIdToken(authToken);
+        return {
+            props: {}
+        };
+    } catch (error) {
+        // 인증 실패 시 로그인 화면으로 이동
+        return {
+            redirect: {
+                destination: '/signIn',
+                parmanent: false,
+            }
+        }
+    }
 }

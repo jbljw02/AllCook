@@ -16,6 +16,9 @@ import Seo from "@/components/Seo";
 import googleAuth from "@/utils/auth/googleAuth";
 import sendUserInitialData from "@/utils/auth/sendUserInitialData";
 import FormInput from "@/components/input/FormInput";
+import { admin } from "@/firebase/firebaseAdmin";
+import { GetServerSidePropsContext } from "next";
+import { parseCookies } from "nookies";
 
 export type signUpForm = {
     name: string,
@@ -164,14 +167,22 @@ export default function login() {
     const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
 
     const googleLogin = async () => {
-        const { user, token } = await googleAuth(favoriteRecipe);
-        dispatch(setUser({
-            email: user.email,
-            name: user.name,
-        }));
+        try {
+            const result = await googleAuth(favoriteRecipe);
+            if (!result) {
+                console.error("구글 로그인/토큰 인증 실패");
+                return;
+            }
 
-        // 인증이 완료된 토큰을 쿠키에 저장(제한시간: 1시간)
-        document.cookie = `authToken=${token}; path=/; max-age=3600; samesite=strict`;
+            const { user } = result;
+
+            dispatch(setUser({
+                email: user.email,
+                name: user.name,
+            }));
+        } catch (error) {
+            console.error("구글 로그인중 에러 발생", error);
+        }
     }
 
     // form을 전송함
@@ -567,8 +578,22 @@ export default function login() {
     )
 }
 
-export const getStaticProps = () => {
-    return {
-        props: {}
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+    const cookies = parseCookies(context);
+    const authToken = cookies.authToken;
+
+    if(!authToken) {
+        return {
+            props: {},
+        }
+    }
+    // 로그인 중이라면 홈으로 redirect 시킴
+    else {
+        return {
+            redirect: {
+                destination: '/',
+                parmanent: false,
+            }
+        }
     }
 }

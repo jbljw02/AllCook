@@ -47,21 +47,16 @@ export default function EmailVerifyModal({ isSubmitted, setIsSubmitted, name }: 
                     setIsSubmitted(false);
 
                     await user.getIdToken().then(async (token) => {
-                        const response = await axios.post('/api/auth/emailToken', { token: token }, {
+                        await axios.post('/api/auth/emailToken', { token: token }, {
                             headers: {
                                 "Content-Type": "application/json",
                                 "Accept": "application/json"
                             },
                         });
-                        const jwtToken = response.data;
-
                         dispatch(setUser({
                             name: user.displayName,
                             email: user.email,
                         }))
-
-                        // JWT를 쿠키에 저장
-                        document.cookie = `authToken=${jwtToken}; path=/; max-age=3600; samesite=strict`;
                     });
 
                     router.push('/');
