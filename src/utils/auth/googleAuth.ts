@@ -42,7 +42,6 @@ const googleAuth = async (initialFolder: FavoriteRecipe[]) => {
 
                 return { user: { name: user.displayName, email: user.email } };
             } catch (error) {
-                console.error("토큰 인증 실패: ", error);
                 return;
             }
         }
@@ -50,8 +49,7 @@ const googleAuth = async (initialFolder: FavoriteRecipe[]) => {
             throw new Error("사용자 이름 혹은 이메일 존재 X");
         }
     } catch (error) {
-        console.error("구글 인증 실패: ", error);
-        return;
+        throw error;
     }
 };
 

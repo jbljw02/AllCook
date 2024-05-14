@@ -19,7 +19,6 @@ export const reciveFavRecipes = async (req: NextApiRequest, res: NextApiResponse
             return res.status(500).json({ error: "관심 레시피 존재 X" })
         }
     } catch (error) {
-        console.error("관심 레시피 가져오기 실패: ", error);
         return res.status(500).json({ error: "관심 레시피 가져오기 실패" })
     }
 }

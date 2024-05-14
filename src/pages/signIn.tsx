@@ -97,7 +97,6 @@ export default function login() {
 
             // 로그인된 사용자의 이메일 인증 여부 확인
             if (user && user.emailVerified) {
-                console.log("이메일 인증 완료, 로그인");
                 setIsSucceess(true);
                 setIsVerifyFail(false);
 
@@ -108,12 +107,10 @@ export default function login() {
             // 이메일 인증이 완료되지 않았을 경우, 인증 모달 팝업
             else {
                 setIsVerifyFail(true);
-                console.log("이메일 인증 미완료, 로그인 X");
             }
         }
         catch (error) {
             if (error instanceof FirebaseError) {
-                console.log("로그인 실패 : ", error.code);
                 setIsSucceess(false);
             }
         }
@@ -161,7 +158,7 @@ export default function login() {
                 name: user.name,
             })); 
         } catch (error) {
-            console.error("구글 로그인중 에러 발생", error);
+            throw error;
         }
     }
 

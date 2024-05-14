@@ -66,7 +66,7 @@ export default function ResetPassword() {
         try {
             await sendPasswordResetEmail(auth, formData.email);
         } catch (error) {
-            console.error("비밀번호 재설정 이메일 발송 실패: ", error);
+            throw error;
         }
     }
 

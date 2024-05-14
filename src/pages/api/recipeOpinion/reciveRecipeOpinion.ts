@@ -27,7 +27,6 @@ const reciveRecipeOpinion = async (req: NextApiRequest, res: NextApiResponse) =>
             }
         }
     } catch (error) {
-        console.error("댓글 및 평점 불러오기 실패");
         return res.status(500).json({ error: "댓글 및 평점 불러오기 실패" });
     }
 }

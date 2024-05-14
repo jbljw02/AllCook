@@ -27,7 +27,6 @@ const addNewRecipeOpinion = async (req: NextApiRequest, res: NextApiResponse) =>
             return res.status(200).json({ opinions: opinionsFromStore });
         }
     } catch (error) {
-        console.error("댓글 및 평점 추가 실패");
         return res.status(500).json({ error: "댓글 및 평점 추가 실패" });
     }
 }

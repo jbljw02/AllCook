@@ -37,7 +37,6 @@ function App({ Component, pageProps }: AppProps) {
     // useEffect(() => {
     //     (async () => {
     //         const response = await fetch('/api/allRecipes/fetchRecipe');
-    //         console.log("결과 : ", response);
     //     })();
     // }, [])
 
@@ -83,19 +82,14 @@ function App({ Component, pageProps }: AppProps) {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 if (!user.emailVerified) {
-                    console.log("로그인중 + 이메일 미인증");
                 }
                 else if (user.emailVerified) {
-                    console.log("로그인중 + 이메일 인증 O", user);
                     dispatch(setUser({
                         name: user.displayName,
                         email: user.email,
                     }));
                     getEmailToken();
                 }
-            }
-            else {
-                console.log("로그인 X");
             }
         });
     }, []);
@@ -106,14 +100,11 @@ function App({ Component, pageProps }: AppProps) {
         const checkBeforeUnload = async () => {
             const user = auth.currentUser;
             if (user && !user.emailVerified) {
-                await logout();
-                console.log("이메일 미인증으로 로그아웃");
+                logout();
             }
             else if (user && user.emailVerified) {
-                console.log("이메일 인증 완료");
             }
             else if (!user) {
-                console.log("사용자 존재하지 않음");
             }
         };
 
@@ -132,7 +123,6 @@ function App({ Component, pageProps }: AppProps) {
 
         // 로컬 스토리지에 이미 레시피가 존재하면 DB에 값을 요청하지 않고 가져옴
         if (cachedRecipes) {
-            console.log("로컬 스토리지에 메뉴 존재");
             dispatch(setAllMenu(recipes));
             dispatch(setDisplayedMenu(recipes))
 
@@ -147,7 +137,6 @@ function App({ Component, pageProps }: AppProps) {
         }
         // 로컬 스토리지에 레시피가 없다면 DB에서 데이터를 요청하고, 로컬 스토리지에 담음
         else {
-            console.log("로컬 스토리지에 메뉴 X");
             const response = await fetch('/api/allRecipes/reciveRecipes');
             const jsonResponse = await response.json();
             const recipes = await jsonResponse.data;

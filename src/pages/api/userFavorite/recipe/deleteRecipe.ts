@@ -43,7 +43,6 @@ const deleteRecipe = async (req: NextApiRequest, res: NextApiResponse) => {
             return res.status(404).json({ error: "사용자 존재 X" })
         }
     } catch (error) {
-        console.error("레시피 삭제 실패: ", error);
         return res.status(500).json({ error: "레시피 삭제 실패" });
     }
 }

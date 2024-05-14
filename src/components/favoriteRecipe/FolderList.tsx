@@ -74,7 +74,6 @@ export default function FolderList() {
     const isCheckedFolder = useSelector((state: RootState) => state.isCheckedFolder);
 
     const checkFolder = (folderId: number) => {
-        console.log("A");
         dispatch(setIsCheckedFolder(folderId));
     }
 

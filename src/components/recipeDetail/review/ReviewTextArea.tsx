@@ -66,8 +66,7 @@ export default function () {
                 dispatch(setRecipeOpinion(response.data.opinions));
             }
         } catch (error) {
-            console.error("댓글 및 별점 불러오기 실패: ", error);
-            throw Error;
+            throw error;
         }
     }
 
@@ -86,7 +85,6 @@ export default function () {
                     "Accept": "application/json"
                 },
             });
-            console.log("댓글 및 평점 추가 완료: ", response);
             reciveRecipeOpinion(user.email, recipe.RCP_SEQ);
             dispatch(setRecipeOpinion(response.data.opinions));
             setFormData({
@@ -94,8 +92,7 @@ export default function () {
                 comment: '',
             })
         } catch (error) {
-            console.error("댓글 및 평점 추가 실패: ", error);
-            throw Error;
+            throw error;
         }
     }
 

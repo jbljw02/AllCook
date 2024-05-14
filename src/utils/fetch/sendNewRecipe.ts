@@ -16,7 +16,7 @@ const sendNewRecipe = async (email: string, id: number, recipe: Menu) => {
         })
         return response;
     } catch (error) {
-        console.error("레시피 추가 실패: ", error);
+        throw error;
     }
 }
 

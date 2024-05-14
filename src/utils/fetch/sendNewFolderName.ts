@@ -16,7 +16,7 @@ const sendNewFolderName = async (email: string, folderId: number, newFolderName:
         });
         return response;
     } catch (error) {
-        console.error("폴더명 변경 실패: ", error);
+        throw error;
     }
 }
 

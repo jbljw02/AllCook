@@ -20,7 +20,6 @@ const googleToken = async (req: NextApiRequest, res: NextApiResponse) => {
 
         res.status(200).json({ success: "토큰 인증 성공 및 JWT 쿠키 설정 완료" });
     } catch (error) {
-        console.error("토큰 인증 실패: ", error);
         res.status(401).json({ error: '토큰 인증 실패' });
     }
 };

@@ -14,10 +14,9 @@ const recipeDeleteRequest = async (email: string, folderId: number, recipe: Menu
                 "Accept": "application/json"
             },
         })
-        console.log("레시피 삭제 성공: ", response);
         return response;
     } catch (error) {
-        console.error("레시피 삭제 실패: ", error);
+        throw error;
     }
 }
 
