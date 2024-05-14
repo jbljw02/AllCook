@@ -12,7 +12,7 @@ import filterSvg from '../../../public/svgs/filter.svg';
 import RecipeTable from "@/components/table/RecipeTable";
 import FilterDetail from "@/components/recipe/filterDetail/FilterDetail";
 import HashTags from "@/components/recipe/HashTags";
-import NoneMenu from "@/components/recipe/noneMenu";
+import NoneMenu from "@/components/recipe/NoneMenu";
 
 export default function Recipe() {
     const dispatch = useDispatch();

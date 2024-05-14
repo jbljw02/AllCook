@@ -1,4 +1,4 @@
-import { combineReducers, configureStore, createSlice } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { HYDRATE, createWrapper } from "next-redux-wrapper";
 import menuReducers, { Menu } from './features/menuSlice';
 import NutritionReducers, { Nutrition } from './features/nutritionSlice';
