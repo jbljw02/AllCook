@@ -12,7 +12,6 @@ import filterSvg from '../../../public/svgs/filter.svg';
 import RecipeTable from "@/components/table/RecipeTable";
 import FilterDetail from "@/components/recipe/filterDetail/FilterDetail";
 import HashTags from "@/components/recipe/HashTags";
-import SkeletonUI from "@/components/Skeleton";
 import NoneMenu from "@/components/recipe/noneMenu";
 
 export default function Recipe() {
@@ -20,10 +19,10 @@ export default function Recipe() {
 
     const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
     const headerSlide = useSelector((state: RootState) => state.headerSlide);
-
+    
     const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
-
+    
     // 화면이 첫 렌더링 될 때 보일 메뉴를 allMenu와 동일하게 업데이트
     useEffect(() => {
         // 페이지를 이동하지 않은 경우에만 업데이트(검색을 통해 이동하지 않은 경우에만)
@@ -106,14 +105,19 @@ export default function Recipe() {
                                 {/* 상세 검색 영역 */}
                                 {
                                     filterVisible &&
-                                    <FilterDetail />
+                                    <FilterDetail
+                                    setFilterVisible={setFilterVisible}
+                                     />
                                 }
                             </div>
                         </div>
                         {/* 메뉴를 보여주는 영역 */}
                         {
-                            // <RecipeTable />
-                            <NoneMenu />   
+                            // 전체 메뉴는 존재하고 화면에 보여질 메뉴가 없는 상태
+                            // 즉, 검색 결과가 없는 상태엔 다른 화면을 보여줌
+                            allMenu.length && !displayedMenu.length ?
+                            <NoneMenu /> :
+                            <RecipeTable />
                         }
                     </div>
                 </div>

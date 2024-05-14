@@ -23,7 +23,7 @@ export default function EmptyFolder() {
                     border: 1px solid rgb(232, 232, 232);
                 }
                 .title {
-                    font-size: 18px;
+                    font-size: 17px;
                     margin-bottom: 20px;
                 }
                 button {
@@ -32,7 +32,7 @@ export default function EmptyFolder() {
                     padding: 7px 14px;
                     border: 1px solid transparent;
                     border-radius: 5px;
-                    font-size: 15px;
+                    font-size: 14px;
                 }
             `}</style>
         </>
