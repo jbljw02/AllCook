@@ -31,7 +31,6 @@ const addNewFolder = async (req: NextApiRequest, res: NextApiResponse) => {
             return res.status(200).json({ success: "폴더 추가 성공" });
         }
     } catch (error) {
-        console.error("폴더 추가 실패: ", error);
         return res.status(500).json({ error: "폴더 추가 실패" });
     }
 }

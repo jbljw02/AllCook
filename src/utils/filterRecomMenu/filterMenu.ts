@@ -35,7 +35,6 @@ export const searchByRange = (filteredMenu: Menu[], nutritionInfo : Nutrition) =
     let finalFilteredMenu : Menu[] = [...filteredMenu];
     // 각 값마다 반복하여 최소값 및 최대값 범위에 있는 요소들을 분류하고, 중첩시킴
     nutritionEntries.forEach(([key, value]) => {
-        console.log(value);
         finalFilteredMenu = finalFilteredMenu.filter(item => Number(value.min) <= item.INFO_CAR && item.INFO_CAR <= Number(value.max));
     });
     return finalFilteredMenu;

@@ -20,7 +20,7 @@ export type UserForm = {
 }
 
 export default function userDetail() {
-    const dispatㅔㅅch = useDispatch();
+    const dispatch = useDispatch();
     const router = useRouter();
 
     const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
@@ -78,8 +78,7 @@ export default function userDetail() {
                 }
             }
         } catch (error) {
-            console.error("유저 이름 변경 실패: ", error);
-            throw Error;
+            throw error;
         }
     }
 

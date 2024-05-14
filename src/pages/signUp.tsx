@@ -153,12 +153,12 @@ export default function login() {
             setEmailDuplicated(false);
         }
         catch (error) {
+            // 이미 사용중인 이메일
             if ((error as FirebaseError).code === 'auth/email-already-in-use') {
-                console.log("회원가입 실패(이미 사용중인 이메일): ", error);
                 setEmailDuplicated(true);
             }
             else {
-                console.log("회원가입 정보 전송 실패: ", error);
+                throw error;
             }
         }
     }
@@ -169,7 +169,6 @@ export default function login() {
         try {
             const result = await googleAuth(favoriteRecipe);
             if (!result) {
-                console.error("구글 로그인/토큰 인증 실패");
                 return;
             }
 
@@ -180,7 +179,7 @@ export default function login() {
                 name: user.name,
             }));
         } catch (error) {
-            console.error("구글 로그인중 에러 발생", error);
+            throw error;
         }
     }
 
@@ -194,7 +193,6 @@ export default function login() {
 
         // 비밀번호가 정규식을 통과하지 못할 경우
         if (!pwdRegex.test(formData.password)) {
-            console.log("동작2");
             setPwdRule({
                 ...pwdRule,
                 valid: false,

@@ -11,7 +11,6 @@ export default function FoodTypeContainer() {
 
     // 음식의 종류 체크 여부를 토글
     const changeFoodCheck = (event: { target: { name: string; checked: boolean; }; }) => {
-        console.log(event.target.name);
         dispatch(setFoodType({
             ...foodType,  // 다른 요소는 그대로 유지
             [event.target.name]: event.target.checked,  // 파라미터로 받은 요소의 체크 여부를 토글

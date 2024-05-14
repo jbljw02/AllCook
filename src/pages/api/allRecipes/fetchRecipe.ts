@@ -40,7 +40,6 @@ const fetchRecipe = async (req: NextApiRequest, res: NextApiResponse) => {
 
         return res.status(200).json({ msg: "레시피 추가 완료" })
     } catch (error) {
-        console.log("DB 추가 에러 : ", error);
         return res.status(500).json({ msg: "레시피 추가 실패" })
     }
 

@@ -13,10 +13,9 @@ const folderDeleteRequest = async (email: string, folderIds: number[]) => {
                 "Accept": "application/json"
             },
         })
-        console.log("폴더 삭제 성공: ", response);
         return response;
     } catch (error) {
-        console.error("폴더 삭제 실패: ", error);
+        throw error;
     }
 }
 

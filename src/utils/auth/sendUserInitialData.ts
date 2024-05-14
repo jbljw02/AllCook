@@ -15,7 +15,7 @@ const sendUserInitialData = async (email: string, initialFolder: FavoriteRecipe[
         });
         return response;
     } catch (error) {
-        console.log("이메일 추가 실패: ", error);
+        throw error;
     }
 }
 

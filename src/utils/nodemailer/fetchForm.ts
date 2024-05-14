@@ -11,7 +11,6 @@ export const fetchForm = async (data: Form) => {
         });
         return response;
     } catch (error) {
-        console.error('Form 전송 실패 : ', error);
         throw error;
     }
 }

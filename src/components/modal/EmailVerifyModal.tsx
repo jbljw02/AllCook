@@ -43,7 +43,6 @@ export default function EmailVerifyModal({ isSubmitted, setIsSubmitted, name }: 
             user.reload().then(async () => {
                 // 사용자의 이메일 인증이 완료된 경우
                 if (user.emailVerified) {
-                    console.log("이메일 인증 성공");
                     setIsSubmitted(false);
 
                     await user.getIdToken().then(async (token) => {
@@ -62,7 +61,6 @@ export default function EmailVerifyModal({ isSubmitted, setIsSubmitted, name }: 
                     router.push('/');
                 }
                 else {
-                    console.log("이메일 인증 아직 X");
                     setIsVerify(false);
 
                     // 이메일이 인증되지 않은 상태에서 '확인' 버튼을 클릭하면 진동 효과
@@ -79,11 +77,10 @@ export default function EmailVerifyModal({ isSubmitted, setIsSubmitted, name }: 
         try {
             if (user) {
                 await sendEmailVerification(user);
-                console.log("이메일 재전송 완료");
             }
         }
         catch (error) {
-            console.log("이메일 재전송 실패");
+            throw error;
         }
     }
 

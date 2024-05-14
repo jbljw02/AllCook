@@ -41,8 +41,7 @@ export default function WithdrawlModal({ isModalOpen, withdrawlOk, setIsModalOpe
                 router.push('/');
             }
         } catch (error) {
-            console.error("탈퇴 실패: ", error);
-            throw Error;
+            throw error;
         }
     }
 
