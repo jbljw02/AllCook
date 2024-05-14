@@ -15,7 +15,6 @@ import googleAuth from "@/utils/auth/googleAuth";
 import { RootState } from "@/redux/store";
 import FormInput from "@/components/input/FormInput";
 import getEmailToken from "@/utils/fetch/getEmailToken";
-import { admin } from "@/firebase/firebaseAdmin";
 import { GetServerSidePropsContext } from "next";
 import { parseCookies } from "nookies";
 

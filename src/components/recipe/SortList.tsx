@@ -1,6 +1,6 @@
 import { setSortRule } from "@/redux/features/sortSlice";
 import { RootState } from "../../redux/store";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setDisplayedMenu } from "@/redux/features/menuSlice";
 import { setCurrentPage } from "@/redux/features/recipePageSlice";

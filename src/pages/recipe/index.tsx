@@ -1,7 +1,7 @@
 import Header from "../../components/header/Header"
 import Footer from "../../components/Footer"
 import { useDispatch, useSelector } from "react-redux"
-import { Menu, RootState } from "../../redux/store";
+import { RootState } from "../../redux/store";
 import { setDisplayedMenu } from "../../redux/features/menuSlice";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -12,6 +12,8 @@ import filterSvg from '../../../public/svgs/filter.svg';
 import RecipeTable from "@/components/table/RecipeTable";
 import FilterDetail from "@/components/recipe/filterDetail/FilterDetail";
 import HashTags from "@/components/recipe/HashTags";
+import SkeletonUI from "@/components/Skeleton";
+import NoneMenu from "@/components/recipe/noneMenu";
 
 export default function Recipe() {
     const dispatch = useDispatch();
@@ -20,6 +22,7 @@ export default function Recipe() {
     const headerSlide = useSelector((state: RootState) => state.headerSlide);
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
+    const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
 
     // 화면이 첫 렌더링 될 때 보일 메뉴를 allMenu와 동일하게 업데이트
     useEffect(() => {
@@ -108,7 +111,10 @@ export default function Recipe() {
                             </div>
                         </div>
                         {/* 메뉴를 보여주는 영역 */}
-                        <RecipeTable />
+                        {
+                            // <RecipeTable />
+                            <NoneMenu />   
+                        }
                     </div>
                 </div>
                 <Footer />
@@ -177,7 +183,7 @@ export default function Recipe() {
                 .filter-button-div span {
                     font-size: 13px;
                     font-weight: 500;
-                }    
+                }   
             `}</style>
         </>
     )

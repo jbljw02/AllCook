@@ -1,4 +1,4 @@
-import { Menu, RootState } from "@/redux/store";
+import { RootState } from "@/redux/store";
 import { useEffect, useState } from "react";
 import MenuTable from "../table/MenuTable";
 import moveToDetail from "@/utils/moveToDetail";
@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setRecipe } from "@/redux/features/recipeSlice";
 import { filterIngredString } from "@/utils/filterManual/filterIngredString";
 import { adjustForServings } from "@/utils/filterManual/adjustForServings";
-
+import { Menu } from "@/redux/features/menuSlice";
 
 export default function RelatedRecipes() {
     const dispatch = useDispatch();

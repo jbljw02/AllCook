@@ -1,9 +1,10 @@
 import { firestore } from "@/firebase/firebasedb";
 import { FavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";
-import { Menu } from "@/redux/store";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
+import { Menu } from "@/redux/features/menuSlice";
 
+// 관심 레시피를 삭제
 const deleteRecipe = async (req: NextApiRequest, res: NextApiResponse) => {
     const { email, folderId, recipe } = req.body;
 

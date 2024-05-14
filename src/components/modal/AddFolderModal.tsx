@@ -26,7 +26,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
     useEffect(() => {
         (async () => {
             if (user && user.email) {
-                const response = await axios.post('/api/reciveFavRecipes', {
+                const response = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
                     email: user.email,
                 });
 

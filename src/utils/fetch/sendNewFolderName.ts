@@ -8,7 +8,7 @@ const sendNewFolderName = async (email: string, folderId: number, newFolderName:
             folderId: folderId,
             newFolderName: newFolderName,
         }
-        const response = await axios.post('/api/updateFolderName', data, {
+        const response = await axios.post('/api/userFavorite/folder/updateFolderName', data, {
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"

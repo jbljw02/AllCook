@@ -1,9 +1,7 @@
-import { Menu, RootState } from "@/redux/store";
-import { adjustForServings } from "@/utils/filterManual/adjustForServings";
-import { filterIngredString } from "@/utils/filterManual/filterIngredString";
+import { RootState } from "@/redux/store";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-
+import { Menu } from "@/redux/features/menuSlice";
 
 export default function Manual() {
     const recipe = useSelector((state: RootState) => state.recipe); // 레시피의 상세 정보를 담고있는 state

@@ -32,7 +32,7 @@ export default function FolderDetail() {
         (async () => {
             try {
                 if (user.email) {
-                    const response = await axios.post('/api/reciveFavRecipes', {
+                    const response = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
                         email: user.email,
                     });
 
@@ -93,7 +93,7 @@ export default function FolderDetail() {
                     }
 
                     // 폴더명이 변경됐으므로 배열 전체 업데이트
-                    const resFavRecipe = await axios.post('/api/reciveFavRecipes', {
+                    const resFavRecipe = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
                         email: user.email,
                     });
                     const favRecipeFromStore: FavoriteRecipe[] = resFavRecipe.data.favoriteRecipe;

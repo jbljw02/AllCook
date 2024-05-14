@@ -1,7 +1,7 @@
 import { combineReducers, configureStore, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE, createWrapper } from "next-redux-wrapper";
-import menuReducers from './features/menuSlice';
-import NutritionReducers from './features/nutritionSlice';
+import menuReducers, { Menu } from './features/menuSlice';
+import NutritionReducers, { Nutrition } from './features/nutritionSlice';
 import SortReducers from './features/sortSlice';
 import RecipeReducers from './features/recipeSlice';
 import UserReducers, { User } from './features/userSlice';
@@ -43,44 +43,6 @@ export type RootState = {
     cookWay: CookWay,
     servings: number,
     nutritionVisible: boolean,
-}
-
-export type Menu = {
-    RCP_NM: string,
-    RCP_WAY2: string,
-    ATT_FILE_NO_MK: string,
-    ATT_FILE_NO_MAIN: string,
-    INFO_CAR: number,  // 탄수화물
-    INFO_ENG: number, // 열량
-    INFO_FAT: number,  // 지방
-    INFO_NA: number,  // 나트륨
-    INFO_PRO: number,  // 단백질
-    MANUAL01?: string,
-    MANUAL02?: string,
-    MANUAL03?: string,
-    MANUAL04?: string,
-    MANUAL05?: string,
-    MANUAL06?: string,
-    MANUAL07?: string,
-    MANUAL08?: string,
-    MANUAL09?: string,
-    MANUAL10?: string,
-    RCP_NA_TIP: string,
-    RCP_PARTS_DTLS: string,
-    RCP_PAT2: string,
-    HASH_TAG: string,
-    RCP_SEQ: string,
-    MANUAL_IMG02: string,
-    INFO_WGT: string,
-    [key: string]: string | number | undefined,
-}
-
-export type Nutrition = {
-    car: { min: number, max: number },  // 탄수화물
-    eng: { min: number, max: number },  // 열량
-    fat: { min: number, max: number },  // 지방
-    na: { min: number, max: number },  // 나트륨
-    pro: { min: number, max: number },  // 단백질
 }
 
 // 각각의 기능을 가진 리듀서들을 병합

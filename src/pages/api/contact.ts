@@ -92,7 +92,7 @@ const sendForm = async (req: NextApiRequest, res: NextApiResponse) => {
         }
     }
     else {
-        return res.status(405).json({error: "허용되지 않은 요청 방법"})
+        return res.status(405).json({error: "허용되지 않은 요청 방법"});
     }
 }
 

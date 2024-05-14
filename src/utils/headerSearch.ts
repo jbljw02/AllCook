@@ -1,4 +1,4 @@
-import { Menu } from "../redux/store";
+import { Menu } from "@/redux/features/menuSlice";
 
 export const searchByMenuIngredient = (inputValue: string, allMenu: Menu[]) => {
     // 메뉴, 재료명으로 검색

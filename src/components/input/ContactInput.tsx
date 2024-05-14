@@ -1,10 +1,4 @@
 import { Form } from "@/pages/contact";
-import { Noto_Sans_KR } from "next/font/google";
-
-const noto = Noto_Sans_KR({
-    subsets: ['latin'],
-    weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
-});
 
 export default function ContactInput({ form, name, height, placeholder, msgWhether, onChange, emailValid }: { form: Form, name: keyof Form, height: string, placeholder: string, msgWhether: boolean, onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void, emailValid?: boolean, }) {
 

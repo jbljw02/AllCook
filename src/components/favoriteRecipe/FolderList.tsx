@@ -1,5 +1,5 @@
 import { FavoriteRecipe, addFavoriteRecipeFolder, setIsCheckedFolder } from "@/redux/features/favoriteRecipeSlice";
-import { Menu, RootState } from "@/redux/store";
+import { RootState } from "@/redux/store";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RecipeThumbnail from "./RecipeThumbnail";
@@ -77,7 +77,6 @@ export default function FolderList() {
         console.log("A");
         dispatch(setIsCheckedFolder(folderId));
     }
-    console.log("금: ", isCheckedFolder);
 
     return (
         <>

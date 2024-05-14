@@ -1,9 +1,10 @@
 import { firestore } from '@/firebase/firebasedb';
-import { Menu } from '@/redux/store';
 import axios from 'axios';
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { Menu } from '@/redux/features/menuSlice';
 
+// API를 통해 받아온 전체 레시피를 DB에 저장
 const fetchRecipe = async (req: NextApiRequest, res: NextApiResponse) => {
     const API_KEY = process.env.API_KEY;
 

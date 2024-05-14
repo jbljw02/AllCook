@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setRecipeAddModal, setRecipeMoveModal } from "@/redux/features/favoriteRecipeSlice";
 
 type ParamsType = {

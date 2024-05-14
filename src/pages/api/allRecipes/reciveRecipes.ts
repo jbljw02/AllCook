@@ -3,6 +3,7 @@ import { collection } from '@firebase/firestore';
 import { getDocs } from 'firebase/firestore';
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+// DB에서 전체 레시피 배열을 받아옴
 const reciveRecipes = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const recipesRef = collection(firestore, 'recipes');

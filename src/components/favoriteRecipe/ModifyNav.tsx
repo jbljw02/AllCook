@@ -1,4 +1,3 @@
-import favoriteRecipe from "@/pages/favoriteRecipe";
 import { FavoriteRecipe, resetIsCheckedFolder, resetIsCheckedRecipe, setFavoriteRecipe, setIsCheckedFolder, setIsCheckedRecipe, setIsFavFolderDelete, setIsFavRecipeDelete, setSelectedFolder } from "@/redux/features/favoriteRecipeSlice";
 import { RootState } from "@/redux/store";
 import folderDeleteRequest from "@/utils/fetch/folderDeleteRequest";
@@ -62,7 +61,7 @@ export default function ModifyNav({ category }: { category: string }) {
             await recipeDeleteRequest(user.email, selectedFolder.folderId, isCheckedRecipe);
 
             // 레시피가 삭제됐으므로 배열 전체 업데이트
-            const resFavRecipe = await axios.post('/api/reciveFavRecipes', {
+            const resFavRecipe = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
                 email: user.email,
             });
             const favRecipeFromStore: FavoriteRecipe[] = resFavRecipe.data.favoriteRecipe;
@@ -75,7 +74,7 @@ export default function ModifyNav({ category }: { category: string }) {
             await folderDeleteRequest(user.email, isCheckedFolder);
 
             // 폴더가 삭제됐으므로 배열 전체 업데이트
-            const resFavRecipe = await axios.post('/api/reciveFavRecipes', {
+            const resFavRecipe = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
                 email: user.email,
             });
             const favRecipeFromStore: FavoriteRecipe[] = resFavRecipe.data.favoriteRecipe;

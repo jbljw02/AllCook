@@ -1,4 +1,4 @@
-import { Menu } from "@/redux/store";
+import { Menu } from "@/redux/features/menuSlice";
 
 export const filterIngredString = (recipe: Menu) => {
   let selectedMenu = recipe;

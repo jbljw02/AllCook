@@ -1,5 +1,35 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+export type Menu = {
+    RCP_NM: string,
+    RCP_WAY2: string,
+    ATT_FILE_NO_MK: string,
+    ATT_FILE_NO_MAIN: string,
+    INFO_CAR: number,  // 탄수화물
+    INFO_ENG: number, // 열량
+    INFO_FAT: number,  // 지방
+    INFO_NA: number,  // 나트륨
+    INFO_PRO: number,  // 단백질
+    MANUAL01?: string,
+    MANUAL02?: string,
+    MANUAL03?: string,
+    MANUAL04?: string,
+    MANUAL05?: string,
+    MANUAL06?: string,
+    MANUAL07?: string,
+    MANUAL08?: string,
+    MANUAL09?: string,
+    MANUAL10?: string,
+    RCP_NA_TIP: string,
+    RCP_PARTS_DTLS: string,
+    RCP_PAT2: string,
+    HASH_TAG: string,
+    RCP_SEQ: string,
+    MANUAL_IMG02: string,
+    INFO_WGT: string,
+    [key: string]: string | number | undefined,
+}
+
 const initialState = {
     RCP_NM: '',
     ATT_FILE_NO_MK: '',
@@ -39,6 +69,7 @@ export const dessertMenuSlice = createSlice({
     }
 })
 
+// 전체 메뉴에 대한 Slice
 export const allMenuSlice = createSlice({
     name: 'allMenu',
     initialState: initialState,

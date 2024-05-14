@@ -1,4 +1,4 @@
-import { Menu, RootState } from "@/redux/store";
+import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 
 interface ParamsType {
