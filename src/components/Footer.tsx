@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Anek_Tamil } from 'next/font/google'
 
 export default function Footer() {
 

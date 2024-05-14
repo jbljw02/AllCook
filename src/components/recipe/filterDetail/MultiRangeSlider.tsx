@@ -89,9 +89,6 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange 
                     <div className="slider__right-value">{`${maxVal} ${unit}`}</div>
                 </div>
             </div>
-            {/* <div style={{ display: 'none' }}>
-                <Recipe setMinVal={setMinVal} setMaxVal={setMaxVal} />
-            </div> */}
             <style jsx>{`
                 .slide-container {
                     display: flex;

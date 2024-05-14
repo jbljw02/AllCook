@@ -1,4 +1,4 @@
-import { auth, firestore } from "@/firebase/firebasedb";
+import { auth } from "@/firebase/firebasedb";
 import axios from "axios";
 
 const getEmailToken = async () => {

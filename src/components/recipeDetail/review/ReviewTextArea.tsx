@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import { useState, ChangeEvent, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-
 export default function () {
     const dispatch = useDispatch();
     const router = useRouter();

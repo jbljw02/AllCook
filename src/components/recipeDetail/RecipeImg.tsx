@@ -11,6 +11,7 @@ export default function RecipeImg() {
     const saveRecipe = () => {
         dispatch(setRecipeAddModal(true));
     }
+    
     return (
         <>
             <div className="recipe-img-section">

@@ -6,7 +6,7 @@ import HeaderOnContents from "@/components/header/HeaderOnContents";
 import { FavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";
 import { RootState } from "@/redux/store";
 import axios from "axios";
-import { useState, useRef, useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";
 import ModifyNav from "@/components/favoriteRecipe/ModifyNav";

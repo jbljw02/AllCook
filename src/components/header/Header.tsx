@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import { Anek_Tamil } from 'next/font/google';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { setDisplayedMenu } from '@/redux/features/menuSlice';
@@ -13,11 +12,6 @@ import userLight from '../../../public/svgs/user-light.svg';
 import userDark from '../../../public/svgs/user-dark.svg';
 import Image from 'next/image';
 import UserDropdown from './UserDropdown';
-
-const titleFont = Anek_Tamil({
-    subsets: ['latin'],
-    weight: ['100', '200', '300', '400', '500'],
-});
 
 type Position = 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky';
 

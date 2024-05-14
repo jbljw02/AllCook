@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import { searchByMenuIngredient } from '../../utils/headerSearch';
+import { searchByMenuIngredient } from '@/utils/headerSearch';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { setDisplayedMenu } from '../../redux/features/menuSlice';
+import { RootState } from '@/redux/store';
+import { setDisplayedMenu } from '@/redux/features/menuSlice';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import titleLogoSmall from '../../../public/svgs/title-logo-small.svg';

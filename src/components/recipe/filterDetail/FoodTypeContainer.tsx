@@ -3,7 +3,6 @@ import FoodType from "./checkbox/FoodType";
 import { setFoodType } from "@/redux/features/foodTypeSlice";
 import { RootState } from "@/redux/store";
 
-
 export default function FoodTypeContainer() {
     const dispatch = useDispatch();
 
