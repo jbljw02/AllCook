@@ -1,6 +1,6 @@
-import { setNutritionVisible, setServings } from "@/redux/features/recipeSlice";
+import { setServings } from "@/redux/features/recipeSlice";
 import { RootState } from "@/redux/store";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const ServingsBox = forwardRef<HTMLDivElement, {}>((props, ref) => {

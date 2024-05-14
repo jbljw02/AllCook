@@ -7,7 +7,7 @@ const folderDeleteRequest = async (email: string, folderIds: number[]) => {
             email: email,
             folderIds: folderIds,
         }
-        const response = await axios.post('/api/deleteFolder', data, {
+        const response = await axios.post('/api/userFavorite/folder/deleteFolder', data, {
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
@@ -17,7 +17,6 @@ const folderDeleteRequest = async (email: string, folderIds: number[]) => {
         return response;
     } catch (error) {
         console.error("폴더 삭제 실패: ", error);
-        throw Error;
     }
 }
 

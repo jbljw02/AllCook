@@ -10,7 +10,7 @@ import FoodTypeContainer from "./FoodTypeContainer";
 import CookWayContainer from "./CookWayContainer";
 import SliderContainer from "./SliderContainer";
 
-export default function FilterDetail() {
+export default function FilterDetail({ setFilterVisible }: { setFilterVisible: React.Dispatch<React.SetStateAction<boolean>> }) {
     const dispatch = useDispatch();
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
@@ -50,6 +50,7 @@ export default function FilterDetail() {
 
         let finalFilteredMenu = searchByRange(filteredMenu, nutritionInfo);
         dispatch(setDisplayedMenu(finalFilteredMenu)); // 최종 분류 결과를 dispatch
+        setFilterVisible(false); // 검색 시도 시 상세 검색 창을 닫음
         dispatch(setCurrentPage(1)); // 화면에 출력되는 메뉴가 변경되었기 때문에 페이지를 초기 상태로 돌림
     }
 
@@ -67,7 +68,7 @@ export default function FilterDetail() {
 
         Object.keys(nutritionInfo).forEach((key: string) => {
             dispatch(setNutritionInfo({ name: key as NutritionKey, values: { min: 0, max: 1000 } }));
-        })
+        });
     }
 
     return (

@@ -2,7 +2,7 @@ import { firestore } from "@/firebase/firebasedb";
 import { doc, getDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 
-// 레시피에 대한 리뷰 및 평점읇 받아옴
+// 레시피에 대한 리뷰 및 평점을 받아옴
 const reciveRecipeOpinion = async (req: NextApiRequest, res: NextApiResponse) => {
     const { RCP_SEQ } = req.body;
 

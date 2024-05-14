@@ -1,11 +1,10 @@
-import { setAllMenu, setDessertMenu } from "@/redux/features/menuSlice";
-import { Menu, RootState, wrapper } from "@/redux/store";
+import { RootState } from "@/redux/store";
+import { Menu } from "@/redux/features/menuSlice";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import ModifyNav from "../favoriteRecipe/ModifyNav";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsCheckedRecipe } from "@/redux/features/favoriteRecipeSlice";
-import { update } from "firebase/database";
 
 type paramsType = {
     menu: Menu[],

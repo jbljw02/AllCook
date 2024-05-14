@@ -17,6 +17,7 @@ const initialState = {
     RCP_SEQ: '',
 }
 
+// 현재 선택된 레시피
 export const recipeSlice = createSlice({
     name: 'recipe',
     initialState: initialState,
@@ -27,6 +28,7 @@ export const recipeSlice = createSlice({
     }
 })
 
+// 몇 인분인지를 관리
 export const servingsSlice = createSlice({
     name: 'servings',
     initialState: 1,
@@ -37,6 +39,7 @@ export const servingsSlice = createSlice({
     }
 })
 
+// 영양성분 박스가 보일지를 관리
 export const nutritionVisibleSlice = createSlice({
     name: 'nutritionVisible',
     initialState: false,

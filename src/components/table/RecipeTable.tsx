@@ -10,6 +10,7 @@ import { setCurrentPage } from "@/redux/features/recipePageSlice";
 export default function RecipeTable() {
     const dispatch = useDispatch();
 
+    const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
 
     const currentPage = useSelector((state: RootState) => state.currentPage);
@@ -69,7 +70,7 @@ export default function RecipeTable() {
         <>
             <div className="menu-section">
                 {
-                    Array.isArray(displayedMenu) ?
+                    displayedMenu.length && allMenu.length ?
                         <table className="menu-table">
                             <tbody>
                                 {

@@ -2,12 +2,10 @@ import Header from "../components/header/Header"
 import Footer from "../components/Footer"
 import Seo from "@/components/Seo"
 import HeaderOnContents from "@/components/header/HeaderOnContents";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import contactImage from "/public/images/contact-img.jpg";
-import ContactInput from "@/components/input/ContactInput";
 import { fetchForm } from "@/utils/nodemailer/fetchForm";
-import Modal from 'react-modal';
 import { addDoc, collection } from "firebase/firestore";
 import fireStore from "@/firebase/firestore";
 import telSvg from '../../public/svgs/tel.svg';
@@ -17,6 +15,8 @@ import PiModal from "@/components/modal/PiModal";
 import SubmitModal from "@/components/modal/SubmitModal";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import PersonalInput from "@/components/contact/PersonalInput";
+import ContactContent from "@/components/contact/ContactContent";
 
 export type Form = {
     id: string,
@@ -171,56 +171,11 @@ export default function Contact() {
                                     <div className="contact-title">메시지를 남겨주세요</div>
                                     <div className="contact-subtitle">All Cook에게 바라는 점, 궁금한 점 등을 작성해주세요 🧑‍🍳</div>
                                 </div>
-                                <div className="personal-info">
-                                    <div className="name-div">
-                                        <ContactInput
-                                            form={formData}
-                                            name="name"
-                                            height="25px"
-                                            placeholder="이름(필수)"
-                                            msgWhether={false}
-                                            onChange={formChange}
-                                        />
-                                        {
-                                            formData.submitted && formData.name === '' ?
-                                                <div className="input-warning">이름을 입력해주세요</div> :
-                                                null
-                                        }
-                                    </div>
-                                    <div className="personal-div">
-                                        <div className="email">
-                                            <ContactInput
-                                                form={formData}
-                                                name="mail"
-                                                height="25px"
-                                                placeholder="이메일(필수)"
-                                                msgWhether={false}
-                                                onChange={formChange}
-                                                emailValid={emailValid}
-                                            />
-                                            {
-                                                formData.submitted && formData.mail === '' ?
-                                                    <div className="input-warning">이메일을 입력해주세요</div> :
-                                                    null
-                                            }
-                                            {
-                                                formData.submitted && formData.mail !== '' && !emailValid ?
-                                                    <div className="input-warning">유효한 이메일을 입력해주세요</div> :
-                                                    null
-                                            }
-                                        </div>
-                                        <div className="tel">
-                                            <ContactInput
-                                                form={formData}
-                                                name="tel"
-                                                height="25px"
-                                                placeholder="연락처(선택)"
-                                                msgWhether={false}
-                                                onChange={formChange}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                                <PersonalInput
+                                    formData={formData}
+                                    emailValid={emailValid}
+                                    formChange={formChange}
+                                />
                                 <div className="checkbox-div">
                                     <input
                                         type="checkbox"
@@ -250,22 +205,10 @@ export default function Contact() {
                             </div>
                             {/* 우측 영역 */}
                             <div className="contact-right">
-                                <div className="msg-div">
-                                    <label className="msg-title">문의내용</label>
-                                    <ContactInput
-                                        form={formData}
-                                        name="content"
-                                        height="190px"
-                                        placeholder=""
-                                        msgWhether={true}
-                                        onChange={formChange}
-                                    />
-                                    {
-                                        formData.submitted && formData.content === '' ?
-                                            <div className="input-warning">문의내용을 입력해주세요</div> :
-                                            null
-                                    }
-                                </div>
+                                <ContactContent
+                                    formData={formData}
+                                    formChange={formChange}
+                                />
                                 <div onClick={formSubmit} className="contact-submit">전송</div>
                             </div>
                         </div>
@@ -299,7 +242,7 @@ export default function Contact() {
                     flex-direction: row;
                     justify-content: center;
                     width: 100%;
-                    margin-top: 300px;
+                    margin-top: 270px;
                     margin-bottom: 300px;
                     color: #002312;
                 }
@@ -334,30 +277,6 @@ export default function Contact() {
                     font-size: 14px;
                     color: #5C5C5C;
                 }
-                .personal-info {
-                    display: flex;
-                    flex-direction: column;
-                    margin-right: 20px;
-                }
-                .name-div {
-                    margin-bottom: 20px;
-                    width: 400px;
-                }               
-                .personal-div {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                    margin-bottom: 20px;
-                }
-                .input-warning {
-                    margin-top: 4px;
-                    margin-left: 1px;
-                    font-size: 11.5px;
-                    color: #FF0000;
-                }
-                .email, .tel {
-                    width: 185px;
-                }
                 .checkbox-div {
                     display: flex;
                     flex-direction: row;
@@ -378,14 +297,6 @@ export default function Contact() {
                 .contact-right {
                     display: flex;
                     flex-direction: column;
-                }
-                .msg-div {
-                    margin-top: 15px;
-                    width: 400px;
-                }
-                .msg-title {
-                    font-size: 15.5px;
-                    margin-left: 2px;
                 }
                 .contact-submit {
                     display: flex;

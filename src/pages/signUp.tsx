@@ -1,7 +1,7 @@
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { auth, firestore } from "@/firebase/firebasedb";
-import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, createUserWithEmailAndPassword, updateProfile, sendEmailVerification, User } from "firebase/auth";
+import { useState } from "react";
+import { auth } from "@/firebase/firebasedb";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/redux/features/userSlice";
@@ -16,7 +16,6 @@ import Seo from "@/components/Seo";
 import googleAuth from "@/utils/auth/googleAuth";
 import sendUserInitialData from "@/utils/auth/sendUserInitialData";
 import FormInput from "@/components/input/FormInput";
-import { admin } from "@/firebase/firebaseAdmin";
 import { GetServerSidePropsContext } from "next";
 import { parseCookies } from "nookies";
 

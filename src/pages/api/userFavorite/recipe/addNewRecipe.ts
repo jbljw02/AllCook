@@ -3,7 +3,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 import { FavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";
 
-// 새로운 레시피를 추가
+// 새로운 관심 레시피를 추가
 const addNewRecipe = async (req: NextApiRequest, res: NextApiResponse) => {
     const { email, id, recipe } = req.body;
 

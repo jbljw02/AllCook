@@ -1,7 +1,6 @@
 import React, { ChangeEvent, FC, useCallback, useEffect, useState, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
-import { NutritionKey, resetNutritionInfo, setNutritionInfo } from '@/redux/features/nutritionSlice';
+import { useDispatch } from 'react-redux';
+import { resetNutritionInfo } from '@/redux/features/nutritionSlice';
 
 interface MultiRangeSliderProps {
     min: number;

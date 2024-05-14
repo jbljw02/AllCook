@@ -1,4 +1,5 @@
-import { Menu, Nutrition } from "@/redux/store";
+import { Menu } from "@/redux/features/menuSlice";
+import { Nutrition } from "@/redux/features/nutritionSlice";
 
 type Key = 'sideDish' | 'specialDish' | 'stew' | 'dessert' | 'steam' | 'boil' | 'grill' | 'stir' | 'fry' | 'etc';
 

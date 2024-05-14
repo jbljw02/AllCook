@@ -1,11 +1,6 @@
 import Link from "next/link";
 import { Anek_Tamil } from 'next/font/google'
 
-const titleFont = Anek_Tamil({
-    subsets: ['latin'],
-    weight: ['100', '200', '300', '400', '500'],
-});
-
 export default function Footer() {
 
     return (
@@ -32,13 +27,6 @@ export default function Footer() {
                                 Home
                             </Link>
                         </div>
-                        {/* <div className='footer-menu-detail'>
-                            <Link
-                                style={{ textDecoration: 'none', color: 'inherit' }}
-                                href={'/about'}>
-                                About
-                            </Link>
-                        </div> */}
                         <div className='footer-menu-detail'>
                             <Link
                                 style={{ textDecoration: 'none', color: 'inherit' }}
@@ -84,7 +72,6 @@ export default function Footer() {
                 .footer-title span {
                     padding-left: 7px;
                     font-size: 12.2px;
-                    {/* font-weight: 300; */}
                 }
                 .recipe-source {
                     font-size: 13px;

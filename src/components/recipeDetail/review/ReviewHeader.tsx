@@ -2,7 +2,6 @@ import { RootState } from "@/redux/store";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-
 export default function ReviewHeader() {
     const recipeOpinion = useSelector((state: RootState) => state.recipeOpinion);
 

@@ -50,7 +50,7 @@ export default function () {
                 email: email,
                 RCP_SEQ: RCP_SEQ,
             }
-            const response = await axios.post('/api/reciveRecipeOpinion', data, {
+            const response = await axios.post('/api/recipeOpinion/reciveRecipeOpinion', data, {
                 headers: {
                     "Content-Type": "application/json",
                     "Accept": "application/json"
@@ -80,7 +80,7 @@ export default function () {
                 rating: rating,
                 RCP_SEQ: recipe.RCP_SEQ,
             }
-            const response = await axios.post('/api/addNewRecipeOpinion', data, {
+            const response = await axios.post('/api/recipeOpinion/addNewRecipeOpinion', data, {
                 headers: {
                     "Content-Type": "application/json",
                     "Accept": "application/json"

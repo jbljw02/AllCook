@@ -1,24 +1,23 @@
 import { AppProps } from 'next/app'
 import { Noto_Sans_KR } from 'next/font/google'
 import { RootState, wrapper } from '@/redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { auth } from '@/firebase/firebasedb';
+import { onAuthStateChanged } from 'firebase/auth';
+import { setUser } from '@/redux/features/userSlice';
+import logout from '@/utils/auth/logout';
+import { useEffect, useRef } from 'react';
+import { setAllMenu, setDisplayedMenu, setDessertMenu, setRecomMenu } from '@/redux/features/menuSlice';
+import filterDessert from '@/utils/filterRecomMenu/filterDessert';
+import shuffleArray from '@/utils/shuffleArray';
+import { setHeaderSlide, setScrollPassContent } from '@/redux/features/scrollSlice';
+import getEmailToken from '@/utils/fetch/getEmailToken';
 import '../styles/global.css'
 import '../styles/menuTable.css'
 import '../styles/scrollStyle.css'
 import '../styles/header.css'
 import '../styles/svgStyle.css'
 import '../styles/modal.css'
-import { useDispatch, useSelector } from 'react-redux';
-import { auth } from '@/firebase/firebasedb';
-import { User, onAuthStateChanged } from 'firebase/auth';
-import { setUser } from '@/redux/features/userSlice';
-import logout from '@/utils/auth/logout';
-import { useEffect, useRef, useState } from 'react';
-import { setAllMenu, setDisplayedMenu, setDessertMenu, setRecomMenu } from '@/redux/features/menuSlice';
-import filterDessert from '@/utils/filterRecomMenu/filterDessert';
-import shuffleArray from '@/utils/shuffleArray';
-import { setHeaderSlide, setScrollPassContent } from '@/redux/features/scrollSlice';
-import axios from 'axios';
-import getEmailToken from '@/utils/fetch/getEmailToken';
 
 const noto = Noto_Sans_KR({
     subsets: ['latin'],
@@ -37,7 +36,7 @@ function App({ Component, pageProps }: AppProps) {
     // Firebase 스토어에 모든 메뉴를 저장
     // useEffect(() => {
     //     (async () => {
-    //         const response = await fetch('/api/fetchRecipe');
+    //         const response = await fetch('/api/allRecipes/fetchRecipe');
     //         console.log("결과 : ", response);
     //     })();
     // }, [])
@@ -92,7 +91,6 @@ function App({ Component, pageProps }: AppProps) {
                         name: user.displayName,
                         email: user.email,
                     }));
-
                     getEmailToken();
                 }
             }
@@ -150,7 +148,7 @@ function App({ Component, pageProps }: AppProps) {
         // 로컬 스토리지에 레시피가 없다면 DB에서 데이터를 요청하고, 로컬 스토리지에 담음
         else {
             console.log("로컬 스토리지에 메뉴 X");
-            const response = await fetch('/api/reciveRecipes');
+            const response = await fetch('/api/allRecipes/reciveRecipes');
             const jsonResponse = await response.json();
             const recipes = await jsonResponse.data;
 

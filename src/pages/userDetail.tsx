@@ -1,5 +1,3 @@
-
-import Footer from "@/components/Footer";
 import Seo from "@/components/Seo";
 import Header from "@/components/header/Header";
 import HeaderOnContents from "@/components/header/HeaderOnContents";
@@ -9,11 +7,11 @@ import { admin } from "@/firebase/firebaseAdmin";
 import { setUser } from "@/redux/features/userSlice";
 import { RootState } from "@/redux/store";
 import logout from "@/utils/auth/logout";
-import { deleteUser, getAuth, updateProfile } from "firebase/auth";
+import { getAuth, updateProfile } from "firebase/auth";
 import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import { parseCookies } from "nookies";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export type UserForm = {
@@ -22,7 +20,7 @@ export type UserForm = {
 }
 
 export default function userDetail() {
-    const dispatch = useDispatch();
+    const dispatㅔㅅch = useDispatch();
     const router = useRouter();
 
     const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);

@@ -6,8 +6,6 @@ import { firestore } from '@/firebase/firebasedb';
 const setUserInitialData = async (req: NextApiRequest, res: NextApiResponse) => {
     const { email, initialFolder } = req.body;
 
-    console.log("이니셜: ", initialFolder);
-
     try {
         const userDocRef = doc(firestore, 'users', email);
         const userDocSnap = await getDoc(userDocRef)

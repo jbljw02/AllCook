@@ -9,8 +9,6 @@ import Image from 'next/image';
 import titleLogoSmall from '../../../public/svgs/title-logo-small.svg';
 import searchSvg from '../../../public/svgs/search.svg'
 import userDark from '../../../public/svgs/user-dark.svg';
-import { signOut } from 'firebase/auth';
-import { auth } from "@/firebase/firebasedb";
 import UserDropdown from './UserDropdown';
 
 export default function Header({ className }: { className: string }) {

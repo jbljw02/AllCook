@@ -8,6 +8,14 @@ const initialState = {
     pro: { min: 0, max: 1000 },  // 단백질
 }
 
+export type Nutrition = {
+    car: { min: number, max: number },  // 탄수화물
+    eng: { min: number, max: number },  // 열량
+    fat: { min: number, max: number },  // 지방
+    na: { min: number, max: number },  // 나트륨
+    pro: { min: number, max: number },  // 단백질
+}
+
 export type NutritionKey = 'car' | 'eng' | 'fat' | 'na' | 'pro';
 
 interface NutritionInfoPayload {

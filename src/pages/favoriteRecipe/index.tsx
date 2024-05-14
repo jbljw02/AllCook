@@ -26,7 +26,7 @@ export default function favoriteRecipe() {
     useEffect(() => {
         (async () => {
             if (user.email) {
-                const response = await axios.post('/api/reciveFavRecipes', {
+                const response = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
                     email: user.email,
                 });
 

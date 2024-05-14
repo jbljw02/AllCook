@@ -1,4 +1,4 @@
-import { Menu } from "@/redux/store";
+import { Menu } from "@/redux/features/menuSlice";
 
 export default function RecipeThumbnail({ recipes, size }: { recipes: Menu[], size: number }) {
     let thumbnailClass = '';
