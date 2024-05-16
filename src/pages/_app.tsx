@@ -6,7 +6,7 @@ import { auth } from '@/firebase/firebasedb';
 import { onAuthStateChanged } from 'firebase/auth';
 import { setUser } from '@/redux/features/userSlice';
 import logout from '@/utils/auth/logout';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { setAllMenu, setDisplayedMenu, setDessertMenu, setRecomMenu } from '@/redux/features/menuSlice';
 import filterDessert from '@/utils/filterRecomMenu/filterDessert';
 import shuffleArray from '@/utils/shuffleArray';
@@ -75,7 +75,7 @@ function App({ Component, pageProps }: AppProps) {
         return () => {
             window.removeEventListener("scroll", checkScrollLocation);
         };
-    }, [scrollPassContent]);
+    }, [scrollPassContent, dispatch]);
 
     // 사용자의 로그인 상태가 변경될 때마다 실행
     useEffect(() => {
@@ -92,7 +92,7 @@ function App({ Component, pageProps }: AppProps) {
                 }
             }
         });
-    }, []);
+    }, [dispatch]);
 
     // 사용자의 이메일 인증 여부를 체크
     useEffect(() => {
@@ -117,7 +117,7 @@ function App({ Component, pageProps }: AppProps) {
     }, []);
 
     // DB에 매번 요청을 보내지 않고, 접속 이력이 있는 사용자는 로컬 스토리지에서 값을 가져오도록 함
-    const reciveRecipes = async () => {
+    const reciveRecipes = useCallback(async () => {
         const cachedRecipes = localStorage.getItem('recipes');
         const recipes = JSON.parse(cachedRecipes as string);
 
@@ -155,11 +155,11 @@ function App({ Component, pageProps }: AppProps) {
 
             localStorage.setItem('recipes', JSON.stringify(recipes));
         }
-    }
+    }, [])
 
     useEffect(() => {
         reciveRecipes();
-    }, []);
+    }, [reciveRecipes]);
 
     return (
         <>

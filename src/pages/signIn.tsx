@@ -25,7 +25,7 @@ export type loginForm = {
     submitted: boolean,
 }
 
-export default function login() {
+export default function Login() {
     const dispatch = useDispatch();
     const router = useRouter();
 

@@ -12,7 +12,7 @@ export default function Footer() {
                         <span>세상의 모든 레시피</span>
                     </div>
                     <div className='recipe-source'>
-                        All Cook에서 제공하는 모든 레시피는 식품의약품안전처에서 제공하는 '조리식품의 레시피 DB'를 따릅니다. <br />
+                        All Cook에서 제공하는 모든 레시피는 식품의약품안전처에서 제공하는 조리식품의 레시피 DB를 따릅니다. <br />
                         본 서비스는 상업적인 이익을 추구하지 않습니다.
                     </div>
                 </div>

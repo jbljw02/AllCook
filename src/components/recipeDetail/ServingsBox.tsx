@@ -100,4 +100,6 @@ const ServingsBox = forwardRef<HTMLDivElement, {}>((props, ref) => {
     )
 });
 
+ServingsBox.displayName = 'ServingsBox';
+
 export default ServingsBox;

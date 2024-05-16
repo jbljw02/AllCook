@@ -28,7 +28,7 @@ export type signUpForm = {
     submitted: boolean,
 }
 
-export default function login() {
+export default function SignUp() {
     const dispatch = useDispatch();
     const router = useRouter();
 

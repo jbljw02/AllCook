@@ -19,7 +19,7 @@ export type UserForm = {
     submitted: boolean,
 }
 
-export default function userDetail() {
+export default function UserDetail() {
     const dispatch = useDispatch();
     const router = useRouter();
 
@@ -95,10 +95,10 @@ export default function userDetail() {
     const [withdrawlOk, setWithdrawlOk] = useState<boolean>(false);
 
     useEffect(() => {
-        setFormData({
-            ...formData,
+        setFormData(prevFormData => ({
+            ...prevFormData,
             name: user.name,
-        });
+        }));
     }, [user.name]);
 
     return (

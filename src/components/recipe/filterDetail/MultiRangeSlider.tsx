@@ -20,7 +20,7 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange 
 
     useEffect(() => {
         dispatch(resetNutritionInfo());
-    }, []);
+    }, [dispatch]);
 
     // 퍼센테이지로 변경
     const getPercent = useCallback((value: number) =>
@@ -35,7 +35,7 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange 
             range.current.style.left = `${minPercent}%`;
             range.current.style.width = `${maxPercent - minPercent}%`;
         }
-    }, [minVal, min, max]);
+    }, [minVal, min, max, getPercent]);
 
     // 범위의 너비를 오른쪽에서 줄이도록 설정
     useEffect(() => {
@@ -45,7 +45,7 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({ min, max, unit, onChange 
         if (range.current) {
             range.current.style.width = `${maxPercent - minPercent}%`;
         }
-    }, [maxVal, min, max]);
+    }, [maxVal, min, max, getPercent]);
 
     // 최소값을 설정
     const minValChange = (event: ChangeEvent<HTMLInputElement>) => {

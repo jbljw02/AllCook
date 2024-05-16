@@ -2,10 +2,10 @@ import { setRecipeOpinion } from "@/redux/features/recipeOpinionSlice";
 import { RootState } from "@/redux/store";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useState, ChangeEvent, useEffect } from "react";
+import { useState, ChangeEvent, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function () {
+export default function ReviewTextArea() {
     const dispatch = useDispatch();
     const router = useRouter();
 
@@ -43,7 +43,7 @@ export default function () {
     }
 
     // 레시피에 대한 댓글 정보를 받음
-    const reciveRecipeOpinion = async (email: string, RCP_SEQ: string) => {
+    const reciveRecipeOpinion = useCallback(async (email: string, RCP_SEQ: string) => {
         try {
             const data = {
                 email: email,
@@ -67,7 +67,7 @@ export default function () {
         } catch (error) {
             throw error;
         }
-    }
+    }, [user, recipe]);
 
     // 레시피에 대한 댓글 및 평점을 업데이트
     const sendNewRecipeOpinion = async () => {
@@ -123,7 +123,7 @@ export default function () {
         if (user && user.email) {
             reciveRecipeOpinion(user.email, recipe.RCP_SEQ);
         }
-    }, [user, recipe]);
+    }, [user, recipe, reciveRecipeOpinion]);
 
     return (
         <>

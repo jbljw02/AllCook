@@ -35,7 +35,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                 dispatch(setFavoriteRecipe(favRecipeFromStore));
             }
         })();
-    }, [user]);
+    }, [user, dispatch]);
 
     // 폴더 내에 동일한 레시피가 존재하는지 판별
     const isDuplicatedRecipe = (id: number) => {

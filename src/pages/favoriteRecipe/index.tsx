@@ -14,7 +14,7 @@ import { GetServerSidePropsContext } from "next";
 import { parseCookies } from "nookies";
 import { admin } from "@/firebase/firebaseAdmin";
 
-export default function favoriteRecipe() {
+export default function FavoriteRecipe() {
     const dispatch = useDispatch();
 
     const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
@@ -34,7 +34,7 @@ export default function favoriteRecipe() {
                 dispatch(setFavoriteRecipe(favRecipeFromStore));
             }
         })();
-    }, [user]);
+    }, [user, dispatch]);
 
     const isFavFolderDelete = useSelector((state: RootState) => state.isFavFolderDelete);
 

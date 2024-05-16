@@ -31,7 +31,7 @@ export default function EmailVerifyModal({ isSubmitted, setIsSubmitted, name }: 
                 email: user.email,
             }));
         }
-    }, [name, user])
+    }, [name, user, dispatch]);
 
     const [isVerify, setIsVerify] = useState<boolean>(true); // 이메일이 인증됐는지
     const [isVibrate, setIsVibrate] = useState<boolean>(false); // 진동 효과를 줄지
@@ -115,20 +115,24 @@ export default function EmailVerifyModal({ isSubmitted, setIsSubmitted, name }: 
                     isVerify ?
                         <div className="pop-up-subtitle-section">
                             메일 본문에 있는 인증 절차를 마치시면 계정이 활성화됩니다. <br />
-                            완료하셨다면 '확인'을 클릭해주시고, 메일을 받지 못하셨다면 '재전송'을 클릭해주세요.
+                            {"완료하셨다면 '확인'을 클릭해주시고, 메일을 받지 못하셨다면 '재전송'을 클릭해주세요."}
                         </div> :
                         <div className='pop-up-subtitle-section' style={{ color: '#111111' }}>
                             메일 본문에 있는 인증 절차를 마치시면 계정이 활성화됩니다. <br />
-                            메일을 받지 못하셨다면 '재전송'을 클릭해주시고, 그럼에도 받지 못하셨다면 스팸 메일함을 확인해주세요.
+                            {"메일을 받지 못하셨다면 '재전송'을 클릭해주시고, 그럼에도 받지 못하셨다면 스팸 메일함을 확인해주세요."}
                         </div>
                 }
                 <div className="pop-up-btn-section">
                     <div
                         className={`${isVibrate ? 'read-btn vibrate' : 'read-btn'}`}
-                        onClick={accountActivate}>확인</div>
+                        onClick={accountActivate}>
+                        확인
+                    </div>
                     <div
                         className="close-btn"
-                        onClick={resendMail}>재전송</div>
+                        onClick={resendMail}>
+                        재전송
+                    </div>
                 </div>
             </div>
         </Modal>

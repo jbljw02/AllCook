@@ -2,7 +2,7 @@ import { RootState } from "@/redux/store";
 import React from "react";
 import { useSelector } from "react-redux";
 
-export default function () {
+export default function ReviewComments() {
     const user = useSelector((state: RootState) => state.user);
     const recipeOpinion = useSelector((state: RootState) => state.recipeOpinion);
 

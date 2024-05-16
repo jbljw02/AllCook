@@ -2,7 +2,7 @@ import Header from "../../components/header/Header";
 import HeaderOnContents from '../../components/header/HeaderOnContents';
 import Footer from '../../components/Footer';
 import Seo from "../../components/Seo";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { RootState } from "../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { filterIngredString } from "@/utils/filterManual/filterIngredString";
@@ -39,7 +39,7 @@ export default function RecipeDetail() {
         else {
             localStorage.setItem('selectedRecipe', JSON.stringify(recipe));
         }
-    }, [recipe])
+    }, [recipe, dispatch]);
 
     // 레시피의 재료를 설정하고 조정
     useEffect(() => {
@@ -70,7 +70,7 @@ export default function RecipeDetail() {
         return () => {
             document.removeEventListener("mousedown", nutritionOutsideClick);
         }
-    }, [nutritionRef]);
+    }, [nutritionRef, dispatch]);
 
     const recipeAddModal = useSelector((state: RootState) => state.recipeAddModal);
     const addedRecipeInfo = useSelector((state: RootState) => state.addedRecipeInfo);
@@ -78,7 +78,7 @@ export default function RecipeDetail() {
     const recipeMoveModal = useSelector((state: RootState) => state.recipeMoveModal);
 
     // 레시피 추가 완료 팝업을 관리
-    const handleCompletePopUp = () => {
+    const handleCompletePopUp = useCallback(() => {
         // 레시피 추가 정보가 존재하는 경우에만 팝업 띄우도록
         if (addedRecipeInfo.folderId !== null) {
             setIsShowPopUp(true);
@@ -93,11 +93,11 @@ export default function RecipeDetail() {
                 setIsShowPopUp(false);
             }, 4000);
         }
-    }
+    }, [addedRecipeInfo, recipeMoveModal]);
 
     useEffect(() => {
         handleCompletePopUp();
-    }, [addedRecipeInfo, recipeMoveModal]);
+    }, [addedRecipeInfo, recipeMoveModal, handleCompletePopUp]);
 
     // 컴포넌트가 마운트 되기 전, 혹시 팝업이 열려있을 수 있으니 닫음
     useEffect(() => {

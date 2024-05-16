@@ -48,7 +48,8 @@ export default function SortList() {
             dispatch(setDisplayedMenu(newDisplayedMenu));
             dispatch(setCurrentPage(1));
         }
-    }, [sortRule])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sortRule]);
 
     return (
         <>
@@ -62,9 +63,10 @@ export default function SortList() {
                     isSortClicked &&
                     <>
                         {
-                            sortArray.map(item => {
+                            sortArray.map((item, index) => {
                                 return (
                                     <div
+                                        key={index}
                                         onClick={() => {
                                             dispatch(setSortRule(item));
                                             setIsSortClicked(false);

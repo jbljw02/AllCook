@@ -1,5 +1,5 @@
 import { RootState } from "@/redux/store";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function ReviewHeader() {
@@ -7,7 +7,7 @@ export default function ReviewHeader() {
 
     const [ratingAvg, setRatingAvg] = useState<number>(0);
 
-    const calReviewAvg = () => {
+    const calReviewAvg = useCallback(() => {
         // 리뷰가 존재하지 않는다면 0으로 지정
         if (recipeOpinion.length === 0) {
             setRatingAvg(0);
@@ -20,7 +20,7 @@ export default function ReviewHeader() {
             let avg = Number((ratingSum / recipeOpinion.length).toFixed(1));
             setRatingAvg(avg);
         }
-    }
+    }, [recipeOpinion]);
 
     useEffect(() => {
         calReviewAvg();
