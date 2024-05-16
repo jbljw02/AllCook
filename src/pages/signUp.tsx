@@ -281,8 +281,8 @@ export default function login() {
                                     ''}`}
                                 style={{ borderColor: nameFocusStyle.borderColor }}>
                                 <svg className="name-svg" xmlns="http://www.w3.org/2000/svg" width="23px" height="20px" viewBox="0 0 24 24" fill="none">
-                                    <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" stroke={nameFocusStyle.stroke} stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                    <path d="M20.5899 22C20.5899 18.13 16.7399 15 11.9999 15C7.25991 15 3.40991 18.13 3.40991 22" stroke={nameFocusStyle.stroke} stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" stroke={nameFocusStyle.stroke} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M20.5899 22C20.5899 18.13 16.7399 15 11.9999 15C7.25991 15 3.40991 18.13 3.40991 22" stroke={nameFocusStyle.stroke} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                                 <FormInput
                                     type="text"
@@ -308,7 +308,7 @@ export default function login() {
                                     : ''}`}
                                 style={{ borderColor: emailFocusStyle.borderColor }}>
                                 <svg className="email-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 29" width="30" height="29">
-                                    <path fill={emailFocusStyle.fill} fill-rule="evenodd" d="M7 7a2.5 2.5 0 0 0-2.5 2.5v9A2.5 2.5 0 0 0 7 21h15a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 22 7H7ZM5.5 9.5C5.5 8.67 6.17 8 7 8h15c.83 0 1.5.67 1.5 1.5v.17l-9 3.79-9-3.8V9.5Zm0 1.25v7.75c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-7.75l-8.8 3.71-.2.08-.2-.08-8.8-3.7Z"></path>
+                                    <path fill={emailFocusStyle.fill} fillRule="evenodd" d="M7 7a2.5 2.5 0 0 0-2.5 2.5v9A2.5 2.5 0 0 0 7 21h15a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 22 7H7ZM5.5 9.5C5.5 8.67 6.17 8 7 8h15c.83 0 1.5.67 1.5 1.5v.17l-9 3.79-9-3.8V9.5Zm0 1.25v7.75c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-7.75l-8.8 3.71-.2.08-.2-.08-8.8-3.7Z"></path>
                                 </svg>
                                 <FormInput
                                     type="text"
@@ -343,8 +343,8 @@ export default function login() {
                                     ''}`}
                                 style={{ borderColor: pwdFocusStyle.borderColor }}>
                                 <svg className="password-svg" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 30 29" fill="none">
-                                    <rect x="3" y="11" width="18" height="11" rx="2" stroke={pwdFocusStyle.stroke} stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                    <path d="M7 10.9999V6.99988C7 4.23845 9.23858 1.99988 12 1.99988V1.99988C14.7614 1.99988 17 4.23845 17 6.99988V10.9999" stroke={pwdFocusStyle.stroke} stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                    <rect x="3" y="11" width="18" height="11" rx="2" stroke={pwdFocusStyle.stroke} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M7 10.9999V6.99988C7 4.23845 9.23858 1.99988 12 1.99988V1.99988C14.7614 1.99988 17 4.23845 17 6.99988V10.9999" stroke={pwdFocusStyle.stroke} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                                 <FormInput
                                     type="password"
@@ -376,8 +376,8 @@ export default function login() {
                                     ''}`}
                                 style={{ borderColor: pwdDoubleFocusStyle.borderColor }}>
                                 <svg className="password-svg" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 30 29" fill="none">
-                                    <rect x="3" y="11" width="18" height="11" rx="2" stroke={pwdDoubleFocusStyle.stroke} stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                    <path d="M7 10.9999V6.99988C7 4.23845 9.23858 1.99988 12 1.99988V1.99988C14.7614 1.99988 17 4.23845 17 6.99988V10.9999" stroke={pwdDoubleFocusStyle.stroke} stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                    <rect x="3" y="11" width="18" height="11" rx="2" stroke={pwdDoubleFocusStyle.stroke} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M7 10.9999V6.99988C7 4.23845 9.23858 1.99988 12 1.99988V1.99988C14.7614 1.99988 17 4.23845 17 6.99988V10.9999" stroke={pwdDoubleFocusStyle.stroke} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                                 <FormInput
                                     type="password"

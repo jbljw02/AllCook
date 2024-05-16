@@ -11,7 +11,7 @@ export default function RecipeImg() {
     const saveRecipe = () => {
         dispatch(setRecipeAddModal(true));
     }
-    
+
     return (
         <>
             <div className="recipe-img-section">
@@ -20,7 +20,7 @@ export default function RecipeImg() {
                     onClick={saveRecipe}>
                     <div className="recipe-button">
                         <svg className="bookmark-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="m15 16-5-3.333L5 16V5.333c0-.353.15-.692.418-.942S6.05 4 6.428 4h7.143c.38 0 .743.14 1.01.39.269.25.419.59.419.943V16z" />
+                            <path stroke="#000000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" d="m15 16-5-3.333L5 16V5.333c0-.353.15-.692.418-.942S6.05 4 6.428 4h7.143c.38 0 .743.14 1.01.39.269.25.419.59.419.943V16z" />
                         </svg>
                         <span>저장</span>
                     </div>
@@ -33,6 +33,7 @@ export default function RecipeImg() {
                     width={320}
                     height={320}
                     alt={''}
+                    priority
                 />
             </div>
             <style jsx>{`

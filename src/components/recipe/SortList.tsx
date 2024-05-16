@@ -55,7 +55,7 @@ export default function SortList() {
             <div className={`${!isSortClicked ? 'dropdown-hover' : 'dropdown'} no-drag`}>
                 <div onClick={() => setIsSortClicked(!isSortClicked)} className={`${!isSortClicked ? 'dropdown-title' : 'dropdown-title open'}`}>
                     <span>{sortRule}</span>
-                    <svg className={`${isSortClicked ? 'rotate-clockwise' : ''} sort-svg`} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m9 4.5-3 3-3-3" stroke="currentColor" stroke-linecap="round"></path>
+                    <svg className={`${isSortClicked ? 'rotate-clockwise' : ''} sort-svg`} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m9 4.5-3 3-3-3" stroke="currentColor" strokeLinecap="round"></path>
                     </svg>
                 </div>
                 {

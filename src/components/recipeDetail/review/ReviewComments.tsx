@@ -1,4 +1,5 @@
 import { RootState } from "@/redux/store";
+import React from "react";
 import { useSelector } from "react-redux";
 
 export default function () {
@@ -10,7 +11,7 @@ export default function () {
             {
                 recipeOpinion.map((item) => {
                     return (
-                        <>
+                        <React.Fragment key={item.RCP_SEQ}>
                             <div className='review-comments-div'>
                                 <div className="comment-contents-header">
                                     <div className="user-info">
@@ -24,14 +25,16 @@ export default function () {
                                     <div className="star-div">
                                         {
                                             Array.from({ length: 5 }, (_, index) => (
-                                                <div className="star">
+                                                <div
+                                                    key={index}
+                                                    className="star">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="17px" height="17px" fill="none" viewBox="0 0 12 12">
                                                         <path
                                                             fill={index < item.rating ? '#fec061' : '#ffffff'}
                                                             stroke="#fec061"
-                                                            stroke-width="0.7"
-                                                            stroke-linecap="round"
-                                                            stroke-linejoin="round"
+                                                            strokeWidth="0.7"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
                                                             d="m6 1 1.545 3.13 3.456.505L8.5 7.07l.59 3.44L6 8.885 2.91 10.51l.59-3.44L1 4.635l3.454-.505L6 1z">
                                                         </path>
                                                     </svg>
@@ -43,64 +46,64 @@ export default function () {
                                 </div>
                                 <div className="review-comment">{item.comment}</div>
                             </div>
-                            <style jsx>{`
-                                .review-comments-div {
-                                    display: flex;
-                                    flex-direction: column;
-                                    border-radius: 5px;
-                                    font-size: 15px;
-                                    padding: 20px 10px 40px 10px;
-                                    margin-top: 20px;
-                                    border-bottom: 1px solid #e8e8e8;
-                                }
-                                .no-comments {
-                                    border-bottom: none;
-                                    padding-bottom: 0px;
-                                }
-                                .review-comments-div:last-child {
-                                    {/* border-bottom: none; */}
-                                }
-                                .comment-contents-header {
-                                    display: flex;
-                                    flex-direction: row;
-                                    justify-content: space-between;
-                                    align-items: center;
-                                }
-                                .user-info {
-                                    display: flex;
-                                    flex-direction: row;
-                                }
-                                .user-svg {
-                                    bottom: 2px;
-                                }
-                                .user-name {
-                                    margin-left: 30px;
-                                    font-size: 17px;
-                                }
-                                .star-div {
-                                    display: flex;
-                                    flex-direction: row;
-                                    margin-left: 17px;
-                                    margin-top: 3px;
-                                }
-                                .star {
-                                    margin-top: 1px;
-                                }
-                                .review-score {
-                                    font-size: 14px;
-                                    margin-left: 5px;
-                                }
-                                .review-comment {
-                                    margin-top: 8px;
-                                    margin-left: 37px;
-                                    font-weight: 300;
-                                    font-size: 15px;
-                                }   
-                            `}</style>
-                        </>
+                        </React.Fragment>
                     )
                 })
             }
+            <style jsx>{`
+                .review-comments-div {
+                    display: flex;
+                    flex-direction: column;
+                    border-radius: 5px;
+                    font-size: 15px;
+                    padding: 20px 10px 40px 10px;
+                    margin-top: 20px;
+                    border-bottom: 1px solid #e8e8e8;
+                }
+                .no-comments {
+                    border-bottom: none;
+                    padding-bottom: 0px;
+                }
+                .review-comments-div:last-child {
+                    {/* border-bottom: none; */}
+                }
+                .comment-contents-header {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                .user-info {
+                    display: flex;
+                    flex-direction: row;
+                }
+                .user-svg {
+                    bottom: 2px;
+                }
+                .user-name {
+                    margin-left: 30px;
+                    font-size: 17px;
+                }
+                .star-div {
+                    display: flex;
+                    flex-direction: row;
+                    margin-left: 17px;
+                    margin-top: 3px;
+                }
+                .star {
+                    margin-top: 1px;
+                }
+                .review-score {
+                    font-size: 14px;
+                    margin-left: 5px;
+                }
+                .review-comment {
+                    margin-top: 8px;
+                    margin-left: 37px;
+                    font-weight: 300;
+                    font-size: 15px;
+                }   
+            `}</style>
         </>
     )
 }

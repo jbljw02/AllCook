@@ -155,7 +155,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                                             viewBox="0 0 12 12"
                                             fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path d="m9 4.5-3 3-3-3" stroke="currentColor" stroke-linecap="round"></path>
+                                            <path d="m9 4.5-3 3-3-3" stroke="currentColor" strokeLinecap="round"></path>
                                         </svg>
                                     </>
                             }

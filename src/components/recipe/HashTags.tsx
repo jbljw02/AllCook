@@ -33,9 +33,14 @@ export default function HashTags() {
             <div className="hash-tag-div">
 
                 {
-                    recomHashTags && recomHashTags.map((item) => {
+                    recomHashTags && recomHashTags.map((item, index) => {
                         return (
-                            <span onClick={() => searchByHashTag(item)} className="no-drag">{item}</span>
+                            <span
+                                key={index}
+                                onClick={() => searchByHashTag(item)}
+                                className="no-drag">
+                                {item}
+                            </span>
                         )
                     })
                 }

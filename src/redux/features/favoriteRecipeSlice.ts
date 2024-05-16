@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Menu, RootState } from "../store";
+import { Menu } from "./menuSlice";
 
 export type FavoriteRecipe = {
     folderId: number,

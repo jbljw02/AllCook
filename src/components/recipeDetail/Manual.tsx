@@ -37,7 +37,9 @@ export default function Manual() {
             {
                 recipeManual.map((item, index) => {
                     return (
-                        <div className="manual-main">
+                        <div
+                            key={index}
+                            className="manual-main">
                             <div className="manual-index">0{index + 1}/0{recipeManual.length}</div>
                             <div className="manual-detail">{item.replace(/[a-zA-Z]$/, '')}</div>
                         </div>

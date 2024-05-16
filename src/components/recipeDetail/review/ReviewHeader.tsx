@@ -45,8 +45,8 @@ export default function ReviewHeader() {
                                         // 각 별에 대한 선형 그라데이션 정의. x2만 100%로 채움으로써 오른쪽으로 채워지도록 함
                                         <linearGradient id={`partialFill${index}`} x1="0" x2="100%" y1="0" y2="0" key={index}>
                                             {/* stop은 색상의 전환점을 정의. 첫번째 stop은 별이 채워질 부분, 두번째 stop은 비울 부분 */}
-                                            <stop offset={`${fillPercentage}%`} stop-color="#fec061" />
-                                            <stop offset={`${fillPercentage}%`} stop-color="#ffffff" />
+                                            <stop offset={`${fillPercentage}%`} stopColor="#fec061" />
+                                            <stop offset={`${fillPercentage}%`} stopColor="#ffffff" />
                                         </linearGradient>
                                     );
                                 })
@@ -59,9 +59,9 @@ export default function ReviewHeader() {
                                     // 만약 평균 평점이 3이라면, 0~2번째 index(3번째 별까지)는 일단 완전히 채우고, 그 뒤 별의 퍼센테이지를 계산 
                                     fill={index < Math.floor(ratingAvg) ? '#fec061' : `url(#partialFill${index})`}
                                     stroke="#fec061"
-                                    stroke-width="0.7"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
+                                    strokeWidth="0.7"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
                                     d="m6 1 1.545 3.13 3.456.505L8.5 7.07l.59 3.44L6 8.885 2.91 10.51l.59-3.44L1 4.635l3.454-.505L6 1z"
                                     transform={`translate(${12 * index}, 0)`}
                                 />
