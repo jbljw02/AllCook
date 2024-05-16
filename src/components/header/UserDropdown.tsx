@@ -30,7 +30,7 @@ export default function UserDropdown({ category }: { category: string }) {
                     className='user-detail-div'
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
-                    onClick={() => router.push('/favoriteRecipe')}>
+                    onClick={() => router.push('/folder')}>
                     <svg className="bookmark svg" xmlns="http://www.w3.org/2000/svg" width="17px" height="17px" fill="none" viewBox="0 0 17.5 17.5">
                         <path stroke="#000000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m15 16-5-3.333L5 16V5.333c0-.353.15-.692.418-.942S6.05 4 6.428 4h7.143c.38 0 .743.14 1.01.39.269.25.419.59.419.943V16z" />
                     </svg>

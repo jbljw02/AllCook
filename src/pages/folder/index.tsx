@@ -14,7 +14,7 @@ import { GetServerSidePropsContext } from "next";
 import { parseCookies } from "nookies";
 import { admin } from "@/firebase/firebaseAdmin";
 
-export default function FavoriteRecipe() {
+export default function Folder() {
     const dispatch = useDispatch();
 
     const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
