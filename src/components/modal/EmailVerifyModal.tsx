@@ -115,11 +115,11 @@ export default function EmailVerifyModal({ isSubmitted, setIsSubmitted, name }: 
                     isVerify ?
                         <div className="pop-up-subtitle-section">
                             메일 본문에 있는 인증 절차를 마치시면 계정이 활성화됩니다. <br />
-                            {"완료하셨다면 '확인'을 클릭해주시고, 메일을 받지 못하셨다면 '재전송'을 클릭해주세요."}
+                            완료하셨다면 &apos;확인&apos;을 클릭해주시고, 메일을 받지 못하셨다면 &apos;재전송&apos;을 클릭해주세요.
                         </div> :
                         <div className='pop-up-subtitle-section' style={{ color: '#111111' }}>
                             메일 본문에 있는 인증 절차를 마치시면 계정이 활성화됩니다. <br />
-                            {"메일을 받지 못하셨다면 '재전송'을 클릭해주시고, 그럼에도 받지 못하셨다면 스팸 메일함을 확인해주세요."}
+                            메일을 받지 못하셨다면 &apos;재전송&apos;을 클릭해주시고, 그럼에도 받지 못하셨다면 스팸 메일함을 확인해주세요.
                         </div>
                 }
                 <div className="pop-up-btn-section">
