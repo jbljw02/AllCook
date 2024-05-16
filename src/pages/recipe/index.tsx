@@ -30,7 +30,7 @@ export default function Recipe() {
             dispatch(setDisplayedMenu(allMenu));
         }
         sessionStorage.removeItem('navigated');
-    }, [allMenu])
+    }, [allMenu, dispatch]);
 
     const [filterVisible, setFilterVisible] = useState<boolean>(false);  // '상세검색' 클릭 시 띄워지는 창을 관리하기 위한 state
     const filterRef = useRef<HTMLDivElement | null>(null);

@@ -6,6 +6,7 @@ import moveToDetail from "@/utils/moveToDetail";
 import { setRecipe } from "@/redux/features/recipeSlice";
 import SkeletonUI from "../Skeleton";
 import { setCurrentPage } from "@/redux/features/recipePageSlice";
+import React from "react";
 
 export default function RecipeTable() {
     const dispatch = useDispatch();
@@ -88,38 +89,40 @@ export default function RecipeTable() {
                                         const items = menuPerPage.slice(index * 4, index * 4 + 4);
                                         const hoverState = isHovered;
                                         return (
-                                            <tr>
+                                            <tr key={index}>
                                                 {
                                                     items.map((item, localIndex) => {
                                                         // 단순 index를 사용하면 현재 tr 내부로 제한되기 때문에, 페이지 전체의 인덱스를 계산해서 사용
                                                         const globalIndex = startIndex + index * 4 + localIndex;
                                                         return (
-                                                            <td>
-                                                                <div>
-                                                                    <div
-                                                                        onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)}
-                                                                        className="td-content">
-                                                                        <Image
-                                                                            src={`${item.ATT_FILE_NO_MK}`}
-                                                                            style={{
-                                                                                borderRadius: 8,
-                                                                                cursor: 'pointer',
-                                                                                transition: 'transform 0.3s ease',
-                                                                                transform: hoverState[globalIndex] ?
-                                                                                    'scale(1.05)' :
-                                                                                    'scale(1)'
-                                                                            }}
-                                                                            width={250}
-                                                                            height={250}
-                                                                            alt={''}
-                                                                            onMouseEnter={() => imgMouseEnter(globalIndex)}
-                                                                            onMouseLeave={() => imgMouseOut(globalIndex)}
-                                                                        />
+                                                            <React.Fragment key={localIndex}>
+                                                                <td>
+                                                                    <div>
+                                                                        <div
+                                                                            onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)}
+                                                                            className="td-content">
+                                                                            <Image
+                                                                                src={`${item.ATT_FILE_NO_MK}`}
+                                                                                style={{
+                                                                                    borderRadius: 8,
+                                                                                    cursor: 'pointer',
+                                                                                    transition: 'transform 0.3s ease',
+                                                                                    transform: hoverState[globalIndex] ?
+                                                                                        'scale(1.05)' :
+                                                                                        'scale(1)'
+                                                                                }}
+                                                                                width={250}
+                                                                                height={250}
+                                                                                alt={''}
+                                                                                onMouseEnter={() => imgMouseEnter(globalIndex)}
+                                                                                onMouseLeave={() => imgMouseOut(globalIndex)}
+                                                                            />
+                                                                        </div>
+                                                                        <div className='RCP_NM'>{item.RCP_NM}</div>
+                                                                        <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
                                                                     </div>
-                                                                    <div className='RCP_NM'>{item.RCP_NM}</div>
-                                                                    <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
-                                                                </div>
-                                                            </td>
+                                                                </td>
+                                                            </React.Fragment>
                                                         )
                                                     })
                                                 }
@@ -138,12 +141,12 @@ export default function RecipeTable() {
                     currentPage !== 1 ?
                         <span
                             onClick={() => movePage('down')}>
-                            <svg className="movePage-svg left" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke={currentPage === 1 ? '#E8EBEE' : 'currentColor'} stroke-linecap="round" stroke-width="1.4" d="m6 12 4-4-4-4"></path>
+                            <svg className="movePage-svg left" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke={currentPage === 1 ? '#E8EBEE' : 'currentColor'} strokeLinecap="round" strokeWidth="1.4" d="m6 12 4-4-4-4"></path>
                             </svg>
                         </span> :
                         <span
                             id="no-movePage-span">
-                            <svg className="no-movePage-svg left" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke={currentPage === 1 ? '#E8EBEE' : 'currentColor'} stroke-linecap="round" stroke-width="1.4" d="m6 12 4-4-4-4"></path>
+                            <svg className="no-movePage-svg left" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke={currentPage === 1 ? '#E8EBEE' : 'currentColor'} strokeLinecap="round" strokeWidth="1.4" d="m6 12 4-4-4-4"></path>
                             </svg>
                         </span>
                 }
@@ -158,11 +161,17 @@ export default function RecipeTable() {
                             return (
                                 pageNumber === currentPage ?
                                     <span
+                                        key={pageNumber}
                                         onClick={() => dispatch(setCurrentPage((pageNumber)))}
                                         style={{ backgroundColor: '#002312', color: '#ffffff' }}>
                                         {pageNumber}
                                     </span> :
-                                    <span className="pagination-hover" onClick={() => dispatch(setCurrentPage((pageNumber)))}>{pageNumber}</span>
+                                    <span
+                                        key={pageNumber}
+                                        className="pagination-hover"
+                                        onClick={() => dispatch(setCurrentPage((pageNumber)))}>
+                                        {pageNumber}
+                                    </span>
                             )
                         })
                 }
@@ -177,8 +186,8 @@ export default function RecipeTable() {
                                 fill="none" viewBox="0 0 16 16">
                                 <path
                                     stroke={currentPage === Math.ceil(displayedMenu.length / tdPerPage) ? '#E8EBEE' : 'currentColor'}
-                                    stroke-linecap="round"
-                                    stroke-width="1.4" d="m6 12 4-4-4-4">
+                                    strokeLinecap="round"
+                                    strokeWidth="1.4" d="m6 12 4-4-4-4">
                                 </path>
                             </svg>
                         </span> :
@@ -190,8 +199,8 @@ export default function RecipeTable() {
                                 fill="none" viewBox="0 0 16 16">
                                 <path
                                     stroke={currentPage === Math.ceil(displayedMenu.length / tdPerPage) ? '#E8EBEE' : 'currentColor'}
-                                    stroke-linecap="round"
-                                    stroke-width="1.4"
+                                    strokeLinecap="round"
+                                    strokeWidth="1.4"
                                     d="m6 12 4-4-4-4">
                                 </path>
                             </svg>

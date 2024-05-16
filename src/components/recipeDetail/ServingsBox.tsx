@@ -26,17 +26,20 @@ const ServingsBox = forwardRef<HTMLDivElement, {}>((props, ref) => {
                 onMouseLeave={() => setInputHover(!inputHover)}
                 className="per-person-box"
                 ref={ref}>
-                <input value={servings}></input>
+                <input 
+                type="text"
+                value={servings}
+                readOnly />
                 <span className={`${!inputHover ? "" : 'visible'} cal-svg`}>
                     <svg onClick={() => { calculateServings('plus') }} className="minus" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
-                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                             <g id="Desktop-1920-/-1080" stroke="#111111">
                                 <g id="qty" transform="translate(3.000000, 5.000000)">
                                     <polyline id="Rectangle-3-Copy" transform="translate(5.000000, 5.000000) rotate(-225.000000) translate(-5.000000, -5.000000) " points="8 8 2 8 2 2" /></g>
                             </g></g>
                     </svg>
                     <svg onClick={() => { calculateServings('minus') }} className="plus" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
-                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                             <g id="Desktop-1920-/-1080" stroke={`${servings === 1 ? '#c3c3c3' : '#111111'}`}>
                                 <g id="qty" transform="translate(8.000000, 6.000000) rotate(-180.000000) translate(-8.000000, -6.000000) translate(3.000000, 1.000000)">
                                     <polyline id="Rectangle-3-Copy" transform="translate(5.000000, 5.000000) rotate(-225.000000) translate(-5.000000, -5.000000) " points="8 8 2 8 2 2" />
@@ -96,5 +99,7 @@ const ServingsBox = forwardRef<HTMLDivElement, {}>((props, ref) => {
         </>
     )
 });
+
+ServingsBox.displayName = 'ServingsBox';
 
 export default ServingsBox;

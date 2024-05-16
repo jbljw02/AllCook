@@ -1,5 +1,5 @@
 import { RootState } from "@/redux/store";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import MenuTable from "../table/MenuTable";
 import moveToDetail from "@/utils/moveToDetail";
 import { useDispatch, useSelector } from "react-redux";
@@ -46,7 +46,7 @@ export default function RelatedRecipes() {
     }
 
     // 추출한 재료명을 이용해 유사한 재료를 사용한 레시피를 찾음
-    const findRelatedRecipe = (ingredNames: string[]) => {
+    const findRelatedRecipe = useCallback((ingredNames: string[]) => {
         let recipeWithCount: { recipe: Menu, count: number }[] = [];
         let newRelatedRecipe: Menu[] = [];
 
@@ -70,7 +70,7 @@ export default function RelatedRecipes() {
             newRelatedRecipe = recipeWithCount.slice(0, 4).map(item => item.recipe);
             setRelatedRecipe(newRelatedRecipe);
         }
-    }
+    }, [recipe, servings]);
 
     useEffect(() => {
         // 레시피의 재료 문자열을 가공함
@@ -83,7 +83,7 @@ export default function RelatedRecipes() {
         let ingredArray = newRecipeIngredients.split(', ')
         let ingredNames = exportIngredientsName(ingredArray);
         findRelatedRecipe(ingredNames);
-    }, [recipe, servings]);
+    }, [recipe, servings, findRelatedRecipe]); 
 
     return (
         <>

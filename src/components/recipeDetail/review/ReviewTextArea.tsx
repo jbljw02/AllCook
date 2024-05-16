@@ -2,10 +2,10 @@ import { setRecipeOpinion } from "@/redux/features/recipeOpinionSlice";
 import { RootState } from "@/redux/store";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useState, ChangeEvent, useEffect } from "react";
+import { useState, ChangeEvent, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function () {
+export default function ReviewTextArea() {
     const dispatch = useDispatch();
     const router = useRouter();
 
@@ -43,7 +43,7 @@ export default function () {
     }
 
     // 레시피에 대한 댓글 정보를 받음
-    const reciveRecipeOpinion = async (email: string, RCP_SEQ: string) => {
+    const reciveRecipeOpinion = useCallback(async (email: string, RCP_SEQ: string) => {
         try {
             const data = {
                 email: email,
@@ -67,7 +67,7 @@ export default function () {
         } catch (error) {
             throw error;
         }
-    }
+    }, [user, recipe]);
 
     // 레시피에 대한 댓글 및 평점을 업데이트
     const sendNewRecipeOpinion = async () => {
@@ -120,10 +120,10 @@ export default function () {
     }
 
     useEffect(() => {
-        if(user && user.email) {
+        if (user && user.email) {
             reciveRecipeOpinion(user.email, recipe.RCP_SEQ);
         }
-    }, [user, recipe]);
+    }, [user, recipe, reciveRecipeOpinion]);
 
     return (
         <>
@@ -160,8 +160,9 @@ export default function () {
                         {
                             Array.from({ length: 5 }, (_, index) => (
                                 <div
-                                    className={`${(user && user.name !== '') && 
-                                    user.name ?
+                                    key={index}
+                                    className={`${(user && user.name !== '') &&
+                                        user.name ?
                                         'cursor-pointer' :
                                         ''}
                                         'star'`}
@@ -169,9 +170,9 @@ export default function () {
                                     <svg xmlns="http://www.w3.org/2000/svg" width="19px" height="19px" fill="none" viewBox="0 0 12 12">
                                         <path
                                             fill={index < rating ? "#fec061" : "#e0e3e6"}
-                                            stroke-width="0.7"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
+                                            strokeWidth="0.7"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
                                             d="m6 1 1.545 3.13 3.456.505L8.5 7.07l.59 3.44L6 8.885 2.91 10.51l.59-3.44L1 4.635l3.454-.505L6 1z">
                                         </path>
                                     </svg>
@@ -185,8 +186,8 @@ export default function () {
                         <textarea
                             value={formData.comment}
                             onChange={commentChange}
-                            placeholder={`${(user && user.name !== '') && 
-                            user.name ?
+                            placeholder={`${(user && user.name !== '') &&
+                                user.name ?
                                 '이 레시피에 대한 의견을 자유롭게 남겨주세요!' :
                                 '로그인하고 레시피를 작성해보세요!'}`} />
                     </div>

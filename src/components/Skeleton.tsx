@@ -7,7 +7,9 @@ export default function SkeletonUI({ length }: { length: number }) {
             <div className='skeleton-grid'>
                 {
                     Array.from({ length }, (_, index) => (
-                        <div className='skeleton-div'>
+                        <div
+                            key={index}
+                            className='skeleton-div'>
                             <Skeleton className="skeleton-img" style={{ height: '250px' }} count={1} />
                             <Skeleton className='skeleton-title' count={1} />
                         </div>

@@ -8,6 +8,7 @@ import sendNewFolder from '@/utils/fetch/sendNewFolder';
 import axios from 'axios';
 import sendNewRecipe from '@/utils/fetch/sendNewRecipe';
 import recipeDeleteRequest from '@/utils/fetch/recipeDeleteRequest';
+import React from 'react';
 
 interface modalProps {
     isModalOpen: boolean,
@@ -34,7 +35,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                 dispatch(setFavoriteRecipe(favRecipeFromStore));
             }
         })();
-    }, [user]);
+    }, [user, dispatch]);
 
     // 폴더 내에 동일한 레시피가 존재하는지 판별
     const isDuplicatedRecipe = (id: number) => {
@@ -201,8 +202,8 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                             setIsModalOpen(false)
                         }} xmlns="http://www.w3.org/2000/svg" width="35px" height="35px" viewBox="0 0 24 24" fill="none">
                             <rect width="24" height="24" fill="white" />
-                            <path d="M7 17L16.8995 7.10051" stroke="#111111" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M7 7.00001L16.8995 16.8995" stroke="#111111" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M7 17L16.8995 7.10051" stroke="#111111" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M7 7.00001L16.8995 16.8995" stroke="#111111" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </div>
                     <div className='pop-up-folder-list'>
@@ -210,7 +211,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                         {
                             favoriteRecipe.map((item) => {
                                 return (
-                                    <>
+                                    <React.Fragment key={item.folderId}>
                                         <div
                                             className='folder-section'
                                             id={(isRecipeDuplicated.folderId === item.folderId && isRecipeDuplicated.duplicated) ?
@@ -220,8 +221,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                                                 isMoving ?
                                                     moveRecipeToAnotherFolder(item.folderId) :
                                                     addFavoriteRecipe(item.folderId, item.folderName)
-                                            }}
-                                            key={item.folderId}>
+                                            }}>
                                             <div className='folder-thumbnail'>
                                                 <RecipeThumbnail
                                                     recipes={item.recipes}
@@ -242,7 +242,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                                                 && isRecipeDuplicated.duplicated) &&
                                             <div className='duplicated-recipe'>폴더 내에 이미 동일한 레시피가 존재합니다</div>
                                         }
-                                    </>
+                                    </React.Fragment>
                                 )
                             })
                         }
@@ -270,8 +270,8 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                             onClick={addNewFolder}>
                             <svg className='plus' xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none">
                                 <rect width="24" height="24" fill="white" />
-                                <path d="M12 6V18" stroke="#949A9F" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M6 12H18" stroke="#949A9F" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M12 6V18" stroke="#949A9F" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M6 12H18" stroke="#949A9F" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                             <div>새 폴더 만들기</div>
                         </div>

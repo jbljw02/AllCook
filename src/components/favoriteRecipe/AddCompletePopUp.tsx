@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image from "next/image"  
 import { useDispatch } from "react-redux";
 import { setRecipeAddModal, setRecipeMoveModal } from "@/redux/features/favoriteRecipeSlice";
 

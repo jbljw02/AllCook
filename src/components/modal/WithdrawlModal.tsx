@@ -2,7 +2,7 @@ import { setUser } from '@/redux/features/userSlice';
 import { RootState } from '@/redux/store';
 import { deleteUser, getAuth } from 'firebase/auth';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,19 +18,12 @@ export default function WithdrawlModal({ isModalOpen, withdrawlOk, setIsModalOpe
     const router = useRouter();
 
     const user = useSelector((state: RootState) => state.user);
-
-    // 동의하면 탈퇴를 실행
-    useEffect(() => {
-        if(withdrawlOk) {
-            withdrawlUser();
-        }
-    }, [withdrawlOk]);
-
+   
     // 회원 탈퇴
-    const withdrawlUser = async () => {
+    const withdrawlUser = useCallback(async () => {
         const auth = getAuth();
         const currentUser = auth.currentUser;
-
+    
         try {
             if (user.name !== '' && currentUser && withdrawlOk) {
                 await deleteUser(currentUser);
@@ -43,7 +36,14 @@ export default function WithdrawlModal({ isModalOpen, withdrawlOk, setIsModalOpe
         } catch (error) {
             throw error;
         }
-    }
+    }, [withdrawlOk]);
+
+     // 동의하면 탈퇴를 실행
+     useEffect(() => {
+        if(withdrawlOk) {
+            withdrawlUser();
+        }
+    }, [withdrawlOk, withdrawlUser]);
 
     return (
         <>

@@ -32,9 +32,9 @@ export default function RecipeThumbnail({ recipes, size }: { recipes: Menu[], si
                         // recipes.length가 3이고 index가 2인 경우(즉, 세 번째 이미지)를 제외하고 이미지를 표시
                         (recipes.length !== 3 || index < 2) && (
                             <div
+                                key={recipe.RCP_SEQ}
                                 className="thumbnail-image"
                                 style={{ backgroundImage: `url(${recipe.ATT_FILE_NO_MAIN})` }}
-                                key={recipe.id}
                             />
                         )
                     ))

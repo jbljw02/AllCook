@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import RecipeThumbnail from "./RecipeThumbnail";
 import sendNewFolder from "@/utils/fetch/sendNewFolder";
 import { useRouter } from "next/router";
+import React from "react";
 
 export default function FolderList() {
     const dispatch = useDispatch();
@@ -81,10 +82,11 @@ export default function FolderList() {
         <>
             <div className="folder-list-section">
                 {
-                    favoriteRecipe.map((item: FavoriteRecipe, index: number) => {
+                    favoriteRecipe.map((item: FavoriteRecipe) => {
                         return (
-                            <>
+                            <React.Fragment key={item.folderId}>
                                 <div
+                                    key={item.folderId}
                                     className="folder"
                                     onClick={() => {
                                         !isFavFolderDelete ?
@@ -107,7 +109,7 @@ export default function FolderList() {
                                     </div>
                                     <div className="title">{item.folderName}</div>
                                 </div>
-                            </>
+                            </React.Fragment>
                         )
                     })
                 }
@@ -134,8 +136,8 @@ export default function FolderList() {
                     <div className="folder-thumbnail add-folder-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="35px" height="35px" viewBox="0 0 24 24" fill="none">
                             <rect width="24" height="24" fill="white" />
-                            <path d="M12 6V18" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M6 12H18" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M12 6V18" stroke="#000000" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M6 12H18" stroke="#000000" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </div>
                     <div className="title">새 폴더 만들기</div>

@@ -43,7 +43,7 @@ export default function FolderDetail() {
                 throw Error;
             }
         })();
-    }, [user]);
+    }, [user, dispatch]);
 
     const favoriteRecipe = useSelector((state: RootState) => state.favoriteRecipe);
     const selectedFolder = useSelector((state: RootState) => state.selectedFolder);
@@ -57,7 +57,7 @@ export default function FolderDetail() {
         if (folderItem) {
             dispatch(setSelectedFolder(folderItem));
         }
-    }, [favoriteRecipe]);
+    }, [favoriteRecipe, dispatch, numericFolderId]);
 
     // 특정 메뉴를 클릭하면 해당 메뉴의 레시피 페이지로 이동
     const menuClick = (name: string, seq: string) => {

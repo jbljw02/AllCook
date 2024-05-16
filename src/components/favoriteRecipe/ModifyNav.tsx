@@ -104,7 +104,8 @@ export default function ModifyNav({ category }: { category: string }) {
             dispatch(setIsFavRecipeDelete(false));
             dispatch(setIsFavFolderDelete(false));
         }
-    }, [])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <>
