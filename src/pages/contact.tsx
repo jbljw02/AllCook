@@ -27,7 +27,7 @@ export type Form = {
     submitted: boolean,
 }
 
-export default function Contact() {
+export default function Contact({ imgSrc }: { imgSrc: string }) {
     const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
     const headerSlide = useSelector((state: RootState) => state.headerSlide);
 
@@ -147,7 +147,7 @@ export default function Contact() {
                             </>
                     }
                     <div className="contact-img">
-                        <Image src={contactImage} alt="" layout="responsive" />
+                        <Image src={imgSrc} alt="" layout="responsive" />
                     </div>
                 </div>
                 <div className="contents-container">
@@ -355,6 +355,8 @@ export default function Contact() {
 
 export const getStaticProps = () => {
     return {
-        props: {}
+        props: {
+            imgSrc: contactImage,
+        }
     }
 }
