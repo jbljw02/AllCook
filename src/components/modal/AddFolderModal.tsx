@@ -9,6 +9,7 @@ import axios from 'axios';
 import sendNewRecipe from '@/utils/fetch/sendNewRecipe';
 import recipeDeleteRequest from '@/utils/fetch/recipeDeleteRequest';
 import React from 'react';
+import NProgress from "nprogress";
 
 interface modalProps {
     isModalOpen: boolean,
@@ -64,24 +65,34 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
     const moveRecipeToAnotherFolder = async (newFolderId: number) => {
         const isDuplicated = isDuplicatedRecipe(newFolderId);
         if (!isDuplicated) {
-            // 레시피를 추가한 이전 폴더에서 레시피를 삭제하는 요청 전송
-            await recipeDeleteRequest(user.email, addedRecipeInfo.folderId, recipe);
-            // 레시피를 state에서 삭제
-            dispatch(removeRecipeFromFolder({
-                forderId: addedRecipeInfo.folderId,
-                recipeNum: recipe.RCP_SEQ,
-            }));
+            try {
+                NProgress.start();
 
-            // 레시피 추가를 요청 
-            await sendNewRecipe(user.email, newFolderId, recipe);
-            // 이동시킬 폴더에 레시피를 추가
-            dispatch(addRecipeToFolder({
-                folderId: newFolderId,
-                recipe: recipe
-            }))
+                // 레시피를 추가한 이전 폴더에서 레시피를 삭제하는 요청 전송
+                await recipeDeleteRequest(user.email, addedRecipeInfo.folderId, recipe);
+                // 레시피를 state에서 삭제
+                dispatch(removeRecipeFromFolder({
+                    forderId: addedRecipeInfo.folderId,
+                    recipeNum: recipe.RCP_SEQ,
+                }));
 
-            // 레시피 위치 변경 모달을 닫음
-            dispatch(setRecipeMoveModal(false));
+                // 레시피 추가를 요청 
+                await sendNewRecipe(user.email, newFolderId, recipe);
+                // 이동시킬 폴더에 레시피를 추가
+                dispatch(addRecipeToFolder({
+                    folderId: newFolderId,
+                    recipe: recipe
+                }));
+
+                NProgress.done();
+
+                // 레시피 위치 변경 모달을 닫음
+                dispatch(setRecipeMoveModal(false));
+            } catch (error) {
+                throw error;
+            } finally {
+                NProgress.done();
+            }
         }
         else {
             setIsRecipeDuplicated({
@@ -97,6 +108,8 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
 
         if (!isDuplicated) {
             try {
+                NProgress.start();
+
                 // 레시피 추가를 요청 
                 await sendNewRecipe(user.email, id, recipe);
                 // 이동시킬 폴더에 레시피를 추가
@@ -117,11 +130,16 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                     folderId: id,
                     duplicated: false,
                 });
+
+                NProgress.done();
+
                 // 레시피를 추가하는 모달을 닫음
                 dispatch(setRecipeAddModal(false));
             } catch (error) {
                 throw error;
-            } 
+            } finally {
+                NProgress.done();
+            }
         }
         else {
             setIsRecipeDuplicated({

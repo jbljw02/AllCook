@@ -10,7 +10,7 @@ export default function NoneMenu() {
     return (
         <>
             <div className="none-menu-container">
-                <svg xmlns="http://www.w3.org/2000/svg" width="105px" height="105px" viewBox="0 0 1024 1024" version="1.1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="95px" height="95px" viewBox="0 0 1024 1024" version="1.1">
                     <path d="M774.8 327.8c-50.6-4.8-97.3 4.3-131 22.7 15.9 20.3 26.1 52.1 26.1 87.9 0 29.2-6.8 55.7-17.9 75.5 28.3 16.9 64.5 28.8 104.6 32.6 96.7 9.2 179.2-32.4 184.2-92.8s-69.3-116.7-166-125.9z" fill="#FFB89A" />
                     <path d="M67.2 494l1 31c2.2 67.7 26.2 133.6 69.6 190.4 41.6 54.5 99.6 99.2 167.9 129.3 15.2 6.7 32.9-0.2 39.5-15.4 6.7-15.2-0.2-32.9-15.4-39.5-59-26-108.9-64.3-144.4-110.8-29-38-47.5-80.7-54.4-125h762.6c-7 44.8-25.8 87.9-55.4 126.3-36.1 46.8-86.8 85.2-146.8 110.9-15.2 6.5-22.2 24.2-15.7 39.4 4.9 11.4 15.9 18.2 27.6 18.2 4 0 8-0.8 11.8-2.4 144.5-62.2 237-185.3 241.3-321.4l1-31H67.2z" fill="#45484C" />
                     <path d="M591.9 800.1h-159c-35.2 0-64.1 28.8-64.1 64.1s28.8 64.1 64.1 64.1h159c35.2 0 64.1-28.8 64.1-64.1s-28.9-64.1-64.1-64.1z m0 68.1h-159c-2.1 0-4.1-2-4.1-4.1s2-4.1 4.1-4.1h159c2.1 0 4.1 2 4.1 4.1s-2 4.1-4.1 4.1z" fill="#45484C" />
@@ -34,12 +34,7 @@ export default function NoneMenu() {
                 }
                 .title {
                     font-size: 17px;
-                    margin-top: 13px;
-                }
-                .subtitle {
-                    font-size: 15px;
-                    font-weight: 300;
-                    margin-top: 5px;
+                    margin-top: 18px;
                 }
                 button {
                     color: #ffffff;
@@ -47,7 +42,7 @@ export default function NoneMenu() {
                     padding: 7px 14px;
                     border: 1px solid transparent;
                     border-radius: 5px;
-                    font-size: 14px;
+                    font-size: 14.5px;
                     margin-top: 15px;
                 }
             `}</style>

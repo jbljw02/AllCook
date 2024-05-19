@@ -56,6 +56,12 @@ export default function Header({ className }: { className: string }) {
         }
     }
 
+    const recipeClick = () => {
+        dispatch(setDisplayedMenu(allMenu));
+        setInputValue('');
+        router.push('/recipe');
+    }
+
     const user = useSelector((state: RootState) => state.user);
     const [userDetail, setUserDetail] = useState<boolean>(false);
 
@@ -71,12 +77,10 @@ export default function Header({ className }: { className: string }) {
                             Home
                         </Link>
                     </span>
-                    <span className='recipe'>
-                        <Link
-                            style={{ textDecoration: 'none', color: 'inherit' }}
-                            href={'/recipe'}>
-                            Recipe
-                        </Link>
+                    <span
+                        className='recipe'
+                        onClick={recipeClick}>
+                        Recipe
                     </span>
                     <span className='contact'>
                         <Link

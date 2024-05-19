@@ -18,6 +18,7 @@ import sendUserInitialData from "@/utils/auth/sendUserInitialData";
 import FormInput from "@/components/input/FormInput";
 import { GetServerSidePropsContext } from "next";
 import { parseCookies } from "nookies";
+import NProgress from "nprogress";
 
 export type signUpForm = {
     name: string,
@@ -142,17 +143,17 @@ export default function SignUp() {
     // 회원가입 초기 작업
     const signUp = async () => {
         try {
-            // 임시로 작업 시간을 늘리기 위해 setTimeout 사용
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            NProgress.start();
 
             const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
             const user = userCredential.user;
-
 
             // 이메일을 전송한 후,
             await sendEmailVerification(user);
             // 이메일 인증 여부를 확인하는 모달을 띄움
             setIsSubmitted(true);
+
+            NProgress.done();
 
             setEmailDuplicated(false);
         }
@@ -164,6 +165,8 @@ export default function SignUp() {
             else {
                 throw error;
             }
+        } finally {
+            NProgress.done();
         }
     }
 

@@ -5,6 +5,7 @@ import recipeDeleteRequest from "@/utils/fetch/recipeDeleteRequest";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
+import NProgress from "nprogress";
 
 export default function ModifyNav({ category }: { category: string }) {
     const dispatch = useDispatch();
@@ -45,8 +46,10 @@ export default function ModifyNav({ category }: { category: string }) {
             });
         }
         if (category === 'folder') {
-            // 폴더 ID를 추출해서 배열로 만듦
-            const allCheckedIndex = favoriteRecipe.map(item => item.folderId);
+            // 폴더 ID를 추출해서 배열로 만듦(0번 폴더 제외)
+            const allCheckedIndex = favoriteRecipe
+                .filter(item => item.folderId !== 0)
+                .map(item => item.folderId);
 
             // 폴더 ID를 모두 dispatch
             allCheckedIndex.map(item => {
@@ -57,30 +60,52 @@ export default function ModifyNav({ category }: { category: string }) {
 
     const deleteFavRecipe = async () => {
         if (category === 'recipe') {
-            // 레시피 삭제 요청 전송
-            await recipeDeleteRequest(user.email, selectedFolder.folderId, isCheckedRecipe);
+            try {
+                NProgress.start();
 
-            // 레시피가 삭제됐으므로 배열 전체 업데이트
-            const resFavRecipe = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
-                email: user.email,
-            });
-            const favRecipeFromStore: FavoriteRecipe[] = resFavRecipe.data.favoriteRecipe;
+                // 레시피 삭제 요청 전송
+                await recipeDeleteRequest(user.email, selectedFolder.folderId, isCheckedRecipe);
 
-            dispatch(setFavoriteRecipe(favRecipeFromStore));
-            cancelDelete();
+                // 레시피가 삭제됐으므로 배열 전체 업데이트
+                const resFavRecipe = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
+                    email: user.email,
+                });
+                const favRecipeFromStore: FavoriteRecipe[] = resFavRecipe.data.favoriteRecipe;
+
+                dispatch(setFavoriteRecipe(favRecipeFromStore));
+                cancelDelete();
+
+                NProgress.done();
+            } catch (error) {
+                throw error;
+            } finally {
+                NProgress.done();
+            }
+
         }
         if (category === 'folder') {
-            // 폴더 삭제 요청 전송
-            await folderDeleteRequest(user.email, isCheckedFolder);
+            try {
+                NProgress.start();
 
-            // 폴더가 삭제됐으므로 배열 전체 업데이트
-            const resFavRecipe = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
-                email: user.email,
-            });
-            const favRecipeFromStore: FavoriteRecipe[] = resFavRecipe.data.favoriteRecipe;
+                // 폴더 삭제 요청 전송
+                await folderDeleteRequest(user.email, isCheckedFolder);
 
-            dispatch(setFavoriteRecipe(favRecipeFromStore));
-            cancelDelete();
+                // 폴더가 삭제됐으므로 배열 전체 업데이트
+                const resFavRecipe = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
+                    email: user.email,
+                });
+                const favRecipeFromStore: FavoriteRecipe[] = resFavRecipe.data.favoriteRecipe;
+
+                dispatch(setFavoriteRecipe(favRecipeFromStore));
+                cancelDelete();
+
+                NProgress.done();
+            } catch (error) {
+                throw error;
+            } finally {
+                NProgress.done();
+            }
+
         }
     }
 
@@ -104,7 +129,6 @@ export default function ModifyNav({ category }: { category: string }) {
             dispatch(setIsFavRecipeDelete(false));
             dispatch(setIsFavFolderDelete(false));
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
