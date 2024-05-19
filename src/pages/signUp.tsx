@@ -18,7 +18,6 @@ import sendUserInitialData from "@/utils/auth/sendUserInitialData";
 import FormInput from "@/components/input/FormInput";
 import { GetServerSidePropsContext } from "next";
 import { parseCookies } from "nookies";
-import Nprogress from 'nprogress';
 
 export type signUpForm = {
     name: string,
@@ -143,7 +142,6 @@ export default function SignUp() {
     // 회원가입 초기 작업
     const signUp = async () => {
         try {
-            Nprogress.start();
             // 임시로 작업 시간을 늘리기 위해 setTimeout 사용
             await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -166,8 +164,6 @@ export default function SignUp() {
             else {
                 throw error;
             }
-        } finally {
-            Nprogress.done();
         }
     }
 
