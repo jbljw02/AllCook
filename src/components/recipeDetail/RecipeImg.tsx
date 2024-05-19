@@ -2,14 +2,22 @@ import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { setRecipeAddModal } from "@/redux/features/favoriteRecipeSlice";
+import { useRouter } from "next/router";
 
 export default function RecipeImg() {
     const dispatch = useDispatch();
+    const router = useRouter();
 
+    const user = useSelector((state: RootState) => state.user);
     const recipe = useSelector((state: RootState) => state.recipe); // 레시피의 상세 정보를 담고있는 state
 
     const saveRecipe = () => {
-        dispatch(setRecipeAddModal(true));
+        if(user.name && user.email) {
+            dispatch(setRecipeAddModal(true));
+        }
+        else {
+            router.push('/signIn');
+        }
     }
 
     return (
