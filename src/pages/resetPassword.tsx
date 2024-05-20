@@ -2,7 +2,6 @@ import { useState } from "react";
 import { auth } from "@/firebase/firebasedb";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { useRouter } from "next/router";
-import HeaderButton from "@/components/header/HeaderButton";
 import Seo from "@/components/Seo";
 import FormInput from "@/components/input/FormInput";
 
@@ -100,91 +99,86 @@ export default function ResetPassword() {
 
     return (
         <>
-            <div className="container">
-                <Seo title="비밀번호 재생성" />
-                <HeaderButton />
-                <div className="contents-container">
-                    <div className="title-container">
-                        <div className="title">
-                            All Cook 계정의 <br />
-                            비밀번호를 재생성합니다.
-                        </div>
-                        <div className="subtitle">
-                            비밀번호를 재설정할 계정의 이메일을 입력해주세요. 설정이 완료되면 <br />
-                            새 비밀번호로 로그인 하실 수 있어요.
-                        </div>
+            <Seo title="비밀번호 재생성" />
+            <div className="contents-container">
+                <div className="title-container">
+                    <div className="title">
+                        All Cook 계정의 <br />
+                        비밀번호를 재생성합니다.
                     </div>
-                    <div className="login-container">
-                        <form>
-                            <div
-                                className='input-div email'
-                                id={`${(formData.submitted && (!emailValid || formData.email === '')) ?
-                                    'warning-border' :
-                                    ''}`}
-                                style={{ borderColor: emailFocusStyle.borderColor }}>
-                                <svg className="email-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 29" width="30" height="29">
-                                    <path fill={emailFocusStyle.fill} fillRule="evenodd" d="M7 7a2.5 2.5 0 0 0-2.5 2.5v9A2.5 2.5 0 0 0 7 21h15a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 22 7H7ZM5.5 9.5C5.5 8.67 6.17 8 7 8h15c.83 0 1.5.67 1.5 1.5v.17l-9 3.79-9-3.8V9.5Zm0 1.25v7.75c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-7.75l-8.8 3.71-.2.08-.2-.08-8.8-3.7Z"></path>
-                                </svg>
-                                <FormInput
-                                    type="text"
-                                    name="email"
-                                    formData={formData}
-                                    formChange={formChange}
-                                    value={formData.email}
-                                    inputFocus={inputFocus}
-                                    inputBlur={inputBlur}
-                                    placeholder="이메일"
-                                />
-                            </div>
-                            {
-                                formData.submitted && formData.email === '' ?
-                                    <div className="input-warning">이메일을 입력해주세요</div> :
-                                    null
-                            }
-                            {
-                                formData.submitted && formData.email !== '' && !emailValid ?
-                                    <div className="input-warning">유효한 이메일을 입력해주세요</div> :
-                                    null
-                            }
-                            <button
-                                type="submit"
-                                onClick={formSubmit}>
-                                전송
-                            </button>
-                        </form>
+                    <div className="subtitle">
+                        비밀번호를 재설정할 계정의 이메일을 입력해주세요. 설정이 완료되면 <br />
+                        새 비밀번호로 로그인 하실 수 있어요.
                     </div>
-                    {
-                        formData.transmitted ?
-                            <div className="contents-footer">
-                                <div>
-                                    비밀번호 재설정을 위한 이메일을 전송해드렸어요.
-                                    <br /> 혹시 받지 못하셨나요?
-                                </div>
-                                <span
-                                    className="underline">
-                                    다시 보내기
-                                </span>
-                                <span
-                                    className="underline"
-                                    onClick={() => router.push('/signIn')}
-                                >
-                                    로그인
-                                </span>
-                            </div> :
-                            null
-                    }
                 </div>
-            </div >
-            <style jsx>{`
-                .container {
-                    justify-content: flex-start !important;
+                <div className="login-container">
+                    <form>
+                        <div
+                            className='input-div email'
+                            id={`${(formData.submitted && (!emailValid || formData.email === '')) ?
+                                'warning-border' :
+                                ''}`}
+                            style={{ borderColor: emailFocusStyle.borderColor }}>
+                            <svg className="email-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 29" width="30" height="29">
+                                <path fill={emailFocusStyle.fill} fillRule="evenodd" d="M7 7a2.5 2.5 0 0 0-2.5 2.5v9A2.5 2.5 0 0 0 7 21h15a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 22 7H7ZM5.5 9.5C5.5 8.67 6.17 8 7 8h15c.83 0 1.5.67 1.5 1.5v.17l-9 3.79-9-3.8V9.5Zm0 1.25v7.75c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-7.75l-8.8 3.71-.2.08-.2-.08-8.8-3.7Z"></path>
+                            </svg>
+                            <FormInput
+                                type="text"
+                                name="email"
+                                formData={formData}
+                                formChange={formChange}
+                                value={formData.email}
+                                inputFocus={inputFocus}
+                                inputBlur={inputBlur}
+                                placeholder="이메일"
+                            />
+                        </div>
+                        {
+                            formData.submitted && formData.email === '' ?
+                                <div className="input-warning">이메일을 입력해주세요</div> :
+                                null
+                        }
+                        {
+                            formData.submitted && formData.email !== '' && !emailValid ?
+                                <div className="input-warning">유효한 이메일을 입력해주세요</div> :
+                                null
+                        }
+                        <button
+                            type="submit"
+                            onClick={formSubmit}>
+                            전송
+                        </button>
+                    </form>
+                </div>
+                {
+                    formData.transmitted ?
+                        <div className="contents-footer">
+                            <div>
+                                비밀번호 재설정을 위한 이메일을 전송해드렸어요.
+                                <br /> 혹시 받지 못하셨나요?
+                            </div>
+                            <span
+                                className="underline">
+                                다시 보내기
+                            </span>
+                            <span
+                                className="underline"
+                                onClick={() => router.push('/signIn')}
+                            >
+                                로그인
+                            </span>
+                        </div> :
+                        null
                 }
+            </div>
+            <style jsx>{`
                 .contents-container {
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
                     align-items: center;
-                    margin-top: 175px;
+                    height: 100%;
+                    margin-bottom: 150px;
                     color: #111111;
                 }
                 .title-container {

@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/redux/features/userSlice";
 import googleIcon from '../../public/svgs/google-icon.svg';
 import { FirebaseError } from "firebase/app";
-import HeaderButton from "@/components/header/HeaderButton";
 import logout from "@/utils/auth/logout";
 import EmailVerifyModal from "@/components/modal/EmailVerifyModal";
 import Seo from "@/components/Seo";
@@ -156,7 +155,7 @@ export default function Login() {
             dispatch(setUser({
                 email: user.email,
                 name: user.name,
-            })); 
+            }));
         } catch (error) {
             throw error;
         }
@@ -164,137 +163,131 @@ export default function Login() {
 
     return (
         <>
-            <div className="container">
-                <Seo title="로그인" />
-                <HeaderButton />
-                <EmailVerifyModal
-                    isSubmitted={isVerifyFail}
-                    setIsSubmitted={setIsVerifyFail}
-                />
-                <div className="contents-container">
-                    <div className="title-container">
-                        <div className="title">로그인</div>
-                        <div className="subtitle">All Cook에 오신 것을 환영합니다!</div>
-                    </div>
-                    <div className="login-container">
-                        <form>
-                            <div
-                                className='input-div email'
-                                id={`${(formData.submitted && (!emailValid || formData.email === ''))
-                                    || !isSuccess ?
-                                    'warning-border' :
-                                    ''}`}
-                                style={{ borderColor: emailFocusStyle.borderColor }}>
-                                <svg className="email-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 29" width="30" height="29">
-                                    <path fill={emailFocusStyle.fill} fillRule="evenodd" d="M7 7a2.5 2.5 0 0 0-2.5 2.5v9A2.5 2.5 0 0 0 7 21h15a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 22 7H7ZM5.5 9.5C5.5 8.67 6.17 8 7 8h15c.83 0 1.5.67 1.5 1.5v.17l-9 3.79-9-3.8V9.5Zm0 1.25v7.75c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-7.75l-8.8 3.71-.2.08-.2-.08-8.8-3.7Z"></path>
-                                </svg>
-                                <FormInput
-                                    type="text"
-                                    name="email"
-                                    formData={formData}
-                                    formChange={formChange}
-                                    value={formData.email}
-                                    inputFocus={inputFocus}
-                                    inputBlur={inputBlur}
-                                    placeholder="이메일"
-                                />
-                            </div>
-                            {
-                                formData.submitted && formData.email === '' ?
-                                    <div className="input-warning">이메일을 입력해주세요</div> :
-                                    null
-                            }
-                            {
-                                formData.submitted && formData.email !== '' && !emailValid ?
-                                    <div className="input-warning">유효한 이메일을 입력해주세요</div> :
-                                    null
-                            }
-                            <div
-                                className="input-div password"
-                                id={`${(formData.submitted && formData.password === '') ||
-                                    !isSuccess ?
-                                    'warning-border' :
-                                    ''}`}
-                                style={{ borderColor: pwdFocusStyle.borderColor }}>
-                                <svg className="password-svg" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 30 29" fill="none">
-                                    <rect x="3" y="11" width="18" height="11" rx="2" stroke={pwdFocusStyle.stroke} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
-                                    <path d="M7 10.9999V6.99988C7 4.23845 9.23858 1.99988 12 1.99988V1.99988C14.7614 1.99988 17 4.23845 17 6.99988V10.9999" stroke={pwdFocusStyle.stroke} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
-                                <FormInput
-                                    type="password"
-                                    name="password"
-                                    formData={formData}
-                                    formChange={formChange}
-                                    value={formData.password}
-                                    inputFocus={inputFocus}
-                                    inputBlur={inputBlur}
-                                    placeholder="비밀번호"
-                                />
-                            </div>
-                            {
-                                formData.submitted && formData.password === '' ?
-                                    <div className="input-warning">비밀번호를 입력해주세요</div> :
-                                    null
-                            }
-                            {
-                                !isSuccess ?
-                                    <div className="input-warning">이메일 또는 비밀번호가 일치하지 않습니다</div> :
-                                    null
-                            }
-                            <div className="login-footer-div">
-                                <div
-                                    className="checkbox-div no-drag"
-                                    onClick={() => setFormData({
-                                        ...formData,
-                                        isSave: !formData.isSave,
-                                    })}>
-                                    <input
-                                        type="checkbox"
-                                        checked={formData.isSave} />
-                                    <label htmlFor="checkbox">로그인 정보 저장</label>
-                                </div>
-                                <div onClick={() => {
-                                    logout();
-                                    dispatch(setUser(null));
-                                    router.push('/resetPassword');
-                                }}>비밀번호를 잊으셨나요?</div>
-                            </div>
-                            <button
-                                type="submit"
-                                onClick={formSubmit}>
-                                로그인
-                            </button>
-                        </form>
+            <Seo title="로그인" />
+            <EmailVerifyModal
+                isSubmitted={isVerifyFail}
+                setIsSubmitted={setIsVerifyFail}
+            />
+            <div className="contents-container">
+                <div className="title-container">
+                    <div className="title">로그인</div>
+                    <div className="subtitle">All Cook에 오신 것을 환영합니다!</div>
+                </div>
+                <div className="login-container">
+                    <form>
                         <div
-                            className="social-login-container"
-                            onClick={googleLogin}>
-                            <Image
-                                src={googleIcon}
-                                className="google-svg"
-                                alt="" />
-                            <div>구글 계정으로 로그인</div>
+                            className='input-div email'
+                            id={`${(formData.submitted && (!emailValid || formData.email === ''))
+                                || !isSuccess ?
+                                'warning-border' :
+                                ''}`}
+                            style={{ borderColor: emailFocusStyle.borderColor }}>
+                            <svg className="email-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 29" width="30" height="29">
+                                <path fill={emailFocusStyle.fill} fillRule="evenodd" d="M7 7a2.5 2.5 0 0 0-2.5 2.5v9A2.5 2.5 0 0 0 7 21h15a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 22 7H7ZM5.5 9.5C5.5 8.67 6.17 8 7 8h15c.83 0 1.5.67 1.5 1.5v.17l-9 3.79-9-3.8V9.5Zm0 1.25v7.75c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-7.75l-8.8 3.71-.2.08-.2-.08-8.8-3.7Z"></path>
+                            </svg>
+                            <FormInput
+                                type="text"
+                                name="email"
+                                formData={formData}
+                                formChange={formChange}
+                                value={formData.email}
+                                inputFocus={inputFocus}
+                                inputBlur={inputBlur}
+                                placeholder="이메일"
+                            />
                         </div>
-                    </div>
-                    <div className="contents-footer">All Cook이 처음이신가요?
-                        <span
-                            className="underline"
-                            onClick={() => router.push('/signUp')}>
-                            이메일로 회원가입
-                        </span>
+                        {
+                            formData.submitted && formData.email === '' ?
+                                <div className="input-warning">이메일을 입력해주세요</div> :
+                                null
+                        }
+                        {
+                            formData.submitted && formData.email !== '' && !emailValid ?
+                                <div className="input-warning">유효한 이메일을 입력해주세요</div> :
+                                null
+                        }
+                        <div
+                            className="input-div password"
+                            id={`${(formData.submitted && formData.password === '') ||
+                                !isSuccess ?
+                                'warning-border' :
+                                ''}`}
+                            style={{ borderColor: pwdFocusStyle.borderColor }}>
+                            <svg className="password-svg" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 30 29" fill="none">
+                                <rect x="3" y="11" width="18" height="11" rx="2" stroke={pwdFocusStyle.stroke} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M7 10.9999V6.99988C7 4.23845 9.23858 1.99988 12 1.99988V1.99988C14.7614 1.99988 17 4.23845 17 6.99988V10.9999" stroke={pwdFocusStyle.stroke} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                            <FormInput
+                                type="password"
+                                name="password"
+                                formData={formData}
+                                formChange={formChange}
+                                value={formData.password}
+                                inputFocus={inputFocus}
+                                inputBlur={inputBlur}
+                                placeholder="비밀번호"
+                            />
+                        </div>
+                        {
+                            formData.submitted && formData.password === '' ?
+                                <div className="input-warning">비밀번호를 입력해주세요</div> :
+                                null
+                        }
+                        {
+                            !isSuccess ?
+                                <div className="input-warning">이메일 또는 비밀번호가 일치하지 않습니다</div> :
+                                null
+                        }
+                        <div className="login-footer-div">
+                            <div
+                                className="checkbox-div no-drag"
+                                onClick={() => setFormData({
+                                    ...formData,
+                                    isSave: !formData.isSave,
+                                })}>
+                                <input
+                                    type="checkbox"
+                                    checked={formData.isSave} />
+                                <label htmlFor="checkbox">로그인 정보 저장</label>
+                            </div>
+                            <div onClick={() => {
+                                logout();
+                                dispatch(setUser(null));
+                                router.push('/resetPassword');
+                            }}>비밀번호를 잊으셨나요?</div>
+                        </div>
+                        <button
+                            type="submit"
+                            onClick={formSubmit}>
+                            로그인
+                        </button>
+                    </form>
+                    <div
+                        className="social-login-container"
+                        onClick={googleLogin}>
+                        <Image
+                            src={googleIcon}
+                            className="google-svg"
+                            alt="" />
+                        <div>구글 계정으로 로그인</div>
                     </div>
                 </div>
-            </div >
+                <div className="contents-footer">All Cook이 처음이신가요?
+                    <span
+                        className="underline"
+                        onClick={() => router.push('/signUp')}>
+                        이메일로 회원가입
+                    </span>
+                </div>
+            </div>
             <style jsx>{`
-                .container {
-                    justify-content: flex-start !important;
-                }
                 .contents-container {
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
                     align-items: center;
                     height: 100%;
-                    margin-bottom: 80px;
+                    margin-bottom: 90px;
                     color: #111111;
                 }
                 .title-container {
@@ -416,21 +409,21 @@ export default function Login() {
 }
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-        const cookies = parseCookies(context);
-        const authToken = cookies.authToken;
+    const cookies = parseCookies(context);
+    const authToken = cookies.authToken;
 
-        if(!authToken) {
-            return {
-                props: {},
+    if (!authToken) {
+        return {
+            props: {},
+        }
+    }
+    // 로그인 중이라면 홈으로 redirect 시킴
+    else {
+        return {
+            redirect: {
+                destination: '/',
+                parmanent: false,
             }
         }
-        // 로그인 중이라면 홈으로 redirect 시킴
-        else {
-            return {
-                redirect: {
-                    destination: '/',
-                    parmanent: false,
-                }
-            }
-        }
+    }
 }

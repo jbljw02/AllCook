@@ -14,6 +14,11 @@ import { setHeaderSlide, setScrollPassContent } from '@/redux/features/scrollSli
 import getEmailToken from '@/utils/fetch/getEmailToken';
 import NextNProgress from 'nextjs-progressbar';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import Header from '@/components/header/Header';
+import HeaderOnContents from '@/components/header/HeaderOnContents';
+import HeaderButton from '@/components/header/HeaderButton';
+import Footer from '@/components/Footer';
 import '../styles/global.css'
 import '../styles/menuTable.css'
 import '../styles/scrollStyle.css'
@@ -28,6 +33,7 @@ const noto = Noto_Sans_KR({
 
 function App({ Component, pageProps }: AppProps) {
     const dispatch = useDispatch();
+    const router = useRouter();
 
     // 스크롤이 컨텐츠를 지나쳤는지 여부
     const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
@@ -143,7 +149,7 @@ function App({ Component, pageProps }: AppProps) {
             const jsonResponse = await response.json();
             const recipes = await jsonResponse.data;
 
-            dispatch(setAllMenu(jsonResponse.data));
+            dispatch(setAllMenu(recipes));
             dispatch(setDisplayedMenu(recipes))
 
             const dessertRecipes = filterDessert(recipes, '후식');
@@ -157,7 +163,7 @@ function App({ Component, pageProps }: AppProps) {
 
             localStorage.setItem('recipes', JSON.stringify(recipes));
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
         reciveRecipes();
@@ -168,7 +174,92 @@ function App({ Component, pageProps }: AppProps) {
             <Head>
                 <link rel="icon" href="/images/favicon.png" />
             </Head>
-            <div ref={contentsRef} className='contents-ref' />
+            <div className='container'>
+                <div ref={contentsRef} className='contents-ref' />
+                {
+                    // 위치가 홈 및 문의 영역일 경우 배경이 없는 헤더
+                    router.pathname === '/' || router.pathname === '/contact' ?
+                        <div className='header-container'>
+                            {
+                                // 스크롤이 contents-container 영역을 지나치면 헤더가 사라지도록 설정
+                                !scrollPassContent ? (
+                                    <Header
+                                        position="absolute"
+                                        backgroundColor="transparent"
+                                        color="#ffffff"
+                                        borderColor="transparent"
+                                        svgFill="#ffffff"
+                                        lightLogo={true}
+                                        inputBackgroundColor="#ffffff"
+                                    />
+                                ) : (
+                                    <HeaderOnContents
+                                        className={
+                                            !headerSlide ?
+                                                "slide-down" :
+                                                "slide-up"
+                                        }
+                                    />
+                                )
+                            }
+                        </div> :
+                        (
+                            // 흰 배경이 있는 헤더
+                            router.pathname === '/signIn' ||
+                                router.pathname === '/signUp' ||
+                                router.pathname === '/resetPassword' ?
+                                <HeaderButton /> :
+                                <div className="header-container">
+                                    {
+                                        // 스크롤이 contents-container 영역을 지나치면 헤더가 사라지도록 설정
+                                        !scrollPassContent ?
+                                            <Header
+                                                position="relative"
+                                                backgroundColor="#ffffff"
+                                                color="#111111"
+                                                borderColor="#e8e8e8"
+                                                svgFill="#000000"
+                                                lightLogo={false}
+                                                inputBackgroundColor="#f2f2f2" /> :
+                                            <>
+                                                <Header
+                                                    position="relative"
+                                                    backgroundColor="#ffffff"
+                                                    color="#111111"
+                                                    borderColor="#e8e8e8"
+                                                    svgFill="#000000"
+                                                    lightLogo={false}
+                                                    inputBackgroundColor="#f2f2f2" />
+                                                <HeaderOnContents
+                                                    className={
+                                                        !headerSlide ?
+                                                            'slide-down' :
+                                                            'slide-up'
+                                                    }
+                                                />
+                                            </>
+                                    }
+                                </div>
+                        )
+                }
+                <Component {...pageProps} />
+                {
+                    // 해당 위치들에는 footer를 배치하지 않음
+                    router.pathname === '/signIn' ||
+                        router.pathname === '/signUp' ||
+                        router.pathname === '/resetPassword' ||
+                        router.pathname === '/userDetail' ||
+                        router.pathname === '/contact' ?
+                        null :
+                        <Footer />
+                }
+                <NextNProgress
+                    color="#29D"
+                    startPosition={0.3}
+                    stopDelayMs={200}
+                    height={2.5}
+                    showOnShallow={true} />
+            </div>
             <style jsx global>{`
                 html, textarea, input {
                     font-family: ${noto.style.fontFamily};
@@ -178,13 +269,6 @@ function App({ Component, pageProps }: AppProps) {
                     top: 50%;
                 }
             `}</style>
-            <NextNProgress
-                color="#29D"
-                startPosition={0.3}
-                stopDelayMs={200}
-                height={2.5}
-                showOnShallow={true} />
-            <Component {...pageProps} />
         </>
     )
 }
