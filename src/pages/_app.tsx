@@ -13,6 +13,7 @@ import shuffleArray from '@/utils/shuffleArray';
 import { setHeaderSlide, setScrollPassContent } from '@/redux/features/scrollSlice';
 import getEmailToken from '@/utils/fetch/getEmailToken';
 import NextNProgress from 'nextjs-progressbar';
+import Head from 'next/head';
 import '../styles/global.css'
 import '../styles/menuTable.css'
 import '../styles/scrollStyle.css'
@@ -164,8 +165,10 @@ function App({ Component, pageProps }: AppProps) {
 
     return (
         <>
-            <div ref={contentsRef} className='contents-ref'>
-            </div>
+            <Head>
+                <link rel="icon" href="/images/favicon.png" />
+            </Head>
+            <div ref={contentsRef} className='contents-ref' />
             <style jsx global>{`
                 html, textarea, input {
                     font-family: ${noto.style.fontFamily};

@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { admin } from "@/firebase/firebaseAdmin";
 import { GetServerSidePropsContext } from "next";
 import { parseCookies } from "nookies";
+import NProgress from "nprogress";
 
 export default function FolderDetail() {
     const dispatch = useDispatch();
@@ -86,21 +87,31 @@ export default function FolderDetail() {
         if (e.key === 'Enter') {
             if (newFolderName !== '') {
                 if (user.email && selectedFolder) {
-                    // DB에서 동일한 폴더를 찾아 폴더명을 변경
-                    const resFolderName = await sendNewFolderName(user.email, selectedFolder?.folderId, newFolderName)
-                    if(resFolderName) {
-                        setNewFolderName(resFolderName.data.newFolderName);
+                    try {
+                        NProgress.start();
+
+                        // DB에서 동일한 폴더를 찾아 폴더명을 변경
+                        const resFolderName = await sendNewFolderName(user.email, selectedFolder?.folderId, newFolderName)
+                        if (resFolderName) {
+                            setNewFolderName(resFolderName.data.newFolderName);
+                        }
+
+                        // 폴더명이 변경됐으므로 배열 전체 업데이트
+                        const resFavRecipe = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
+                            email: user.email,
+                        });
+                        const favRecipeFromStore: FavoriteRecipe[] = resFavRecipe.data.favoriteRecipe;
+                        dispatch(setFavoriteRecipe(favRecipeFromStore));
+
+                        NProgress.done();
+
+                        // 모든 작업이 완료된 후 작업 마침
+                        setIsAddFolder(false);
+                    } catch (error) {
+                        throw error;
+                    } finally {
+                        NProgress.done();
                     }
-
-                    // 폴더명이 변경됐으므로 배열 전체 업데이트
-                    const resFavRecipe = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
-                        email: user.email,
-                    });
-                    const favRecipeFromStore: FavoriteRecipe[] = resFavRecipe.data.favoriteRecipe;
-                    dispatch(setFavoriteRecipe(favRecipeFromStore));
-
-                    // 모든 작업이 완료된 후 작업 마침
-                    setIsAddFolder(false);
                 }
             }
         }
