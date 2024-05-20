@@ -1,6 +1,3 @@
-import Header from "../../components/header/Header";
-import HeaderOnContents from '../../components/header/HeaderOnContents';
-import Footer from '../../components/Footer';
 import Seo from "../../components/Seo";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { RootState } from "../../redux/store";
@@ -20,9 +17,6 @@ import RelatedRecipes from "@/components/recipeDetail/RelatedRecipes";
 
 export default function RecipeDetail() {
     const dispatch = useDispatch();
-
-    const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
-    const headerSlide = useSelector((state: RootState) => state.headerSlide);
 
     const recipe = useSelector((state: RootState) => state.recipe); // 레시피의 상세 정보를 담고있는 state
     const servings = useSelector((state: RootState) => state.servings); // 레시피의 인분 수 
@@ -107,7 +101,7 @@ export default function RecipeDetail() {
     return (
         <>
             <Seo title="레시피" />
-            <div className="container">
+            <div className="container-float-top">
                 {
                     isShowPopUp &&
                     // 레시피 추가 완료 시 띄울 팝업
@@ -126,37 +120,6 @@ export default function RecipeDetail() {
                     isModalOpen={recipeAddModal}
                     setIsModalOpen={(isOpen) => dispatch(setRecipeAddModal(isOpen))}
                 />
-                <div className="header-container">
-                    {
-                        // 스크롤이 contents-container 영역을 지나치면 헤더가 사라지도록 설정
-                        !scrollPassContent ?
-                            <Header
-                                position="relative"
-                                backgroundColor="#ffffff"
-                                color="#111111"
-                                borderColor="#e8e8e8"
-                                svgFill="#000000"
-                                lightLogo={false}
-                                inputBackgroundColor="#f2f2f2" /> :
-                            <>
-                                <Header
-                                    position="relative"
-                                    backgroundColor="#ffffff"
-                                    color="#111111"
-                                    borderColor="#e8e8e8"
-                                    svgFill="#000000"
-                                    lightLogo={false}
-                                    inputBackgroundColor="#f2f2f2" />
-                                <HeaderOnContents
-                                    className={
-                                        !headerSlide ?
-                                            'slide-down' :
-                                            'slide-up'
-                                    }
-                                />
-                            </>
-                    }
-                </div>
                 <div className="container-float-top">
                     {/* 헤더와 풋터를 제외한 영역 */}
                     <div className="contents-container">
@@ -208,13 +171,11 @@ export default function RecipeDetail() {
                         <ReviewContainer />
                     </div>
                 </div>
-                <Footer />
-            </div >
+            </div>
             <style jsx>{`
                 .contents-container {
                     display: flex;
                     flex-direction: column;
-                    justify-content: center;
                     align-items: center;
                     margin-top: 70px;
                     color: #111111;

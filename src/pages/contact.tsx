@@ -1,7 +1,4 @@
-import Header from "../components/header/Header"
-import Footer from "../components/Footer"
 import Seo from "@/components/Seo"
-import HeaderOnContents from "@/components/header/HeaderOnContents";
 import { useState } from "react";
 import Image from "next/image";
 import contactImage from "/public/images/contact-img.jpg";
@@ -13,8 +10,6 @@ import mailSvg from '../../public/svgs/mail.svg';
 import PiNoticeModal from "@/components/modal/PiNoticeModal";
 import PiModal from "@/components/modal/PiModal";
 import SubmitModal from "@/components/modal/SubmitModal";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import PersonalInput from "@/components/contact/PersonalInput";
 import ContactContent from "@/components/contact/ContactContent";
 
@@ -28,9 +23,6 @@ export type Form = {
 }
 
 export default function Contact({ imgSrc }: { imgSrc: string }) {
-    const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
-    const headerSlide = useSelector((state: RootState) => state.headerSlide);
-
     // 회원의 문의 내용을 담는 state
     const [formData, setFormData] = useState<Form>({
         id: '',
@@ -113,108 +105,72 @@ export default function Contact({ imgSrc }: { imgSrc: string }) {
     return (
         <>
             <Seo title="문의" />
-            <div className="container">
-                <div className="header-container">
-                    {
-                        // 스크롤이 contents-container 영역을 지나치면 헤더가 사라지도록 설정
-                        !scrollPassContent ?
-                            <Header
-                                position="absolute"
-                                backgroundColor="transparent"
-                                color="#ffffff"
-                                borderColor="transparent"
-                                svgFill="#ffffff"
-                                lightLogo={true}
-                                inputBackgroundColor="#ffffff"
-                            /> :
-                            <>
-                                <Header
-                                    position="absolute"
-                                    backgroundColor="transparent"
-                                    color="#ffffff"
-                                    borderColor="transparent"
-                                    svgFill="#ffffff"
-                                    lightLogo={true}
-                                    inputBackgroundColor="#ffffff"
+            <div className="contact-img">
+                <Image src={imgSrc} alt="" layout="responsive" />
+            </div>
+            <div className="contents-container">
+                {/* 개인정보 처리방침에 동의하지 않았을 경우의 팝업 */}
+                <PiNoticeModal
+                    isCheckedModalOpen={isCheckedModalOpen}
+                    setIsModalOpen={setIsModalOpen}
+                    setIsCheckedModalOpen={setIsCheckedModalOpen}
+                />
+                {/* 문의사항이 전송 완료되었음을 알리는 팝업 */}
+                <SubmitModal
+                    isSubmitted={isSubmitted}
+                    setIsSubmitted={setIsSubmitted}
+                />
+                {/* 문의 내용에 대한 영역 */}
+                <div className="contact-section">
+                    <div className="contact-contents">
+                        {/* 좌측 영역 */}
+                        <div className="contact-left">
+                            <div className="contact-header">
+                                <div className="contact-title">메시지를 남겨주세요</div>
+                                <div className="contact-subtitle">All Cook에게 바라는 점, 궁금한 점 등을 작성해주세요 🧑‍🍳</div>
+                            </div>
+                            <PersonalInput
+                                formData={formData}
+                                emailValid={emailValid}
+                                formChange={formChange}
+                            />
+                            <div className="checkbox-div">
+                                <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={checkboxChange}
                                 />
-                                <HeaderOnContents
-                                    className={
-                                        !headerSlide ?
-                                            'slide-down' :
-                                            'slide-up'
-                                    }
-                                />
-                            </>
-                    }
-                    <div className="contact-img">
-                        <Image src={imgSrc} alt="" layout="responsive" />
-                    </div>
-                </div>
-                <div className="contents-container">
-                    {/* 개인정보 처리방침에 동의하지 않았을 경우의 팝업 */}
-                    <PiNoticeModal
-                        isCheckedModalOpen={isCheckedModalOpen}
-                        setIsModalOpen={setIsModalOpen}
-                        setIsCheckedModalOpen={setIsCheckedModalOpen}
-                    />
-                    {/* 문의사항이 전송 완료되었음을 알리는 팝업 */}
-                    <SubmitModal
-                        isSubmitted={isSubmitted}
-                        setIsSubmitted={setIsSubmitted}
-                    />
-                    {/* 문의 내용에 대한 영역 */}
-                    <div className="contact-section">
-                        <div className="contact-contents">
-                            {/* 좌측 영역 */}
-                            <div className="contact-left">
-                                <div className="contact-header">
-                                    <div className="contact-title">메시지를 남겨주세요</div>
-                                    <div className="contact-subtitle">All Cook에게 바라는 점, 궁금한 점 등을 작성해주세요 🧑‍🍳</div>
-                                </div>
-                                <PersonalInput
-                                    formData={formData}
-                                    emailValid={emailValid}
-                                    formChange={formChange}
-                                />
-                                <div className="checkbox-div">
-                                    <input
-                                        type="checkbox"
-                                        checked={isChecked}
-                                        onChange={checkboxChange}
+                                <div>
+                                    <span onClick={() => setIsModalOpen(true)}>개인정보 처리방침</span>에 동의합니다.
+                                    <PiModal
+                                        isModalOpen={isModalOpen}
+                                        setIsModalOpen={setIsModalOpen}
+                                        category="문의"
                                     />
-                                    <div>
-                                        <span onClick={() => setIsModalOpen(true)}>개인정보 처리방침</span>에 동의합니다.
-                                        <PiModal
-                                            isModalOpen={isModalOpen}
-                                            setIsModalOpen={setIsModalOpen}
-                                            category="문의"
-                                        />
-                                    </div>
-                                </div>
-                                {/* 좌측 하단 연락처, 이메일 영역 */}
-                                <div className="contact-footer">
-                                    <div className="tel-section">
-                                        <Image src={telSvg} className="tel-svg" alt="" />
-                                        <div>010-8511-3589</div>
-                                    </div>
-                                    <div className="mail-section">
-                                        <Image src={mailSvg} className="mail-svg" alt="" />
-                                        <div>jbljw02@naver.com</div>
-                                    </div>
                                 </div>
                             </div>
-                            {/* 우측 영역 */}
-                            <div className="contact-right">
-                                <ContactContent
-                                    formData={formData}
-                                    formChange={formChange}
-                                />
-                                <div onClick={formSubmit} className="contact-submit">전송</div>
+                            {/* 좌측 하단 연락처, 이메일 영역 */}
+                            <div className="contact-footer">
+                                <div className="tel-section">
+                                    <Image src={telSvg} className="tel-svg" alt="" />
+                                    <div>010-8511-3589</div>
+                                </div>
+                                <div className="mail-section">
+                                    <Image src={mailSvg} className="mail-svg" alt="" />
+                                    <div>jbljw02@naver.com</div>
+                                </div>
                             </div>
+                        </div>
+                        {/* 우측 영역 */}
+                        <div className="contact-right">
+                            <ContactContent
+                                formData={formData}
+                                formChange={formChange}
+                            />
+                            <div onClick={formSubmit} className="contact-submit">전송</div>
                         </div>
                     </div>
                 </div>
-                <Footer />
             </div>
             <style jsx>{`
                 .contact-introduce {

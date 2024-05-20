@@ -91,10 +91,14 @@ export default function Header({ className }: { className: string }) {
                     </span>
                 </div>
                 {/* 타이틀 이미지 */}
-                <div className='title-logo-div'>
-                    <Link href={''}>
-                        <Image src={titleLogoSmall} className='title-logo-small' alt={''} />
-                    </Link>
+                <div
+                    className='title-logo-div'
+                    onClick={() => router.push('/')}>
+                    <Image
+                        src={titleLogoSmall}
+                        className='title-logo-small'
+                        alt={''}
+                    />
                 </div>
                 {/* 검색창 및 로그인 네비게이션 바 */}
                 <div className='right-nav'>
@@ -106,7 +110,11 @@ export default function Header({ className }: { className: string }) {
                             onChange={changeInput}
                             className='search-input'
                             placeholder='메뉴, 재료로 검색' />
-                        <Image onClick={() => searchRecipe(inputValue)} className='search-svg' src={searchSvg} alt='' />
+                        <Image
+                            onClick={() => searchRecipe(inputValue)}
+                            className='search-svg'
+                            src={searchSvg}
+                            alt='' />
                     </div>
                     <div
                         className='user-container no-drag'

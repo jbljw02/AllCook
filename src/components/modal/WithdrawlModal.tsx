@@ -1,10 +1,12 @@
 import { setUser } from '@/redux/features/userSlice';
 import { RootState } from '@/redux/store';
+import axios from 'axios';
 import { deleteUser, getAuth } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect } from 'react';
 import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
+import NProgress from "nprogress";
 
 interface ModalProps {
     isModalOpen: boolean,
@@ -18,29 +20,47 @@ export default function WithdrawlModal({ isModalOpen, withdrawlOk, setIsModalOpe
     const router = useRouter();
 
     const user = useSelector((state: RootState) => state.user);
-   
+
     // 회원 탈퇴
     const withdrawlUser = useCallback(async () => {
         const auth = getAuth();
         const currentUser = auth.currentUser;
-    
+
         try {
             if (user.name !== '' && currentUser && withdrawlOk) {
-                await deleteUser(currentUser);
+                NProgress.start();
+
+                // 회원 탈퇴 및 쿠키 삭제
+                deleteUser(currentUser).then(async () => {
+                    await axios.post('/api/auth/withdrawl', {
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                    });
+                }).catch((error) => {
+                    throw error;
+                });
+
                 dispatch(setUser({
                     name: '',
                     email: '',
                 }));
+                NProgress.done();
+
                 router.push('/');
             }
         } catch (error) {
             throw error;
         }
+        finally {
+            NProgress.done();
+        }
     }, [withdrawlOk]);
 
-     // 동의하면 탈퇴를 실행
-     useEffect(() => {
-        if(withdrawlOk) {
+    // 동의하면 탈퇴를 실행
+    useEffect(() => {
+        if (withdrawlOk) {
             withdrawlUser();
         }
     }, [withdrawlOk, withdrawlUser]);

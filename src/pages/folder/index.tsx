@@ -1,8 +1,5 @@
-import Footer from "@/components/Footer";
 import Seo from "@/components/Seo";
 import FolderList from "@/components/favoriteRecipe/FolderList";
-import Header from "@/components/header/Header";
-import HeaderOnContents from "@/components/header/HeaderOnContents";
 import { FavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";
 import { RootState } from "@/redux/store";
 import axios from "axios";
@@ -16,9 +13,6 @@ import { admin } from "@/firebase/firebaseAdmin";
 
 export default function Folder() {
     const dispatch = useDispatch();
-
-    const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
-    const headerSlide = useSelector((state: RootState) => state.headerSlide);
 
     const user = useSelector((state: RootState) => state.user);
 
@@ -41,58 +35,24 @@ export default function Folder() {
     return (
         <>
             <Seo title="관심 레시피" />
-            <div className="container">
-                <div className="container-float-top">
-                    <div className="header-container">
-                        {
-                            // 스크롤이 contents-container 영역을 지나치면 헤더가 사라지도록 설정
-                            !scrollPassContent ?
-                                <Header
-                                    position="relative"
-                                    backgroundColor="#ffffff"
-                                    color="#111111"
-                                    borderColor="#e8e8e8"
-                                    svgFill="#000000"
-                                    lightLogo={false}
-                                    inputBackgroundColor="#f2f2f2" /> :
-                                <>
-                                    <Header
-                                        position="relative"
-                                        backgroundColor="#ffffff"
-                                        color="#111111"
-                                        borderColor="#e8e8e8"
-                                        svgFill="#000000"
-                                        lightLogo={false}
-                                        inputBackgroundColor="#f2f2f2" />
-                                    <HeaderOnContents
-                                        className={
-                                            !headerSlide ?
-                                                'slide-down' :
-                                                'slide-up'
-                                        }
-                                    />
-                                </>
-                        }
-                    </div>
-                    <div className="contents-container">
-                        {
-                            !isFavFolderDelete ?
-                                <div className="nav">
-                                    <div className="title">내가 저장한 레시피</div>
+            <div className="container-float-top">
+                <div className="contents-container">
+                    {
+                        !isFavFolderDelete ?
+                            <div className="nav">
+                                <div className="title">내가 저장한 레시피</div>
+                                <ModifyNav category="folder" />
+                            </div> :
+                            <>
+                                <div className="title">내가 저장한 레시피</div>
+                                <div className="nav-modify-on">
                                     <ModifyNav category="folder" />
-                                </div> :
-                                <>
-                                    <div className="title">내가 저장한 레시피</div>
-                                    <div className="nav-modify-on">
-                                        <ModifyNav category="folder" />
-                                    </div>
-                                </>
-                        }
-                        {/* 폴더 목록을 정렬 */}
-                        <FolderList />
-                    </div>
+                                </div>
+                            </>
+                    }
+                    {/* 폴더 목록을 정렬 */}
+                    <FolderList />
                 </div>
-                <Footer />
             </div>
             <style jsx>{`
                 .contents-container {

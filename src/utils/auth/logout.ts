@@ -12,5 +12,5 @@ export default function logout() {
         });
     }).catch((error) => {
         throw error;
-    })
+    });
 }

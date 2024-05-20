@@ -16,6 +16,7 @@ export default function UserDropdown({ category }: { category: string }) {
             name: '',
             email: '',
         }));
+        router.push('/');
     }
 
     return (

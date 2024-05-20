@@ -20,13 +20,15 @@ export default function Header({ position, backgroundColor, color, borderColor, 
     const router = useRouter();
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
+    const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
 
     const [inputValue, setInputValue] = useState<string>('');
+    
     const changeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.target.value);
     }
 
-    const searchRecipe = (event: React.KeyboardEvent<HTMLInputElement> | string) => {
+    const searchRecipe = async (event: React.KeyboardEvent<HTMLInputElement> | string) => {
         if (typeof event !== 'string' && event.key === 'Enter') {
             let newDisplayedMenu = searchByMenuIngredient(inputValue, allMenu);
             dispatch(setDisplayedMenu(newDisplayedMenu));
@@ -34,7 +36,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
             // 현재 위치가 레시피 페이지가 아닌 경우에만 세션 스토리지에 이동 했음을 담고, 페이지를 이동시킴
             if (router.pathname !== '/recipe') {
                 sessionStorage.setItem('navigated', 'true');
-                router.push('/recipe');
+                await router.push('/recipe');
             }
             // 검색어가 공란일 경우 초기 상태로 되돌림
             if (inputValue === '') {
@@ -48,7 +50,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
             // 현재 위치가 레시피 페이지가 아닌 경우에만 세션 스토리지에 이동 했음을 담고, 페이지를 이동시킴
             if (router.pathname !== '/recipe') {
                 sessionStorage.setItem('navigated', 'true');
-                router.push('/recipe');
+                await router.push('/recipe');
             }
 
             // 검색어가 공란일 경우 초기 상태로 되돌림

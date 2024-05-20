@@ -1,5 +1,3 @@
-import Header from "../../components/header/Header"
-import Footer from "../../components/Footer"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../../redux/store";
 import { setDisplayedMenu } from "../../redux/features/menuSlice";
@@ -7,7 +5,6 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Seo from "../../components/Seo";
 import SortList from "../../components/recipe/SortList";
-import HeaderOnContents from '../../components/header/HeaderOnContents';
 import filterSvg from '../../../public/svgs/filter.svg';
 import RecipeTable from "@/components/table/RecipeTable";
 import FilterDetail from "@/components/recipe/filterDetail/FilterDetail";
@@ -17,12 +14,9 @@ import NoneMenu from "@/components/recipe/NoneMenu";
 export default function Recipe() {
     const dispatch = useDispatch();
 
-    const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
-    const headerSlide = useSelector((state: RootState) => state.headerSlide);
-    
     const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
-    
+
     // 화면이 첫 렌더링 될 때 보일 메뉴를 allMenu와 동일하게 업데이트
     useEffect(() => {
         // 페이지를 이동하지 않은 경우에만 업데이트(검색을 통해 이동하지 않은 경우에만)
@@ -53,75 +47,41 @@ export default function Recipe() {
     return (
         <>
             <Seo title="메뉴" />
-            <div className="container">
-                <div className="container-float-top">
-                    <div className="header-container">
-                        {
-                            // 스크롤이 contents-container 영역을 지나치면 헤더가 사라지도록 설정
-                            !scrollPassContent ?
-                                <Header
-                                    position="relative"
-                                    backgroundColor="#ffffff"
-                                    color="#111111"
-                                    borderColor="#e8e8e8"
-                                    svgFill="#000000"
-                                    lightLogo={false}
-                                    inputBackgroundColor="#f2f2f2" /> :
-                                <>
-                                    <Header
-                                        position="relative"
-                                        backgroundColor="#ffffff"
-                                        color="#111111"
-                                        borderColor="#e8e8e8"
-                                        svgFill="#000000"
-                                        lightLogo={false}
-                                        inputBackgroundColor="#f2f2f2" />
-                                    <HeaderOnContents
-                                        className={
-                                            !headerSlide ?
-                                                'slide-down' :
-                                                'slide-up'
-                                        }
-                                    />
-                                </>
-                        }
-                    </div>
-                    {/* 헤더와 풋터를 제외한 영역 */}
-                    <div className="contents-container">
-                        {/* 정렬, 해시태그, 상세검색 등을 보여주는 영역 */}
-                        <div className="top-contents-section">
-                            <div className="sortList-section">
-                                {/* 레시피의 정렬 기준을 결정하는 영역 */}
-                                <SortList />
-                            </div>
-                            <div className="hash-tag-section">
-                                <HashTags />
-                            </div>
-                            <div ref={filterRef} className="filter-button-div">
-                                <span className='filter-button' onClick={() => setFilterVisible(!filterVisible)}>
-                                    <Image className="filter-svg" src={filterSvg} alt='' />
-                                    <span className="no-drag">상세검색</span>
-                                </span>
-                                {/* 상세 검색 영역 */}
-                                {
-                                    filterVisible &&
-                                    <FilterDetail
-                                    setFilterVisible={setFilterVisible}
-                                     />
-                                }
-                            </div>
+            <div className="container-float-top">
+                {/* 헤더와 풋터를 제외한 영역 */}
+                <div className="contents-container">
+                    {/* 정렬, 해시태그, 상세검색 등을 보여주는 영역 */}
+                    <div className="top-contents-section">
+                        <div className="sortList-section">
+                            {/* 레시피의 정렬 기준을 결정하는 영역 */}
+                            <SortList />
                         </div>
-                        {/* 메뉴를 보여주는 영역 */}
-                        {
-                            // 전체 메뉴는 존재하고 화면에 보여질 메뉴가 없는 상태
-                            // 즉, 검색 결과가 없는 상태엔 다른 화면을 보여줌
-                            allMenu.length && !displayedMenu.length ?
+                        <div className="hash-tag-section">
+                            <HashTags />
+                        </div>
+                        <div ref={filterRef} className="filter-button-div">
+                            <span className='filter-button' onClick={() => setFilterVisible(!filterVisible)}>
+                                <Image className="filter-svg" src={filterSvg} alt='' />
+                                <span className="no-drag">상세검색</span>
+                            </span>
+                            {/* 상세 검색 영역 */}
+                            {
+                                filterVisible &&
+                                <FilterDetail
+                                    setFilterVisible={setFilterVisible}
+                                />
+                            }
+                        </div>
+                    </div>
+                    {/* 메뉴를 보여주는 영역 */}
+                    {
+                        // 전체 메뉴는 존재하고 화면에 보여질 메뉴가 없는 상태
+                        // 즉, 검색 결과가 없는 상태엔 다른 화면을 보여줌
+                        allMenu.length && !displayedMenu.length ?
                             <NoneMenu /> :
                             <RecipeTable />
-                        }
-                    </div>
+                    }
                 </div>
-                <Footer />
             </div>
             <style jsx> {`
                 .contents-container {

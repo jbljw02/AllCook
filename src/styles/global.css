@@ -26,6 +26,7 @@ body {
 .container-float-top {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 }
 
 .no-drag {
