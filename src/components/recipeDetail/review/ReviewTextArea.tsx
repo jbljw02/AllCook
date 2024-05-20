@@ -4,6 +4,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useState, ChangeEvent, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import NProgress from "nprogress";
 
 export default function ReviewTextArea() {
     const dispatch = useDispatch();
@@ -72,6 +73,8 @@ export default function ReviewTextArea() {
     // 레시피에 대한 댓글 및 평점을 업데이트
     const sendNewRecipeOpinion = async () => {
         try {
+            NProgress.start();
+
             const data = {
                 email: user.email,
                 comment: formData.comment,
@@ -86,10 +89,14 @@ export default function ReviewTextArea() {
             });
             reciveRecipeOpinion(user.email, recipe.RCP_SEQ);
             dispatch(setRecipeOpinion(response.data.opinions));
+
+            NProgress.done();
+
             setFormData({
                 ...formData,
                 comment: '',
-            })
+            });
+            setRating(0);
         } catch (error) {
             throw error;
         }

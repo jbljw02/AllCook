@@ -18,6 +18,7 @@ import sendUserInitialData from "@/utils/auth/sendUserInitialData";
 import FormInput from "@/components/input/FormInput";
 import { GetServerSidePropsContext } from "next";
 import { parseCookies } from "nookies";
+import NProgress from "nprogress";
 
 export type signUpForm = {
     name: string,
@@ -142,6 +143,8 @@ export default function SignUp() {
     // 회원가입 초기 작업
     const signUp = async () => {
         try {
+            NProgress.start();
+
             const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
             const user = userCredential.user;
 
@@ -149,6 +152,8 @@ export default function SignUp() {
             await sendEmailVerification(user);
             // 이메일 인증 여부를 확인하는 모달을 띄움
             setIsSubmitted(true);
+
+            NProgress.done();
 
             setEmailDuplicated(false);
         }
@@ -160,6 +165,8 @@ export default function SignUp() {
             else {
                 throw error;
             }
+        } finally {
+            NProgress.done();
         }
     }
 
@@ -579,7 +586,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
     const cookies = parseCookies(context);
     const authToken = cookies.authToken;
 
-    if(!authToken) {
+    if (!authToken) {
         return {
             props: {},
         }

@@ -12,6 +12,7 @@ import filterDessert from '@/utils/filterRecomMenu/filterDessert';
 import shuffleArray from '@/utils/shuffleArray';
 import { setHeaderSlide, setScrollPassContent } from '@/redux/features/scrollSlice';
 import getEmailToken from '@/utils/fetch/getEmailToken';
+import NextNProgress from 'nextjs-progressbar';
 import '../styles/global.css'
 import '../styles/menuTable.css'
 import '../styles/scrollStyle.css'
@@ -174,6 +175,12 @@ function App({ Component, pageProps }: AppProps) {
                     top: 50%;
                 }
             `}</style>
+            <NextNProgress
+                color="#29D"
+                startPosition={0.3}
+                stopDelayMs={200}
+                height={2.5}
+                showOnShallow={true} />
             <Component {...pageProps} />
         </>
     )

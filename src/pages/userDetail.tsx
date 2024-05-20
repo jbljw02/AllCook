@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { parseCookies } from "nookies";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import NProgress from "nprogress";
 
 export type UserForm = {
     name: string,
@@ -25,7 +26,7 @@ export default function UserDetail() {
 
     const scrollPassContent = useSelector((state: RootState) => state.scrollPassContent);
     const headerSlide = useSelector((state: RootState) => state.headerSlide);
-    
+
     const user = useSelector((state: RootState) => state.user);
 
     const [formData, setFormData] = useState<UserForm>({
@@ -65,20 +66,26 @@ export default function UserDetail() {
             submitted: true,
         });
 
-        const auth = getAuth();
-        const currentUser = auth.currentUser;
-
         try {
+            NProgress.start();
+            
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+
             if (formData.name !== '') {
                 if (currentUser) {
                     await updateProfile(currentUser, {
                         displayName: formData.name,
                     });
+
+                    NProgress.done();
                     window.location.reload();
                 }
             }
         } catch (error) {
             throw error;
+        } finally {
+            NProgress.done();
         }
     }
 
@@ -103,7 +110,7 @@ export default function UserDetail() {
 
     return (
         <>
-        <Seo title="회원 정보"  />
+            <Seo title="회원 정보" />
             <div className="container">
                 <div className="header-container">
                     {

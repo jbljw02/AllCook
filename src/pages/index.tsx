@@ -1,4 +1,4 @@
-import bannerImg from "/public/images/banner-img.jpg";
+import bannerImg from '../../public/images/banner-img.jpg';
 import Image from "next/image";
 import { RootState } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +14,7 @@ import MenuTable from "@/components/table/MenuTable";
 import SkeletonUI from "../components/Skeleton";
 import ExplainSection from "@/components/home/ExplainSection";
 
-export default function Home() {
+export default function Home({ imgSrc }: { imgSrc: string }) {
     const dispatch = useDispatch();
 
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
@@ -75,7 +75,7 @@ export default function Home() {
                         </div>
                     </div>
                     <span className="banner-img">
-                        <Image src={bannerImg} alt={""} layout="responsive" />
+                        <Image src={imgSrc} alt={""} layout="responsive" />
                     </span>
                 </div>
                 {/* 헤더,풋터 및 배너 컨테이너를 제외한 컨텐츠의 영역 */}
@@ -259,6 +259,8 @@ export default function Home() {
 
 export const getStaticProps = () => {
     return {
-        props: {}
+        props: {
+            imgSrc: bannerImg,
+        }
     }
 }

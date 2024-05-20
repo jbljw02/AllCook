@@ -66,7 +66,7 @@ export default function FolderList() {
     // 클릭한 폴더의 상세 페이지로 이동
     const moveToFolderDetail = (folderId: number) => {
         router.push({
-            pathname: `/favoriteRecipe/${folderId}`,
+            pathname: `/folder/${folderId}`,
             query: { folderId: folderId },
         });
     }
