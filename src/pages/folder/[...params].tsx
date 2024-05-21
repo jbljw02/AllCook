@@ -14,6 +14,7 @@ import { admin } from "@/firebase/firebaseAdmin";
 import { GetServerSidePropsContext } from "next";
 import { parseCookies } from "nookies";
 import NProgress from "nprogress";
+import requestFavRecipes from "@/utils/fetch/requestFavRecipes";
 
 export default function FolderDetail() {
     const dispatch = useDispatch();
@@ -25,18 +26,8 @@ export default function FolderDetail() {
     // 컴포넌트가 마운트 될 때 관심 레시피 호출
     useEffect(() => {
         (async () => {
-            try {
-                if (user.email) {
-                    const response = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
-                        email: user.email,
-                    });
-
-                    const favRecipeFromStore: FavoriteRecipe[] = response.data.favoriteRecipe;
-                    dispatch(setFavoriteRecipe(favRecipeFromStore));
-                }
-            } catch (error) {
-                throw Error;
-            }
+            const favRecipeFromStore = await requestFavRecipes(user);
+            dispatch(setFavoriteRecipe(favRecipeFromStore));
         })();
     }, [user, dispatch]);
 

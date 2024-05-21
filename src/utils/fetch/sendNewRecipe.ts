@@ -14,6 +14,7 @@ const sendNewRecipe = async (email: string, id: number, recipe: Menu) => {
                 "Accept": "application/json"
             },
         })
+
         return response;
     } catch (error) {
         throw error;
