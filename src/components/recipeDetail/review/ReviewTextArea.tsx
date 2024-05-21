@@ -196,7 +196,7 @@ export default function ReviewTextArea() {
                             placeholder={`${(user && user.name !== '') &&
                                 user.name ?
                                 '이 레시피에 대한 의견을 자유롭게 남겨주세요!' :
-                                '로그인하고 레시피를 작성해보세요!'}`} />
+                                '로그인하고 댓글을 남겨보세요!'}`} />
                     </div>
                     {
                         formData.submitted && formData.isRatingEmpty && formData.comment !== '' ?

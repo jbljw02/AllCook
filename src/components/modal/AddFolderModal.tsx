@@ -282,7 +282,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                                         onChange={newFolderNameChange}
                                         onKeyDown={newFolderSave}
                                         onBlur={newFolderBlur}
-                                        placeholder="폴더의 이름을 정해주세요!"
+                                        placeholder="폴더명을 정해주세요!"
                                     />
                                 </div>
                             </div>

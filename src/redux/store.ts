@@ -12,6 +12,7 @@ import RecipePageSlice from './features/recipePageSlice';
 import scrollReducers from './features/scrollSlice';
 import cookWayReducers, { CookWay } from './features/cookWaySlice';
 import foodTypeReducers, { FoodType } from './features/foodTypeSlice';
+import SearchInputReducers from './features/searchInputSlice';
 
 export type RootState = {
     recomMenu: Menu[],
@@ -43,6 +44,7 @@ export type RootState = {
     cookWay: CookWay,
     servings: number,
     nutritionVisible: boolean,
+    searchInput: string,
 }
 
 // 각각의 기능을 가진 리듀서들을 병합
@@ -73,6 +75,7 @@ const combinedReducer = combineReducers({
     cookWay: cookWayReducers.cookWay,
     servings: RecipeReducers.servings,
     nutritionVisible: RecipeReducers.nutritionVisible,
+    searchInput: SearchInputReducers.searchInput,
 });
 
 // 전체 리듀서를 관리
