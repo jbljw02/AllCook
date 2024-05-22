@@ -6,6 +6,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import NProgress from "nprogress";
+import requestFavRecipes from "@/utils/fetch/requestFavRecipes";
 
 export default function ModifyNav({ category }: { category: string }) {
     const dispatch = useDispatch();
@@ -67,11 +68,7 @@ export default function ModifyNav({ category }: { category: string }) {
                 await recipeDeleteRequest(user.email, selectedFolder.folderId, isCheckedRecipe);
 
                 // 레시피가 삭제됐으므로 배열 전체 업데이트
-                const resFavRecipe = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
-                    email: user.email,
-                });
-                const favRecipeFromStore: FavoriteRecipe[] = resFavRecipe.data.favoriteRecipe;
-
+                const favRecipeFromStore = await requestFavRecipes(user);
                 dispatch(setFavoriteRecipe(favRecipeFromStore));
                 cancelDelete();
 

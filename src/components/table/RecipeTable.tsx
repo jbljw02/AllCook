@@ -210,7 +210,6 @@ export default function RecipeTable() {
             <style jsx>{`
                 .menu-section {
                     display: flex;
-                    justify-content: center;
                     margin-top: 30px;
                     width: 1080px;
                 }

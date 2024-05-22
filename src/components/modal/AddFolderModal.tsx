@@ -5,11 +5,13 @@ import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import RecipeThumbnail from '../favoriteRecipe/RecipeThumbnail';
 import sendNewFolder from '@/utils/fetch/sendNewFolder';
-import axios from 'axios';
 import sendNewRecipe from '@/utils/fetch/sendNewRecipe';
 import recipeDeleteRequest from '@/utils/fetch/recipeDeleteRequest';
 import React from 'react';
 import NProgress from "nprogress";
+import requestFavRecipes from '@/utils/fetch/requestFavRecipes';
+import { debounce } from 'lodash';
+import Loading from '../Loading';
 
 interface modalProps {
     isModalOpen: boolean,
@@ -27,14 +29,8 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
     // 컴포넌트가 마운트되기 전, DB로부터 사용자의 관심 레시피 정보를 받아옴
     useEffect(() => {
         (async () => {
-            if (user && user.email) {
-                const response = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
-                    email: user.email,
-                });
-
-                const favRecipeFromStore: FavoriteRecipe[] = response.data.favoriteRecipe;
-                dispatch(setFavoriteRecipe(favRecipeFromStore));
-            }
+            const favRecipeFromStore = await requestFavRecipes(user);
+            dispatch(setFavoriteRecipe(favRecipeFromStore));
         })();
     }, [user, dispatch]);
 
@@ -62,27 +58,20 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
     const addedRecipeInfo = useSelector((state: RootState) => state.addedRecipeInfo);
 
     // 레시피를 다른 폴더로 이동시킴
-    const moveRecipeToAnotherFolder = async (newFolderId: number) => {
+    // 300ms의 디바운싱을 적용하여 중복 실행 방지
+    const moveRecipeToAnotherFolder = debounce(async (newFolderId: number) => {
         const isDuplicated = isDuplicatedRecipe(newFolderId);
         if (!isDuplicated) {
             try {
-                NProgress.start();
+                setIsLoading(true);
 
                 // 레시피를 추가한 이전 폴더에서 레시피를 삭제하는 요청 전송
                 await recipeDeleteRequest(user.email, addedRecipeInfo.folderId, recipe);
-                // 레시피를 state에서 삭제
-                dispatch(removeRecipeFromFolder({
-                    forderId: addedRecipeInfo.folderId,
-                    recipeNum: recipe.RCP_SEQ,
-                }));
 
                 // 레시피 추가를 요청 
-                await sendNewRecipe(user.email, newFolderId, recipe);
-                // 이동시킬 폴더에 레시피를 추가
-                dispatch(addRecipeToFolder({
-                    folderId: newFolderId,
-                    recipe: recipe
-                }));
+                const response = await sendNewRecipe(user.email, newFolderId, recipe);
+                const favRecipeFromStore = response.data.favoriteRecipe;
+                dispatch(setFavoriteRecipe(favRecipeFromStore));
 
                 NProgress.done();
 
@@ -91,7 +80,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
             } catch (error) {
                 throw error;
             } finally {
-                NProgress.done();
+                setIsLoading(false);
             }
         }
         else {
@@ -100,23 +89,21 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                 duplicated: true,
             });
         }
-    }
+    }, 300);
 
     // 레시피를 폴더에 추가하고 모달을 닫음
-    const addFavoriteRecipe = async (id: number, folderName: string) => {
+    // 300ms의 디바운싱을 적용하여 중복 실행 방지
+    const addFavoriteRecipe = debounce(async (id: number, folderName: string) => {
         const isDuplicated = isDuplicatedRecipe(id);
 
         if (!isDuplicated) {
             try {
-                NProgress.start();
+                setIsLoading(true);
 
                 // 레시피 추가를 요청 
-                await sendNewRecipe(user.email, id, recipe);
-                // 이동시킬 폴더에 레시피를 추가
-                dispatch(addRecipeToFolder({
-                    folderId: id,
-                    recipe: recipe
-                }));
+                const response = await sendNewRecipe(user.email, id, recipe);
+                const favRecipeFromStore = response.data.favoriteRecipe;
+                dispatch(setFavoriteRecipe(favRecipeFromStore));
 
                 // 추가한 레시피의 상세 정보를 업데이트(팝업을 띄우기 위해)
                 dispatch(setAddedRecipeInfo({
@@ -131,27 +118,25 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                     duplicated: false,
                 });
 
-                NProgress.done();
-
                 // 레시피를 추가하는 모달을 닫음
                 dispatch(setRecipeAddModal(false));
             } catch (error) {
                 throw error;
             } finally {
-                NProgress.done();
+                setIsLoading(false);
             }
-        }
-        else {
+        } else {
             setIsRecipeDuplicated({
                 folderId: id,
                 duplicated: true,
             });
         }
-    }
+    }, 300);
 
     const [isAddFolder, setIsAddFolder] = useState<boolean>(false); // 현재 새 폴더를 추가중인지
     const [newFolderName, setNewFolderName] = useState<string>(''); // 새 폴더의 이름
     const nameRef = useRef<HTMLInputElement>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     // 새 폴더의 이름을 변경
     const newFolderNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -216,6 +201,10 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                     }
                 }}
             >
+                {
+                    isLoading && 
+                    <Loading />
+                }
                 <div className="pop-up-container">
                     <div className='pop-up-title-section'>
                         <div className='pop-up-title'>폴더에 레시피를 저장</div>
@@ -282,7 +271,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                                         onChange={newFolderNameChange}
                                         onKeyDown={newFolderSave}
                                         onBlur={newFolderBlur}
-                                        placeholder="폴더의 이름을 정해주세요!"
+                                        placeholder="폴더명을 정해주세요!"
                                     />
                                 </div>
                             </div>
@@ -329,8 +318,6 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                     justify-content: flex-start;
                     align-items: flex-start;
                     margin-top: 30px;
-                    {/* padding-top: 22px;
-                    border-top: 1px solid #dbdbdb; */}
                 }
                 .folder-section {
                     display: flex;

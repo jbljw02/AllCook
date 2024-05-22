@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -12,6 +12,7 @@ import userLight from '../../../public/svgs/user-light.svg';
 import userDark from '../../../public/svgs/user-dark.svg';
 import Image from 'next/image';
 import UserDropdown from './UserDropdown';
+import { setSearchInput } from '@/redux/features/searchInputSlice';
 
 type Position = 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky';
 
@@ -20,49 +21,49 @@ export default function Header({ position, backgroundColor, color, borderColor, 
     const router = useRouter();
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
-    const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
 
-    const [inputValue, setInputValue] = useState<string>('');
-    
+    const searchInput = useSelector((state: RootState) => state.searchInput);
+
     const changeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setInputValue(event.target.value);
+        dispatch(setSearchInput(event.target.value));
     }
+
+    const [isUpdated, setIsUpdated] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (isUpdated) {
+            router.push('/recipe').then(() => setIsUpdated(false));
+        }
+    }, [isUpdated, router]);
 
     const searchRecipe = async (event: React.KeyboardEvent<HTMLInputElement> | string) => {
         if (typeof event !== 'string' && event.key === 'Enter') {
-            let newDisplayedMenu = searchByMenuIngredient(inputValue, allMenu);
-            dispatch(setDisplayedMenu(newDisplayedMenu));
-
-            // 현재 위치가 레시피 페이지가 아닌 경우에만 세션 스토리지에 이동 했음을 담고, 페이지를 이동시킴
-            if (router.pathname !== '/recipe') {
-                sessionStorage.setItem('navigated', 'true');
-                await router.push('/recipe');
+            if (searchInput !== '') {
+                const newDisplayedMenu = searchByMenuIngredient(searchInput, allMenu);
+                dispatch(setDisplayedMenu(newDisplayedMenu));
+                setIsUpdated(true);
             }
-            // 검색어가 공란일 경우 초기 상태로 되돌림
-            if (inputValue === '') {
+            else {
                 dispatch(setDisplayedMenu(allMenu));
+                setIsUpdated(true);
             }
         }
         else if (typeof event === 'string') {
-            let newDisplayedMenu = searchByMenuIngredient(event, allMenu);
-            dispatch(setDisplayedMenu(newDisplayedMenu));
-
-            // 현재 위치가 레시피 페이지가 아닌 경우에만 세션 스토리지에 이동 했음을 담고, 페이지를 이동시킴
-            if (router.pathname !== '/recipe') {
-                sessionStorage.setItem('navigated', 'true');
-                await router.push('/recipe');
+            if (searchInput !== '') {
+                const newDisplayedMenu = searchByMenuIngredient(event, allMenu);
+                dispatch(setDisplayedMenu(newDisplayedMenu));
+                setIsUpdated(true);
             }
-
-            // 검색어가 공란일 경우 초기 상태로 되돌림
-            if (inputValue === '') {
+            else {
                 dispatch(setDisplayedMenu(allMenu));
+                setIsUpdated(true);
             }
         }
-    }
+    };
 
     const recipeClick = () => {
         dispatch(setDisplayedMenu(allMenu));
-        setInputValue('');
+        dispatch(setSearchInput(''));
         router.push('/recipe');
     }
 
@@ -82,24 +83,26 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                     className='header'>
                     {/* 메뉴 네비게이션 바 */}
                     <div className='left-nav'>
-                        <span className='home'>
-                            <Link
-                                style={{ textDecoration: 'none', color: 'inherit' }}
-                                href={'/'}>
-                                Home
-                            </Link>
+                        <span
+                            className='home'
+                            onClick={() => {
+                                router.push('/');
+                                dispatch(setSearchInput(''));
+                            }}>
+                            Home
                         </span>
                         <span
                             className='recipe'
                             onClick={recipeClick}>
                             Recipe
                         </span>
-                        <span className='contact'>
-                            <Link
-                                style={{ textDecoration: 'none', color: 'inherit' }}
-                                href={'/contact'}>
-                                Contact
-                            </Link>
+                        <span
+                            className='contact'
+                            onClick={() => {
+                                router.push('/contact');
+                                dispatch(setSearchInput(''));
+                            }}>
+                            Contact
                         </span>
                     </div>
                     {/* 타이틀 이미지 */}
@@ -122,14 +125,20 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                             {/* onKeyDown = 키가 눌렸을 때 발생 */}
                             <input
                                 onKeyDown={searchRecipe}
-                                value={inputValue}
+                                value={searchInput}
                                 onChange={changeInput}
                                 style={{ backgroundColor: inputBackgroundColor }}
                                 className='search-input'
                                 placeholder='메뉴, 재료로 검색' />
-                            <Image onClick={() => searchRecipe(inputValue)} className='search-svg' src={searchSvg} alt='' />
+                            <Image
+                                onClick={() => searchRecipe(searchInput)}
+                                className='search-svg'
+                                src={searchSvg}
+                                alt='' />
                         </div>
-                        <div className='user-container no-drag' onClick={() => setUserDetail(!userDetail)}>
+                        <div
+                            className='user-container no-drag'
+                            onClick={() => setUserDetail(!userDetail)}>
                             {
 
                                 lightLogo ?

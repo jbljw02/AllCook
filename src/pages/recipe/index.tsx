@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../../redux/store";
-import { setDisplayedMenu } from "../../redux/features/menuSlice";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Seo from "../../components/Seo";
@@ -12,19 +11,8 @@ import HashTags from "@/components/recipe/HashTags";
 import NoneMenu from "@/components/recipe/NoneMenu";
 
 export default function Recipe() {
-    const dispatch = useDispatch();
-
     const allMenu = useSelector((state: RootState) => state.allMenu);
     const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
-
-    // 화면이 첫 렌더링 될 때 보일 메뉴를 allMenu와 동일하게 업데이트
-    useEffect(() => {
-        // 페이지를 이동하지 않은 경우에만 업데이트(검색을 통해 이동하지 않은 경우에만)
-        if (!sessionStorage.getItem('navigated')) {
-            dispatch(setDisplayedMenu(allMenu));
-        }
-        sessionStorage.removeItem('navigated');
-    }, [allMenu, dispatch]);
 
     const [filterVisible, setFilterVisible] = useState<boolean>(false);  // '상세검색' 클릭 시 띄워지는 창을 관리하기 위한 state
     const filterRef = useRef<HTMLDivElement | null>(null);
@@ -44,6 +32,9 @@ export default function Recipe() {
         }
     }, [filterRef]);
 
+    const dispatch = useDispatch();
+    const searchInput = useSelector((state: RootState) => state.searchInput);
+
     return (
         <>
             <Seo title="메뉴" />
@@ -60,7 +51,9 @@ export default function Recipe() {
                             <HashTags />
                         </div>
                         <div ref={filterRef} className="filter-button-div">
-                            <span className='filter-button' onClick={() => setFilterVisible(!filterVisible)}>
+                            <span
+                                className='filter-button'
+                                onClick={() => setFilterVisible(!filterVisible)}>
                                 <Image className="filter-svg" src={filterSvg} alt='' />
                                 <span className="no-drag">상세검색</span>
                             </span>
