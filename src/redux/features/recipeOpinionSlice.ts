@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export type RecipeOpinion = {
     RCP_SEQ: string,
     email: string,
+    name: string,
     comment: string,
     rating: number,
 }

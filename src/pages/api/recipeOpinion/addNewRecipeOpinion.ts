@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next/types";
 
 // 댓글 및 별점을 레시피에 추가
 const addNewRecipeOpinion = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { email, comment, rating, RCP_SEQ } = req.body;
+    const { email, name, comment, rating, RCP_SEQ } = req.body;
 
     try {
         const recipeDocRef = doc(firestore, 'recipes', RCP_SEQ);
@@ -13,6 +13,7 @@ const addNewRecipeOpinion = async (req: NextApiRequest, res: NextApiResponse) =>
         if (recipeDocSnap.exists()) {
             const opinion = {
                 email,
+                name,
                 comment,
                 rating,
                 RCP_SEQ,

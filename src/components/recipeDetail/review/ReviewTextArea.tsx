@@ -77,6 +77,7 @@ export default function ReviewTextArea() {
 
             const data = {
                 email: user.email,
+                name: user.name,
                 comment: formData.comment,
                 rating: rating,
                 RCP_SEQ: recipe.RCP_SEQ,

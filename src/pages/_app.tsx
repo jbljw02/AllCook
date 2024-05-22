@@ -47,7 +47,7 @@ function App({ Component, pageProps }: AppProps) {
     // Firebase 스토어에 모든 메뉴를 저장
     // useEffect(() => {
     //     (async () => {
-    //         const response = await fetch('/api/allRecipes/fetchRecipe');
+    //         await fetch('/api/allRecipes/fetchRecipe');
     //     })();
     // }, [])
 
