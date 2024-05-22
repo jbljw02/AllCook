@@ -16,6 +16,7 @@ export default function FolderList() {
 
     const [isAddFolder, setIsAddFolder] = useState<boolean>(false); // 현재 새 폴더를 추가중인지
     const [newFolderName, setNewFolderName] = useState<string>(''); // 새 폴더의 이름
+    const [folderDuplicated, setFolderDuplicated] = useState<boolean>(false);
     const nameRef = useRef<HTMLInputElement>(null);
 
     // 새 폴더의 이름을 변경
@@ -24,24 +25,32 @@ export default function FolderList() {
     }
 
     // 새 폴더의 이름을 state에 push
-    const newFolderSave = (e: { key: string; }) => {
+    const newFolderSave = async (e: { key: string; }) => {
         // 이름을 입력하고 엔터키를 누른 경우, 폴더가 추가됨
         if (e.key == 'Enter') {
             if (newFolderName.trim() !== '') {
-                dispatch(addFavoriteRecipeFolder({ folderName: newFolderName, recipes: [] }));
-                setNewFolderName('');
-                setIsAddFolder(false);
+                const isDuplicated = favoriteRecipe.find(item => item.folderName === newFolderName);
+                if (isDuplicated) {
+                    setFolderDuplicated(true);
+                }
+                else {
+                    dispatch(addFavoriteRecipeFolder({ folderName: newFolderName, recipes: [] }));
+                    setNewFolderName('');
+                    setIsAddFolder(false);
+                    setFolderDuplicated(false);
 
-                // ex)현재 배열에 요소가 2개 있다면 다음 id는 3, 0개 있다면 다음 id는 1
-                const nextFolderId = favoriteRecipe.length > 0 ? favoriteRecipe[favoriteRecipe.length - 1].folderId + 1 : 1;
-                // DB에 새로운 폴더를 추가
-                sendNewFolder(user.email, nextFolderId, newFolderName, []);
+                    // ex)현재 배열에 요소가 2개 있다면 다음 id는 3, 0개 있다면 다음 id는 1
+                    const nextFolderId = favoriteRecipe.length > 0 ? favoriteRecipe[favoriteRecipe.length - 1].folderId + 1 : 1;
+                    // DB에 새로운 폴더를 추가
+                    await sendNewFolder(user.email, nextFolderId, newFolderName, []);
+                }
             }
         }
         // ESC 키를 누를 경우, 폴더 추가 작업이 취소
         else if (e.key === 'Escape') {
             setIsAddFolder(false);
             setNewFolderName('');
+            setFolderDuplicated(false);
         }
     }
 
@@ -49,6 +58,7 @@ export default function FolderList() {
     const newFolderBlur = () => {
         setIsAddFolder(false);
         setNewFolderName('');
+        setFolderDuplicated(false);
     }
 
     // 폴더 추가 작업을 시작
@@ -92,7 +102,7 @@ export default function FolderList() {
                                         !isFavFolderDelete ?
                                             moveToFolderDetail(item.folderId) :
                                             checkFolder(item.folderId);
-                                        }}>
+                                    }}>
                                     {
                                         (isFavFolderDelete && item.folderId !== 0) &&
                                         <input
@@ -116,7 +126,7 @@ export default function FolderList() {
                 {
                     // 폴더를 추가하려는 상태일 때만 보이도록 함
                     isAddFolder &&
-                    <div className="folder">
+                    <div className="folder" id="new-folder">
                         <div className="folder-thumbnail add-thumbnail" />
                         <div className="title">
                             <input
@@ -130,6 +140,10 @@ export default function FolderList() {
                                 placeholder="폴더의 이름을 정해주세요"
                             />
                         </div>
+                        {
+                            folderDuplicated &&
+                            <div className="duplicated-folder">이미 존재하는 폴더명입니다</div>
+                        }
                     </div>
                 }
                 <div className="folder" onClick={addNewFolder}>
@@ -155,6 +169,16 @@ export default function FolderList() {
                     margin-right: 15px;
                     margin-bottom: 50px;
                     cursor: pointer;
+                }
+                #new-folder {
+                    margin-bottom: 5px;
+                }
+                .duplicated-folder {
+                    margin-top: 6px;
+                    margin-bottom: 12px;
+                    margin-left: 3px;
+                    font-size: 14px;
+                    color: #F00;
                 }
                 .folder-thumbnail {
                     background-color: #f4f5f6;

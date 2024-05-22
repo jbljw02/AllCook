@@ -11,6 +11,7 @@ import React from 'react';
 import NProgress from "nprogress";
 import requestFavRecipes from '@/utils/fetch/requestFavRecipes';
 import { debounce } from 'lodash';
+import Loading from '../Loading';
 
 interface modalProps {
     isModalOpen: boolean,
@@ -62,7 +63,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
         const isDuplicated = isDuplicatedRecipe(newFolderId);
         if (!isDuplicated) {
             try {
-                NProgress.start();
+                setIsLoading(true);
 
                 // 레시피를 추가한 이전 폴더에서 레시피를 삭제하는 요청 전송
                 await recipeDeleteRequest(user.email, addedRecipeInfo.folderId, recipe);
@@ -79,7 +80,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
             } catch (error) {
                 throw error;
             } finally {
-                NProgress.done();
+                setIsLoading(false);
             }
         }
         else {
@@ -97,7 +98,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
 
         if (!isDuplicated) {
             try {
-                NProgress.start();
+                setIsLoading(true);
 
                 // 레시피 추가를 요청 
                 const response = await sendNewRecipe(user.email, id, recipe);
@@ -117,14 +118,12 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                     duplicated: false,
                 });
 
-                NProgress.done();
-
                 // 레시피를 추가하는 모달을 닫음
                 dispatch(setRecipeAddModal(false));
             } catch (error) {
                 throw error;
             } finally {
-                NProgress.done();
+                setIsLoading(false);
             }
         } else {
             setIsRecipeDuplicated({
@@ -137,6 +136,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
     const [isAddFolder, setIsAddFolder] = useState<boolean>(false); // 현재 새 폴더를 추가중인지
     const [newFolderName, setNewFolderName] = useState<string>(''); // 새 폴더의 이름
     const nameRef = useRef<HTMLInputElement>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     // 새 폴더의 이름을 변경
     const newFolderNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -201,6 +201,10 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                     }
                 }}
             >
+                {
+                    isLoading && 
+                    <Loading />
+                }
                 <div className="pop-up-container">
                     <div className='pop-up-title-section'>
                         <div className='pop-up-title'>폴더에 레시피를 저장</div>
