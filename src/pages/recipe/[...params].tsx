@@ -95,7 +95,7 @@ export default function RecipeDetail() {
 
     // 컴포넌트가 마운트 되기 전, 혹시 팝업이 열려있을 수 있으니 닫음
     useEffect(() => {
-        setIsShowPopUp(false)
+        setIsShowPopUp(false);
     }, []);
 
     return (

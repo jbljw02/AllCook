@@ -10,6 +10,7 @@ export default function Loading() {
                     alt=""
                     width={80}
                     height={80}
+                    fetchPriority="high"
                 />
             </div>
             <style jsx>{`

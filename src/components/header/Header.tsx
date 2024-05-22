@@ -13,6 +13,7 @@ import userDark from '../../../public/svgs/user-dark.svg';
 import Image from 'next/image';
 import UserDropdown from './UserDropdown';
 import { setSearchInput } from '@/redux/features/searchInputSlice';
+import { setCurrentPage } from '@/redux/features/recipePageSlice';
 
 type Position = 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky';
 
@@ -65,6 +66,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
         dispatch(setDisplayedMenu(allMenu));
         dispatch(setSearchInput(''));
         router.push('/recipe');
+        dispatch(setCurrentPage(1));
     }
 
     const user = useSelector((state: RootState) => state.user);
@@ -111,10 +113,20 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                             {
                                 lightLogo ?
                                     <>
-                                        <Image src={lightTitleLogo} className='title-logo' alt={''} />
+                                        <Image
+                                            src={lightTitleLogo}
+                                            className='title-logo'
+                                            alt={''}
+                                            fetchPriority="auto"
+                                        />
                                     </> :
                                     <>
-                                        <Image src={darkTitleLogo} className='title-logo' alt={''} />
+                                        <Image
+                                            src={darkTitleLogo}
+                                            className='title-logo'
+                                            alt={''}
+                                            fetchPriority="auto"
+                                        />
                                     </>
                             }
                         </Link>
@@ -134,7 +146,9 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                                 onClick={() => searchRecipe(searchInput)}
                                 className='search-svg'
                                 src={searchSvg}
-                                alt='' />
+                                alt=''
+                                fetchPriority="auto"
+                            />
                         </div>
                         <div
                             className='user-container no-drag'
@@ -146,13 +160,17 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                                         <Image
                                             className='user-svg'
                                             src={userLight}
-                                            alt={''} />
+                                            alt={''}
+                                            fetchPriority="auto"
+                                        />
                                     </> :
                                     <>
                                         <Image
                                             className='user-svg'
                                             src={userDark}
-                                            alt={''} />
+                                            alt={''}
+                                            fetchPriority="auto"
+                                        />
                                     </>
                             }
                             {

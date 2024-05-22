@@ -41,7 +41,7 @@ export default function RecipeImg() {
                     width={320}
                     height={320}
                     alt={''}
-                    priority
+                    fetchPriority="high"
                 />
             </div>
             <style jsx>{`

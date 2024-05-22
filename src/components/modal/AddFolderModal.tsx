@@ -181,7 +181,11 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
         if (isAddFolder && nameRef.current) {
             nameRef.current.focus();
         }
-    }, [isAddFolder])
+    }, [isAddFolder]);
+
+    useEffect(() => {
+        console.log("바낌: ", isRecipeDuplicated);
+    }, [isRecipeDuplicated])
 
     return (
         <>
@@ -202,7 +206,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                 }}
             >
                 {
-                    isLoading && 
+                    isLoading &&
                     <Loading />
                 }
                 <div className="pop-up-container">

@@ -49,7 +49,12 @@ export default function Home({ imgSrc }: { imgSrc: string }) {
                 </div>
             </div>
             <span className="banner-img">
-                <Image src={imgSrc} alt={""} layout="responsive" />
+                <Image
+                    src={imgSrc}
+                    alt={""}
+                    layout="responsive"
+                    fetchPriority="auto"
+                />
             </span>
             {/* 헤더,풋터 및 배너 컨테이너를 제외한 컨텐츠의 영역 */}
             <div className="contents-container">

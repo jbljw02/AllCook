@@ -268,7 +268,9 @@ export default function Login() {
                         <Image
                             src={googleIcon}
                             className="google-svg"
-                            alt="" />
+                            alt=""
+                            fetchPriority="auto"
+                        />
                         <div>구글 계정으로 로그인</div>
                     </div>
                 </div>

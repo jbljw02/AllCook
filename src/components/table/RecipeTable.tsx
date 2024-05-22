@@ -26,6 +26,11 @@ export default function RecipeTable() {
     // ex) 23이 마지막 페이지 번호라고 한다면, 30과 23중엔 23이 작은 값이므로 23 할당
     const endPage = Math.min(currentBlock * pagesPerBlock, totalPagecount);
 
+    if (displayedMenu.length) {
+
+        console.log("이스프: ", Array(Math.min(Math.ceil(displayedMenu.length / 4), trPerPage)).fill(0));
+    }
+
     // 현재 페이지 번호가 변경될 때마다 블록번호를 업데이트
     // currentPage가 1~10일 때, currentBlock은 1, 11~20일 때 2...
     useEffect(() => {
@@ -80,10 +85,20 @@ export default function RecipeTable() {
                                     // Math.min을 통해 tr의 최대 개수를 trPerPage(6개) 만큼으로 제한
                                     // 그 후에, map은 undefined은 무시하기 때문에 fill을 사용해 모든 요소를 0으로 초기화
                                     Array(Math.min(Math.ceil(displayedMenu.length / 4), trPerPage)).fill(0).map((_, index) => {
+                                        let startIndex: number;
+                                        let endIndex: number;
+                                        // 메뉴의 개수가 한 페이지를 다 채우지 못할 양이라면 인덱스를 제한
+                                        if(displayedMenu.length <= 24) {
+                                            startIndex = 0;
+                                            endIndex = 24;
+                                        }
+                                        // 메뉴의 개수가 한 페이지를 초과한다면 인덱스를 계산
+                                        else {
+                                            startIndex = (currentPage - 1) * tdPerPage;
+                                            endIndex = startIndex + tdPerPage;
+                                        }
                                         // 한 페이지에 출력할 메뉴의 개수를 설정
                                         // 1페이지 = slice(0, 24), 2페이지 = slice(24, 48)...
-                                        const startIndex = (currentPage - 1) * tdPerPage;
-                                        const endIndex = startIndex + tdPerPage;
                                         const menuPerPage = displayedMenu.slice(startIndex, endIndex);
                                         // 0번째 tr = slice(0, 4), 2번째 tr = slice(4, 8)... 4개씩 나누어 출력
                                         const items = menuPerPage.slice(index * 4, index * 4 + 4);
@@ -114,6 +129,7 @@ export default function RecipeTable() {
                                                                                 width={250}
                                                                                 height={250}
                                                                                 alt={''}
+                                                                                fetchPriority="high"
                                                                                 onMouseEnter={() => imgMouseEnter(globalIndex)}
                                                                                 onMouseLeave={() => imgMouseOut(globalIndex)}
                                                                             />

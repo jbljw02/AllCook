@@ -19,6 +19,7 @@ import Header from '@/components/header/Header';
 import HeaderOnContents from '@/components/header/HeaderOnContents';
 import HeaderButton from '@/components/header/HeaderButton';
 import Footer from '@/components/Footer';
+import Modal from 'react-modal';
 import '../styles/global.css'
 import '../styles/menuTable.css'
 import '../styles/scrollStyle.css'
@@ -30,6 +31,8 @@ const noto = Noto_Sans_KR({
     subsets: ['latin'],
     weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
 });
+
+Modal.setAppElement('#__next');
 
 function App({ Component, pageProps }: AppProps) {
     const dispatch = useDispatch();

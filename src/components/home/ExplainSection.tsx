@@ -6,7 +6,11 @@ export default function ExplainSection() {
 
     return (
         <>
-            <Image src={explainImg} alt={''} />
+            <Image
+                src={explainImg}
+                alt={''}
+                fetchPriority="auto"
+            />
             <div className="explain-detail">
                 All Cook을 통해 당신의 주방을 세계의 건강한
                 <br /> 레시피로 가득 채워보세요!
