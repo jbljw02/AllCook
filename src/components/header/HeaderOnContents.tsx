@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { searchByMenuIngredient } from '@/utils/headerSearch';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,6 +26,12 @@ export default function Header({ className }: { className: string }) {
     }
 
     const [isUpdated, setIsUpdated] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (isUpdated) {
+            router.push('/recipe').then(() => setIsUpdated(false));
+        }
+    }, [isUpdated, router]);
 
     const searchRecipe = async (event: React.KeyboardEvent<HTMLInputElement> | string) => {
         if (typeof event !== 'string' && event.key === 'Enter') {
