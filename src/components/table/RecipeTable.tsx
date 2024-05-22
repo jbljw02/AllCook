@@ -26,11 +26,6 @@ export default function RecipeTable() {
     // ex) 23이 마지막 페이지 번호라고 한다면, 30과 23중엔 23이 작은 값이므로 23 할당
     const endPage = Math.min(currentBlock * pagesPerBlock, totalPagecount);
 
-    if (displayedMenu.length) {
-
-        console.log("이스프: ", Array(Math.min(Math.ceil(displayedMenu.length / 4), trPerPage)).fill(0));
-    }
-
     // 현재 페이지 번호가 변경될 때마다 블록번호를 업데이트
     // currentPage가 1~10일 때, currentBlock은 1, 11~20일 때 2...
     useEffect(() => {

@@ -9,9 +9,9 @@ export default function ReviewComments() {
     return (
         <>
             {
-                recipeOpinion.map((item) => {
+                recipeOpinion.map((item, index) => {
                     return (
-                        <React.Fragment key={item.RCP_SEQ}>
+                        <React.Fragment key={index}>
                             <div className='review-comments-div'>
                                 <div className="comment-contents-header">
                                     <div className="user-info">
@@ -24,13 +24,13 @@ export default function ReviewComments() {
                                     </div>
                                     <div className="star-div">
                                         {
-                                            Array.from({ length: 5 }, (_, index) => (
+                                            Array.from({ length: 5 }, (_, localIndex) => (
                                                 <div
-                                                    key={index}
+                                                    key={localIndex}
                                                     className="star">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="17px" height="17px" fill="none" viewBox="0 0 12 12">
                                                         <path
-                                                            fill={index < item.rating ? '#fec061' : '#ffffff'}
+                                                            fill={localIndex < item.rating ? '#fec061' : '#ffffff'}
                                                             stroke="#fec061"
                                                             strokeWidth="0.7"
                                                             strokeLinecap="round"

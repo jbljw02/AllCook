@@ -125,7 +125,8 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
             } finally {
                 setIsLoading(false);
             }
-        } else {
+        }
+        else {
             setIsRecipeDuplicated({
                 folderId: id,
                 duplicated: true,
@@ -144,18 +145,18 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
     }
 
     // 새 폴더의 이름을 state에 push
-    const newFolderSave = (e: { key: string; }) => {
+    const newFolderSave = async (e: { key: string; }) => {
         // 이름을 입력하고 엔터키를 누른 경우, 폴더가 추가됨
         if (e.key === 'Enter') {
             if (newFolderName.trim() !== '') {
-                dispatch(addFavoriteRecipeFolder({ folderName: newFolderName, recipes: [] }));
-                setNewFolderName('');
-                setIsAddFolder(false);
-
                 // ex)현재 배열에 요소가 2개 있다면 다음 id는 3, 0개 있다면 다음 id는 1
                 const nextFolderId = favoriteRecipe.length > 0 ? favoriteRecipe[favoriteRecipe.length - 1].folderId + 1 : 1;
                 // DB에 새로운 폴더를 추가
-                sendNewFolder(user.email, nextFolderId, newFolderName, []);
+                await sendNewFolder(user.email, nextFolderId, newFolderName, []);
+
+                dispatch(addFavoriteRecipeFolder({ folderName: newFolderName, recipes: [] }));
+                setNewFolderName('');
+                setIsAddFolder(false);
             }
         }
         // ESC 키를 누를 경우, 폴더 추가 작업이 취소
@@ -183,9 +184,14 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
         }
     }, [isAddFolder]);
 
-    useEffect(() => {
-        console.log("바낌: ", isRecipeDuplicated);
-    }, [isRecipeDuplicated])
+    // 모달을 닫으면서 중복 여부는 초기 상태로 되돌림
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setIsRecipeDuplicated({
+            ...isRecipeDuplicated,
+            duplicated: false,
+        });
+    }
 
     return (
         <>
@@ -203,8 +209,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                         height: 600,
                         transform: 'translate(-50%, -50%)',
                     }
-                }}
-            >
+                }}>
                 {
                     isLoading &&
                     <Loading />
@@ -214,7 +219,7 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                         <div className='pop-up-title'>폴더에 레시피를 저장</div>
                         <svg id="close-svg" onClick={(event) => {
                             event.stopPropagation();
-                            setIsModalOpen(false);
+                            closeModal();
                         }} xmlns="http://www.w3.org/2000/svg" width="35px" height="35px" viewBox="0 0 24 24" fill="none">
                             <rect width="24" height="24" fill="white" />
                             <path d="M7 17L16.8995 7.10051" stroke="#111111" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -229,7 +234,8 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                                     <React.Fragment key={item.folderId}>
                                         <div
                                             className='folder-section'
-                                            id={(isRecipeDuplicated.folderId === item.folderId && isRecipeDuplicated.duplicated) ?
+                                            id={(isRecipeDuplicated.folderId === item.folderId &&
+                                                isRecipeDuplicated.duplicated) ?
                                                 'duplicated-border' :
                                                 ''}
                                             onClick={() => {
@@ -253,8 +259,8 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                                             </div>
                                         </div>
                                         {
-                                            (isRecipeDuplicated.folderId === item.folderId
-                                                && isRecipeDuplicated.duplicated) &&
+                                            (isRecipeDuplicated.folderId === item.folderId &&
+                                                isRecipeDuplicated.duplicated) &&
                                             <div className='duplicated-recipe'>폴더 내에 이미 동일한 레시피가 존재합니다</div>
                                         }
                                     </React.Fragment>
