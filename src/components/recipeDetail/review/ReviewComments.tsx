@@ -21,12 +21,12 @@ export default function ReviewComments() {
     // 컴포넌트가 마운트 될 때 정렬 기준에 따라 댓글을 정렬
     useEffect(() => {
         if (recipeOpinion.sortRule === '등록순') {
-            dispatch(sortRecipeOpinionAsc());
+            clickAsc();
         }
         if (recipeOpinion.sortRule === '최신순') {
-            dispatch(sortRecipeOpinionDesc());
+            clickDesc();
         }
-    }, [recipeOpinion]);
+    }, [recipeOpinion, dispatch]);
 
     return (
         <>
