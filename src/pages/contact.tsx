@@ -68,6 +68,7 @@ export default function Contact({ imgSrc }: { imgSrc: string }) {
         }
         else {
             setEmailValid(false);
+            return;
         }
 
         // 모든 필수 항목이 공란이 아니며, 개인정보 처리 방침에 동의했을 경우

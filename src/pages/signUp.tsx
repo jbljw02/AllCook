@@ -202,7 +202,7 @@ export default function SignUp() {
             setPwdRule({
                 ...pwdRule,
                 valid: false,
-            })
+            });
         }
 
         // 비밀번호가 정규식을 통과했으며, 비밀번호 확인란과 일치하는지 확인
