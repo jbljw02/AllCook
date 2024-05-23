@@ -14,7 +14,7 @@ export default function ContactInput({ form, name, height, placeholder, msgWheth
         if (checkSubmittedAndEmpty(fieldName) && fieldName !== 'tel') {
             return `${baseClass} input-warning`
         }
-        if(fieldName === 'mail' && !emailValid) {
+        if (fieldName === 'mail' && !emailValid) {
             return `${baseClass} input-warning`
         }
         return baseClass;
@@ -23,7 +23,13 @@ export default function ContactInput({ form, name, height, placeholder, msgWheth
     return (
         <>
             <div className={inputClass(name)}>
-                <textarea name={name} className='search-input' style={{ height: height }} placeholder={placeholder} onChange={onChange} />
+                <textarea
+                    name={name}
+                    className='search-input'
+                    style={{ height: height }}
+                    placeholder={placeholder}
+                    onChange={onChange}
+                />
             </div>
             <style jsx>{`
                 .input-div {
@@ -47,9 +53,6 @@ export default function ContactInput({ form, name, height, placeholder, msgWheth
                 .input-warning {
                     border-color: #FF0000;
                 }
-                {/* textarea::placeholder {
-                    color: #FF0000;
-                } */}
             `}</style>
         </>
     )
