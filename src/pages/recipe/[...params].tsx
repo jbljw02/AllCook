@@ -14,26 +14,41 @@ import ServingsBox from "@/components/recipeDetail/ServingsBox";
 import RecipeImg from "@/components/recipeDetail/RecipeImg";
 import Manual from "@/components/recipeDetail/Manual";
 import RelatedRecipes from "@/components/recipeDetail/RelatedRecipes";
+import { useRouter } from "next/router";
 
 export default function RecipeDetail() {
     const dispatch = useDispatch();
+    const router = useRouter();
+
+    const allMenu = useSelector((state: RootState) => state.allMenu);
+
+    useEffect(() => {
+        const { name, seq } = router.query;
+
+        if (!Array.isArray(allMenu)) {
+            return;
+        }
+
+        const selectedRecipe = allMenu.find(item => item.RCP_SEQ === seq);
+        dispatch(setRecipe(selectedRecipe));
+    }, [allMenu, router.query, dispatch]);
 
     const recipe = useSelector((state: RootState) => state.recipe); // 레시피의 상세 정보를 담고있는 state
     const servings = useSelector((state: RootState) => state.servings); // 레시피의 인분 수 
     const [recipeIngredients, setRecipeIngredients] = useState(''); // 레시피의 재료
 
-    useEffect(() => {
-        // 페이지를 새로고침 하면 state가 초기화되기 때문에, 로컬 스토리지에서 선택된 레시피를 가져와서 업데이트
-        if (recipe.RCP_NM === "") {
-            let selectedRecipe = localStorage.getItem('selectedRecipe');
-            selectedRecipe = JSON.parse(selectedRecipe as string);
-            dispatch(setRecipe(selectedRecipe));
-        }
-        // 페이지에 도착하면 로컬 스토리지에 현재 선택된 레시피를 담음
-        else {
-            localStorage.setItem('selectedRecipe', JSON.stringify(recipe));
-        }
-    }, [recipe, dispatch]);
+    // useEffect(() => {
+    //     // 페이지를 새로고침 하면 state가 초기화되기 때문에, 로컬 스토리지에서 선택된 레시피를 가져와서 업데이트
+    //     if (recipe.RCP_NM === "") {
+    //         let selectedRecipe = localStorage.getItem('selectedRecipe');
+    //         selectedRecipe = JSON.parse(selectedRecipe as string);
+    //         dispatch(setRecipe(selectedRecipe));
+    //     }
+    //     // 페이지에 도착하면 로컬 스토리지에 현재 선택된 레시피를 담음
+    //     else {
+    //         localStorage.setItem('selectedRecipe', JSON.stringify(recipe));
+    //     }
+    // }, [recipe, dispatch]);
 
     // 레시피의 재료를 설정하고 조정
     useEffect(() => {
