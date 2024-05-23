@@ -1,4 +1,4 @@
-import { setRecipeOpinion } from "@/redux/features/recipeOpinionSlice";
+import { setRecipeOpinion, sortRecipeOpinionAsc, sortRecipeOpinionDesc } from "@/redux/features/recipeOpinionSlice";
 import { RootState } from "@/redux/store";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -44,17 +44,17 @@ export default function ReviewTextArea() {
     }
 
     // 레시피에 대한 댓글 정보를 받음
-    const reciveRecipeOpinion = useCallback(async (email: string, RCP_SEQ: string) => {
+    const requestRecipeOpinion = useCallback(async (email: string, RCP_SEQ: string) => {
         try {
             const data = {
                 email: email,
                 RCP_SEQ: RCP_SEQ,
             }
 
-            if(!data.email || !data.RCP_SEQ) {
+            if (!data.email || !data.RCP_SEQ) {
                 return;
             }
-            
+
             const response = await axios.post('/api/recipeOpinion/reciveRecipeOpinion', data, {
                 headers: {
                     "Content-Type": "application/json",
@@ -86,15 +86,18 @@ export default function ReviewTextArea() {
                 comment: formData.comment,
                 rating: rating,
                 RCP_SEQ: recipe.RCP_SEQ,
+                dateTime: new Date().toISOString(),
             }
-            const response = await axios.post('/api/recipeOpinion/addNewRecipeOpinion', data, {
+
+            // 새 댓글을 전송
+            await axios.post('/api/recipeOpinion/addNewRecipeOpinion', data, {
                 headers: {
                     "Content-Type": "application/json",
                     "Accept": "application/json"
                 },
             });
-            reciveRecipeOpinion(user.email, recipe.RCP_SEQ);
-            dispatch(setRecipeOpinion(response.data.opinions));
+            // 댓글을 받아옴
+            await requestRecipeOpinion(user.email, recipe.RCP_SEQ);
 
             NProgress.done();
 
@@ -134,13 +137,13 @@ export default function ReviewTextArea() {
 
     useEffect(() => {
         if (user && user.email) {
-            reciveRecipeOpinion(user.email, recipe.RCP_SEQ);
+            requestRecipeOpinion(user.email, recipe.RCP_SEQ);
         }
-    }, [user, recipe, reciveRecipeOpinion]);
+    }, [user, recipe, requestRecipeOpinion]);
 
     return (
         <>
-            <div className={`review-write-div ${recipeOpinion.length === 0 ? 'no-comments' : ''}`}>
+            <div className={`review-write-div ${recipeOpinion.opinions.length === 0 ? 'no-comments' : ''}`}>
                 <div className="review-contents-header">
                     {
                         !user || (user.name === '' && user.email === '') ?

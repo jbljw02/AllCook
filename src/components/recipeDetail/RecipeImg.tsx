@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { setRecipeAddModal } from "@/redux/features/favoriteRecipeSlice";
 import { useRouter } from "next/router";
+import SkeletonImg from "../skeleton/recipeDetail/SkeletonImg";
 
 export default function RecipeImg() {
     const dispatch = useDispatch();
@@ -12,7 +13,7 @@ export default function RecipeImg() {
     const recipe = useSelector((state: RootState) => state.recipe); // 레시피의 상세 정보를 담고있는 state
 
     const saveRecipe = () => {
-        if(user.name && user.email) {
+        if (user.name && user.email) {
             dispatch(setRecipeAddModal(true));
         }
         else {
@@ -33,16 +34,20 @@ export default function RecipeImg() {
                         <span>저장</span>
                     </div>
                 </div>
-                <Image
-                    src={recipe.ATT_FILE_NO_MK}
-                    style={{
-                        borderRadius: 5,
-                    }}
-                    width={320}
-                    height={320}
-                    alt={''}
-                    fetchPriority="high"
-                />
+                {
+                    recipe.ATT_FILE_NO_MK ?
+                        <Image
+                            src={recipe.ATT_FILE_NO_MK}
+                            style={{
+                                borderRadius: 5,
+                            }}
+                            width={320}
+                            height={320}
+                            alt={''}
+                            fetchPriority="high"
+                        /> :
+                        <SkeletonImg />
+                }
             </div>
             <style jsx>{`
                 .recipe-img-section {

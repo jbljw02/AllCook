@@ -9,15 +9,15 @@ export default function ReviewHeader() {
 
     const calReviewAvg = useCallback(() => {
         // 리뷰가 존재하지 않는다면 0으로 지정
-        if (recipeOpinion.length === 0) {
+        if (recipeOpinion.opinions.length === 0) {
             setRatingAvg(0);
         }
         // 존재한다면 평균을 계산
         else {
             let ratingSum = 0;
-            recipeOpinion.map(item => ratingSum = ratingSum + item.rating)
+            recipeOpinion.opinions.map(item => ratingSum = ratingSum + item.rating)
 
-            let avg = Number((ratingSum / recipeOpinion.length).toFixed(1));
+            let avg = Number((ratingSum / recipeOpinion.opinions.length).toFixed(1));
             setRatingAvg(avg);
         }
     }, [recipeOpinion]);

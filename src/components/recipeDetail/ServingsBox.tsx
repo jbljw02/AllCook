@@ -19,6 +19,13 @@ const ServingsBox = forwardRef<HTMLDivElement, {}>((props, ref) => {
         }
     }
 
+    const servingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = Number(e.target.value)
+        const limitedValue = Math.min(Math.max(inputValue, 1), 1000);
+
+        dispatch(setServings(limitedValue));
+    }
+
     return (
         <>
             <div
@@ -26,10 +33,12 @@ const ServingsBox = forwardRef<HTMLDivElement, {}>((props, ref) => {
                 onMouseLeave={() => setInputHover(!inputHover)}
                 className="per-person-box"
                 ref={ref}>
-                <input 
-                type="text"
-                value={servings}
-                readOnly />
+                <input
+                    type="number"
+                    value={servings}
+                    min={1}
+                    max={1000}
+                    onChange={servingsChange} />
                 <span className={`${!inputHover ? "" : 'visible'} cal-svg`}>
                     <svg onClick={() => { calculateServings('plus') }} className="minus" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
                         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -94,6 +103,16 @@ const ServingsBox = forwardRef<HTMLDivElement, {}>((props, ref) => {
                     border: 1px solid #cecece;
                     font-weight: 300;
                     color: #5C5C5C;
+                }
+                /* Chrome, Safari, Edge, Opera */
+                .per-person-box input::-webkit-outer-spin-button,
+                .per-person-box input::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+                /* Firefox */
+                .per-person-box input[type=number] {
+                    -moz-appearance: textfield;
                 }
             `}</style>
         </>

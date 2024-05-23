@@ -7,6 +7,7 @@ import { setRecipe } from "@/redux/features/recipeSlice";
 import { filterIngredString } from "@/utils/filterManual/filterIngredString";
 import { adjustForServings } from "@/utils/filterManual/adjustForServings";
 import { Menu } from "@/redux/features/menuSlice";
+import SkeletonTable from "../skeleton/SkeletonTable";
 
 export default function RelatedRecipes() {
     const dispatch = useDispatch();
@@ -83,16 +84,22 @@ export default function RelatedRecipes() {
         let ingredArray = newRecipeIngredients.split(', ')
         let ingredNames = exportIngredientsName(ingredArray);
         findRelatedRecipe(ingredNames);
-    }, [recipe, servings, findRelatedRecipe]); 
+    }, [recipe, servings, findRelatedRecipe]);
 
     return (
         <>
             <div className="related-title">유사한 재료를 사용한 레시피</div>
-            <MenuTable
-                menu={relatedRecipe}
-                category=""
-                menuClick={menuClick}
-            />
+            {
+                recipe.RCP_PARTS_DTLS ?
+                    <MenuTable
+                        menu={relatedRecipe}
+                        category=""
+                        menuClick={menuClick}
+                    /> :
+                    <div style={{marginLeft: '-10.5px'}}>
+                        <SkeletonTable length={4} />
+                    </div>
+            }
             <style jsx>{`
                 .related-title {
                     font-size: 24px;
