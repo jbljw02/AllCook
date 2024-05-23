@@ -2,6 +2,7 @@ import { RootState } from "@/redux/store";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Menu } from "@/redux/features/menuSlice";
+import SkeletonManual from "../skeleton/recipeDetail/SkeletonManual";
 
 export default function Manual() {
     const recipe = useSelector((state: RootState) => state.recipe); // 레시피의 상세 정보를 담고있는 state
@@ -35,6 +36,7 @@ export default function Manual() {
         <>
             <div className="manual-title">요리 방법</div>
             {
+                recipe.MANUAL01 ?
                 recipeManual.map((item, index) => {
                     return (
                         <div
@@ -44,7 +46,8 @@ export default function Manual() {
                             <div className="manual-detail">{item.replace(/[a-zA-Z]$/, '')}</div>
                         </div>
                     )
-                })
+                }) :
+                <SkeletonManual />
             }
             <style jsx>{`
                 .manual-title {

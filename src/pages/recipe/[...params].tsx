@@ -15,6 +15,9 @@ import RecipeImg from "@/components/recipeDetail/RecipeImg";
 import Manual from "@/components/recipeDetail/Manual";
 import RelatedRecipes from "@/components/recipeDetail/RelatedRecipes";
 import { useRouter } from "next/router";
+import SkeletonIngred from "@/components/skeleton/recipeDetail/SkeletonIngred";
+import SkeletonManual from "@/components/skeleton/recipeDetail/SkeletonManual";
+import SkeletonTitle from "@/components/skeleton/recipeDetail/SkeletonTitle";
 
 export default function RecipeDetail() {
     const dispatch = useDispatch();
@@ -22,6 +25,7 @@ export default function RecipeDetail() {
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
 
+    // URL에서 해당 메뉴의 일련번호를 가져와 state에 할당
     useEffect(() => {
         const { name, seq } = router.query;
 
@@ -36,19 +40,6 @@ export default function RecipeDetail() {
     const recipe = useSelector((state: RootState) => state.recipe); // 레시피의 상세 정보를 담고있는 state
     const servings = useSelector((state: RootState) => state.servings); // 레시피의 인분 수 
     const [recipeIngredients, setRecipeIngredients] = useState(''); // 레시피의 재료
-
-    // useEffect(() => {
-    //     // 페이지를 새로고침 하면 state가 초기화되기 때문에, 로컬 스토리지에서 선택된 레시피를 가져와서 업데이트
-    //     if (recipe.RCP_NM === "") {
-    //         let selectedRecipe = localStorage.getItem('selectedRecipe');
-    //         selectedRecipe = JSON.parse(selectedRecipe as string);
-    //         dispatch(setRecipe(selectedRecipe));
-    //     }
-    //     // 페이지에 도착하면 로컬 스토리지에 현재 선택된 레시피를 담음
-    //     else {
-    //         localStorage.setItem('selectedRecipe', JSON.stringify(recipe));
-    //     }
-    // }, [recipe, dispatch]);
 
     // 레시피의 재료를 설정하고 조정
     useEffect(() => {
@@ -141,10 +132,14 @@ export default function RecipeDetail() {
                         <div className="recipe-top-section">
                             <RecipeImg />
                             <div className="recipe-intro">
-                                <div className="recipe-title-div">
-                                    <div className="recipe-title">{recipe.RCP_NM}</div>
-                                    <div className="recipe-subtitle">{recipe.RCP_PAT2}</div>
-                                </div>
+                                {
+                                    recipe.RCP_NM ?
+                                        <div className="recipe-title-div">
+                                            <div className="recipe-title">{recipe.RCP_NM}</div>
+                                            <div className="recipe-subtitle">{recipe.RCP_PAT2}</div>
+                                        </div> :
+                                        <SkeletonTitle />
+                                }
                                 <div className="recipe-serv-ingred-div">
                                     <div className="per-person-div">
                                         <div>인분</div>
@@ -169,7 +164,11 @@ export default function RecipeDetail() {
                                     </div>
                                 </div>
                                 {/* 레시피의 재료를 보여주는 영역 */}
-                                <div className="recipe-ingredients">{recipeIngredients}</div>
+                                {
+                                    recipe.RCP_PARTS_DTLS ?
+                                        <div className="recipe-ingredients">{recipeIngredients}</div> :
+                                        <SkeletonIngred />
+                                }
                             </div>
                         </div>
                         {/* 요리 방법, 관련 레시피를 보여주는 영역 */}

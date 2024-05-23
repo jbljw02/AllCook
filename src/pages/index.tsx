@@ -8,7 +8,7 @@ import moveToDetail from "@/utils/moveToDetail";
 import { setRecipe } from "@/redux/features/recipeSlice";
 import 'react-loading-skeleton/dist/skeleton.css'
 import MenuTable from "@/components/table/MenuTable";
-import SkeletonUI from "../components/Skeleton";
+import SkeletonTable from "../components/skeleton/SkeletonTable";
 import ExplainSection from "@/components/home/ExplainSection";
 
 export default function Home({ imgSrc }: { imgSrc: string }) {
@@ -75,7 +75,7 @@ export default function Home({ imgSrc }: { imgSrc: string }) {
                                 category={'recom'}
                                 menuClick={menuClick}
                             /> :
-                            <SkeletonUI length={4} />
+                            <SkeletonTable length={4} />
                     }
                 </div>
                 {/* 추천 후식 영역을 차지하는 컨테이너 */}
@@ -93,7 +93,7 @@ export default function Home({ imgSrc }: { imgSrc: string }) {
                                 category={'recom'}
                                 menuClick={menuClick}
                             /> :
-                            <SkeletonUI length={4} />
+                            <SkeletonTable length={4} />
                     }
                 </div>
             </div>

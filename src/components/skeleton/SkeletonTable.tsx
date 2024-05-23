@@ -1,7 +1,7 @@
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
-export default function SkeletonUI({ length }: { length: number }) {
+export default function SkeletonTable({ length }: { length: number }) {
     return (
         <>
             <div className='skeleton-grid'>
@@ -29,6 +29,12 @@ export default function SkeletonUI({ length }: { length: number }) {
                     box-sizing: border-box;
                     width: 25%; /* 한 줄에 4개의 아이템이 들어갈 수 있도록 */
                     padding: 10.5px;
+                }
+                .skeleton-div:first-child {
+                    {/* padding-left: 0px; */}
+                }
+                .skeleton-div:last-child {
+                    {/* padding-right: 0px; */}
                 }
                 .skeleton-img, .skeleton-title {
                     width: 100%;

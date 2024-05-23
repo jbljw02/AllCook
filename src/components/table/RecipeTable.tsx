@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import moveToDetail from "@/utils/moveToDetail";
 import { setRecipe } from "@/redux/features/recipeSlice";
-import SkeletonUI from "../Skeleton";
+import SkeletonTable from "../skeleton/SkeletonTable";
 import { setCurrentPage } from "@/redux/features/recipePageSlice";
 import React from "react";
 
@@ -143,7 +143,7 @@ export default function RecipeTable() {
                                 }
                             </tbody>
                         </table> :
-                        <SkeletonUI length={24} />
+                        <SkeletonTable length={24} />
                 }
             </div>
             <div className="pagination-section">
