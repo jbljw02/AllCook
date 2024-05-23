@@ -106,7 +106,12 @@ export default function Contact({ imgSrc }: { imgSrc: string }) {
         <>
             <Seo title="문의" />
             <div className="contact-img">
-                <Image src={imgSrc} alt="" layout="responsive" />
+                <Image
+                    src={imgSrc}
+                    alt=""
+                    layout="responsive"
+                    fetchPriority="auto"
+                />
             </div>
             <div className="contents-container">
                 {/* 개인정보 처리방침에 동의하지 않았을 경우의 팝업 */}
@@ -152,11 +157,21 @@ export default function Contact({ imgSrc }: { imgSrc: string }) {
                             {/* 좌측 하단 연락처, 이메일 영역 */}
                             <div className="contact-footer">
                                 <div className="tel-section">
-                                    <Image src={telSvg} className="tel-svg" alt="" />
+                                    <Image
+                                        src={telSvg}
+                                        className="tel-svg"
+                                        alt=""
+                                        fetchPriority="auto"
+                                    />
                                     <div>010-8511-3589</div>
                                 </div>
                                 <div className="mail-section">
-                                    <Image src={mailSvg} className="mail-svg" alt="" />
+                                    <Image
+                                        src={mailSvg}
+                                        className="mail-svg"
+                                        alt=""
+                                        fetchPriority="auto"
+                                    />
                                     <div>jbljw02@naver.com</div>
                                 </div>
                             </div>

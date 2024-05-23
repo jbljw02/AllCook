@@ -130,6 +130,7 @@ export const MenuTable: React.FC<paramsType> = ({ menu, category, menuClick, isM
                                                                     width={250}
                                                                     height={250}
                                                                     alt={""}
+                                                                    fetchPriority="high"
                                                                     onMouseEnter={() => imgMouseEnter(globalIndex)}
                                                                     onMouseLeave={() => imgMouseOut(globalIndex)}
                                                                 />
@@ -169,6 +170,7 @@ export const MenuTable: React.FC<paramsType> = ({ menu, category, menuClick, isM
                                                                         width={250}
                                                                         height={250}
                                                                         alt={""}
+                                                                        fetchPriority="high"
                                                                         onMouseEnter={() => imgMouseEnter(index)}
                                                                         onMouseLeave={() => imgMouseOut(index)}
                                                                     />

@@ -16,7 +16,7 @@ export type AddedRecipeInfo = {
 const folderInitialState: FavoriteRecipe[] = [
     {
         folderId: 0,
-        folderName: `최근 저장한 레시피`,
+        folderName: `내가 좋아하는 레시피`,
         recipes: [],
     }
 ];

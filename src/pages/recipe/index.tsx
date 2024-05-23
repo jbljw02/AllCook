@@ -32,9 +32,6 @@ export default function Recipe() {
         }
     }, [filterRef]);
 
-    const dispatch = useDispatch();
-    const searchInput = useSelector((state: RootState) => state.searchInput);
-
     return (
         <>
             <Seo title="메뉴" />
@@ -54,7 +51,12 @@ export default function Recipe() {
                             <span
                                 className='filter-button'
                                 onClick={() => setFilterVisible(!filterVisible)}>
-                                <Image className="filter-svg" src={filterSvg} alt='' />
+                                <Image
+                                    className="filter-svg"
+                                    src={filterSvg}
+                                    alt=''
+                                    fetchPriority="auto"
+                                />
                                 <span className="no-drag">상세검색</span>
                             </span>
                             {/* 상세 검색 영역 */}

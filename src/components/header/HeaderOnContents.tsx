@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { searchByMenuIngredient } from '@/utils/headerSearch';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ import searchSvg from '../../../public/svgs/search.svg'
 import userDark from '../../../public/svgs/user-dark.svg';
 import UserDropdown from './UserDropdown';
 import { setSearchInput } from '@/redux/features/searchInputSlice';
+import { setCurrentPage } from '@/redux/features/recipePageSlice';
 
 export default function Header({ className }: { className: string }) {
     const dispatch = useDispatch();
@@ -25,6 +26,12 @@ export default function Header({ className }: { className: string }) {
     }
 
     const [isUpdated, setIsUpdated] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (isUpdated) {
+            router.push('/recipe').then(() => setIsUpdated(false));
+        }
+    }, [isUpdated, router]);
 
     const searchRecipe = async (event: React.KeyboardEvent<HTMLInputElement> | string) => {
         if (typeof event !== 'string' && event.key === 'Enter') {
@@ -55,6 +62,7 @@ export default function Header({ className }: { className: string }) {
         dispatch(setDisplayedMenu(allMenu));
         dispatch(setSearchInput(''));
         router.push('/recipe');
+        dispatch(setCurrentPage(1));
     }
 
     const user = useSelector((state: RootState) => state.user);
@@ -95,6 +103,7 @@ export default function Header({ className }: { className: string }) {
                         src={titleLogoSmall}
                         className='title-logo-small'
                         alt={''}
+                        fetchPriority="auto"
                     />
                 </div>
                 {/* 검색창 및 로그인 네비게이션 바 */}
@@ -111,7 +120,9 @@ export default function Header({ className }: { className: string }) {
                             onClick={() => searchRecipe(searchInput)}
                             className='search-svg'
                             src={searchSvg}
-                            alt='' />
+                            alt=''
+                            fetchPriority="auto"
+                        />
                     </div>
                     <div
                         className='user-container no-drag'
@@ -119,7 +130,9 @@ export default function Header({ className }: { className: string }) {
                         <Image
                             className='user-svg on-contents'
                             src={userDark}
-                            alt={''} />
+                            alt={''}
+                            fetchPriority="auto"
+                        />
                         {
                             !user || (!user.email && !user.name) ?
                                 <span className='logIn' onClick={() => router.push('/signIn')}>

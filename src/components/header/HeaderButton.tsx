@@ -9,10 +9,18 @@ export default function HeaderButton() {
         <>
             <div className="header-btn">
                 <span className="back-svg" onClick={router.back}>
-                    <Image src={backSvg} alt="" />
+                    <Image
+                        src={backSvg}
+                        alt=""
+                        fetchPriority="auto"
+                    />
                 </span>
                 <span className="close-svg" onClick={() => router.push('/')}>
-                    <Image src={closeSvg} alt="" />
+                    <Image
+                        src={closeSvg}
+                        alt=""
+                        fetchPriority="auto"
+                    />
                 </span>
             </div>
             <style jsx>{`

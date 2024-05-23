@@ -50,6 +50,11 @@ export default function ReviewTextArea() {
                 email: email,
                 RCP_SEQ: RCP_SEQ,
             }
+
+            if(!data.email || !data.RCP_SEQ) {
+                return;
+            }
+            
             const response = await axios.post('/api/recipeOpinion/reciveRecipeOpinion', data, {
                 headers: {
                     "Content-Type": "application/json",
@@ -77,6 +82,7 @@ export default function ReviewTextArea() {
 
             const data = {
                 email: user.email,
+                name: user.name,
                 comment: formData.comment,
                 rating: rating,
                 RCP_SEQ: recipe.RCP_SEQ,
