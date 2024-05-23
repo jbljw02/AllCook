@@ -32,7 +32,7 @@ export type RootState = {
     recipeMoveModal: boolean,
     recipeAddModal: boolean,
     selectedFolder: FavoriteRecipe,
-    recipeOpinion: RecipeOpinion[],
+    recipeOpinion: RecipeOpinion,
     isFavRecipeDelete: boolean,
     isCheckedRecipe: string[],
     isFavFolderDelete: boolean,

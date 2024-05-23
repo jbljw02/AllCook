@@ -1,15 +1,15 @@
 import { firestore } from "@/firebase/firebasedb";
-import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
+import { Timestamp, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next/types";
 
 // 댓글 및 별점을 레시피에 추가
 const addNewRecipeOpinion = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { email, name, comment, rating, RCP_SEQ } = req.body;
+    const { email, name, comment, rating, RCP_SEQ, dateTime } = req.body;
 
     try {
         const recipeDocRef = doc(firestore, 'recipes', RCP_SEQ);
         const recipeDocSnap = await getDoc(recipeDocRef);
-
+        
         if (recipeDocSnap.exists()) {
             const opinion = {
                 email,
@@ -17,8 +17,9 @@ const addNewRecipeOpinion = async (req: NextApiRequest, res: NextApiResponse) =>
                 comment,
                 rating,
                 RCP_SEQ,
+                dateTime: Timestamp.fromDate(new Date(dateTime)),
             }
-            
+
             await updateDoc(recipeDocRef, {
                 // arrayUnion = 지정된 필드가 존재하면 push, 존재하지 않으면 생성 후 push
                 opinions: arrayUnion(opinion),
