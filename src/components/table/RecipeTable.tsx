@@ -7,6 +7,8 @@ import { setRecipe } from "@/redux/features/recipeSlice";
 import SkeletonTable from "../skeleton/SkeletonTable";
 import { setCurrentPage } from "@/redux/features/recipePageSlice";
 import React from "react";
+import PreparingMenu from "../placeholder/PreparingMenu";
+import LoadingMenu from "../placeholder/LoadingMenu";
 
 export default function RecipeTable() {
     const dispatch = useDispatch();
@@ -57,6 +59,44 @@ export default function RecipeTable() {
         });
     };
 
+    // 이미지가 제대로 존재하는지
+    const [isImgLoaded, setIsImgLoaded] = useState(new Array(displayedMenu.length).fill(true));
+    // 이미지가 완전히 로딩되지 않았는지
+    const [isLoading, setIsLoading] = useState(new Array(displayedMenu.length).fill(true));
+
+    const handleImgError = (globalIndex: number) => {
+        setIsImgLoaded((prev) => {
+            const newImgLoadedState = [...prev];
+            newImgLoadedState[globalIndex] = false;
+            return newImgLoadedState;
+        });
+        setIsLoading(prevState => {
+            const newState = [...prevState];
+            newState[globalIndex] = false;
+            return newState;
+        });
+    };
+
+    const handleImgLoad = (globalIndex: number) => {
+        setIsImgLoaded((prev) => {
+            const newImgLoadedState = [...prev];
+            newImgLoadedState[globalIndex] = true;
+            return newImgLoadedState;
+        });
+        setIsLoading(prevState => {
+            const newState = [...prevState];
+            newState[globalIndex] = false;
+            return newState;
+        });
+    };
+
+    useEffect(() => {
+        // 초기화 및 displayedMenu가 변경될 때마다 상태를 초기화
+        setIsImgLoaded(new Array(displayedMenu.length).fill(true));
+        setIsLoading(new Array(displayedMenu.length).fill(false));
+        setIsHovered(new Array(displayedMenu.length).fill(false));
+    }, [displayedMenu]);
+
     // 버튼을 통해 페이지를 이동
     const movePage = (param: string) => {
         if (param === 'up' && currentPage < totalPagecount) {
@@ -83,7 +123,7 @@ export default function RecipeTable() {
                                         let startIndex: number;
                                         let endIndex: number;
                                         // 메뉴의 개수가 한 페이지를 다 채우지 못할 양이라면 인덱스를 제한
-                                        if(displayedMenu.length <= 24) {
+                                        if (displayedMenu.length <= 24) {
                                             startIndex = 0;
                                             endIndex = 24;
                                         }
@@ -111,23 +151,39 @@ export default function RecipeTable() {
                                                                         <div
                                                                             onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)}
                                                                             className="td-content">
-                                                                            <Image
-                                                                                src={`${item.ATT_FILE_NO_MK}`}
-                                                                                style={{
-                                                                                    borderRadius: 8,
-                                                                                    cursor: 'pointer',
-                                                                                    transition: 'transform 0.3s ease',
-                                                                                    transform: hoverState[globalIndex] ?
-                                                                                        'scale(1.05)' :
-                                                                                        'scale(1)'
-                                                                                }}
-                                                                                width={250}
-                                                                                height={250}
-                                                                                alt={''}
-                                                                                fetchPriority="high"
-                                                                                onMouseEnter={() => imgMouseEnter(globalIndex)}
-                                                                                onMouseLeave={() => imgMouseOut(globalIndex)}
-                                                                            />
+                                                                            {
+                                                                                // 이미지가 단순 로딩중일시
+                                                                                isLoading[globalIndex] ?
+                                                                                    <LoadingMenu
+                                                                                        width="250px"
+                                                                                        height="250px"
+                                                                                    /> :
+                                                                                    (
+                                                                                        // 이미지를 불러올 수 있을 때만 로드
+                                                                                        isImgLoaded[globalIndex] ?
+                                                                                            <Image
+                                                                                                src={item.ATT_FILE_NO_MK || item.ATT_FILE_NO_MAIN}
+                                                                                                style={{
+                                                                                                    borderRadius: 8,
+                                                                                                    cursor: 'pointer',
+                                                                                                    transition: 'transform 0.3s ease',
+                                                                                                    transform: hoverState[globalIndex] ? 'scale(1.05)' : 'scale(1)',
+                                                                                                }}
+                                                                                                width={250}
+                                                                                                height={250}
+                                                                                                alt={''}
+                                                                                                fetchPriority="high"
+                                                                                                onError={() => handleImgError(globalIndex)}
+                                                                                                onLoad={() => handleImgLoad(globalIndex)}
+                                                                                                onMouseEnter={() => imgMouseEnter(globalIndex)}
+                                                                                                onMouseLeave={() => imgMouseOut(globalIndex)}
+                                                                                            /> :
+                                                                                            <PreparingMenu
+                                                                                                width="250px"
+                                                                                                height="250px"
+                                                                                            />
+                                                                                    )
+                                                                            }
                                                                         </div>
                                                                         <div className='RCP_NM'>{item.RCP_NM}</div>
                                                                         <div className='RCP_PAT2'>{item.RCP_PAT2}</div>
