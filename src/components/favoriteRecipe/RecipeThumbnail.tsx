@@ -67,7 +67,6 @@ export default function RecipeThumbnail({ recipes, size }: { recipes: Menu[], si
                 .four-images .thumbnail-image {
                     width: calc(50% - 3px);
                     height: calc(50% - 3px);
-                    {/* height: 50%; */}
                 }
             `}</style>
         </>

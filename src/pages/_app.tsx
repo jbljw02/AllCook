@@ -269,7 +269,7 @@ function App({ Component, pageProps }: AppProps) {
                 }
                 .contents-ref {
                     position: absolute;
-                    top: 50%;
+                    top: 60%;
                 }
             `}</style>
         </>

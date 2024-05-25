@@ -111,7 +111,7 @@ export default function Contact({ imgSrc }: { imgSrc: string }) {
                     src={imgSrc}
                     alt=""
                     layout="responsive"
-                    fetchPriority="auto"
+                    fetchPriority="high"
                 />
             </div>
             <div className="contents-container">

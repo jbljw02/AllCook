@@ -53,7 +53,7 @@ export default function Home({ imgSrc }: { imgSrc: string }) {
                     src={imgSrc}
                     alt={""}
                     layout="responsive"
-                    fetchPriority="auto"
+                    fetchPriority="high"
                 />
             </span>
             {/* 헤더,풋터 및 배너 컨테이너를 제외한 컨텐츠의 영역 */}

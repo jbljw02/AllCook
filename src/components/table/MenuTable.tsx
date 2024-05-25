@@ -97,8 +97,6 @@ export const MenuTable: React.FC<paramsType> = ({ menu, category, menuClick, isM
                                             rowMenu.length &&
                                             rowMenu.map((item, index) => {
                                                 const globalIndex = index + rowIndex * 4;
-                                                console.log("이름: ", item.RCP_NM);
-                                                console.log("이미지: ", item.ATT_FILE_NO_MK);
                                                 return (
                                                     <td key={globalIndex}>
                                                         <div>
