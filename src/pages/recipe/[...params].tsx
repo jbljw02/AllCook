@@ -16,7 +16,6 @@ import Manual from "@/components/recipeDetail/Manual";
 import RelatedRecipes from "@/components/recipeDetail/RelatedRecipes";
 import { useRouter } from "next/router";
 import SkeletonIngred from "@/components/skeleton/recipeDetail/SkeletonIngred";
-import SkeletonManual from "@/components/skeleton/recipeDetail/SkeletonManual";
 import SkeletonTitle from "@/components/skeleton/recipeDetail/SkeletonTitle";
 
 export default function RecipeDetail() {
@@ -87,7 +86,8 @@ export default function RecipeDetail() {
             setTimeout(() => {
                 dispatch(setAddedRecipeInfo({
                     folderId: null,
-                    imgString: '',
+                    ATT_FILE_NO_MK: '',
+                    ATT_FILE_NO_MAIN: '',
                     folderName: '',
                 }));
                 setIsShowPopUp(false);
@@ -112,7 +112,8 @@ export default function RecipeDetail() {
                     isShowPopUp &&
                     // 레시피 추가 완료 시 띄울 팝업
                     <AddCompletePopUp
-                        imgString={addedRecipeInfo.imgString}
+                        ATT_FILE_NO_MK={addedRecipeInfo.ATT_FILE_NO_MK}
+                        ATT_FILE_NO_MAIN={addedRecipeInfo.ATT_FILE_NO_MAIN}
                         folderName={addedRecipeInfo.folderName}
                     />
                 }

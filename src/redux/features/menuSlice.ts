@@ -5,11 +5,11 @@ export type Menu = {
     RCP_WAY2: string,
     ATT_FILE_NO_MK: string,
     ATT_FILE_NO_MAIN: string,
-    INFO_CAR: number,  // 탄수화물
+    INFO_CAR: number, // 탄수화물
     INFO_ENG: number, // 열량
-    INFO_FAT: number,  // 지방
-    INFO_NA: number,  // 나트륨
-    INFO_PRO: number,  // 단백질
+    INFO_FAT: number, // 지방
+    INFO_NA: number, // 나트륨
+    INFO_PRO: number, // 단백질
     MANUAL01?: string,
     MANUAL02?: string,
     MANUAL03?: string,
@@ -33,6 +33,7 @@ export type Menu = {
 const initialState = {
     RCP_NM: '',
     ATT_FILE_NO_MK: '',
+    ATT_FILE_NO_MAIN: '',
     INFO_CAR: '',
     INFO_ENG: '',
     INFO_FAT: '',

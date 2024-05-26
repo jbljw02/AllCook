@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { searchByMenuIngredient } from '@/utils/headerSearch';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';

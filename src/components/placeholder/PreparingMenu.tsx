@@ -41,7 +41,7 @@ export default function PreparingMenu({ width, height }: NoneImage) {
                 </svg>
                 <div className="title">이미지를 <b>준비중</b>입니다</div>
                 <div className="subtitle">이용에 불편을 드려 죄송합니다.</div>
-                <div className="subtitle">곧 정상화된 서비스로 찾아뵙겠습니다.</div>
+                <div className="subtitle">서비스 정상화에 더욱 힘 쓰겠습니다.</div>
             </div>
             <style jsx>{`
                 .preparing-img-container {

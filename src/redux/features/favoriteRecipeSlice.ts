@@ -9,8 +9,9 @@ export type FavoriteRecipe = {
 
 export type AddedRecipeInfo = {
     folderId: number,
-    imgString: string,
     folderName: string,
+    ATT_FILE_NO_MK: string,
+    ATT_FILE_NO_MAIN: string,
 }
 
 const folderInitialState: FavoriteRecipe[] = [
@@ -23,7 +24,8 @@ const folderInitialState: FavoriteRecipe[] = [
 
 const infoInitialState = {
     folderId: null,
-    imgString: '',
+    ATT_FILE_NO_MK: '',
+    ATT_FILE_NO_MAIN: '',
     folderName: '',
 }
 

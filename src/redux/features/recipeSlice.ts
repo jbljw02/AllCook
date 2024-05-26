@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     RCP_NM: '',
     ATT_FILE_NO_MK: '',
+    ATT_FILE_NO_MAIN: '',
     INFO_CAR: '',
     INFO_ENG: '',
     INFO_FAT: '',

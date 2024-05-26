@@ -3,7 +3,6 @@ import Image from "next/image";
 import explainImg from "../../../public/svgs/explain.svg";
 
 export default function ExplainSection() {
-
     return (
         <>
             <Image

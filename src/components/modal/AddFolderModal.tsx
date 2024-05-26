@@ -108,7 +108,8 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                 // 추가한 레시피의 상세 정보를 업데이트(팝업을 띄우기 위해)
                 dispatch(setAddedRecipeInfo({
                     folderId: id,
-                    imgString: recipe.ATT_FILE_NO_MAIN,
+                    ATT_FILE_NO_MK: recipe.ATT_FILE_NO_MK,
+                    ATT_FILE_NO_MAIN: recipe.ATT_FILE_NO_MAIN,
                     folderName: folderName,
                 }));
 
