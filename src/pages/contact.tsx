@@ -55,6 +55,8 @@ export default function Contact({ imgSrc }: { imgSrc: string }) {
         }
     }
 
+    const [isLoading, setIsLoading] = useState(false);
+
     // 작성이 완료된 폼을 전송
     const formSubmit = () => {
         setFormData({
@@ -71,6 +73,8 @@ export default function Contact({ imgSrc }: { imgSrc: string }) {
             return;
         }
 
+        setIsLoading(true);
+
         // 모든 필수 항목이 공란이 아니며, 개인정보 처리 방침에 동의했을 경우
         if ((formData.name !== '' &&
             formData.mail !== '' &&
@@ -79,7 +83,7 @@ export default function Contact({ imgSrc }: { imgSrc: string }) {
             isChecked === true) {
             fetchForm(formData);
             setIsSubmitted(true);
-            addDoc(collection(fireStore, 'temp'),
+            addDoc(collection(fireStore, 'contact'),
                 { formData }
             )
         }
@@ -91,6 +95,8 @@ export default function Contact({ imgSrc }: { imgSrc: string }) {
             isChecked === false) {
             setIsCheckedModalOpen(true);
         }
+
+        setIsLoading(false);
     };
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // 개인정보 처리방침 모달 관리
@@ -183,7 +189,12 @@ export default function Contact({ imgSrc }: { imgSrc: string }) {
                                 formData={formData}
                                 formChange={formChange}
                             />
-                            <div onClick={formSubmit} className="contact-submit">전송</div>
+                            <button
+                                onClick={formSubmit}
+                                className="contact-submit"
+                                disabled={isLoading}>
+                                전송
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -273,15 +284,17 @@ export default function Contact({ imgSrc }: { imgSrc: string }) {
                 .contact-submit {
                     display: flex;
                     justify-content: center;
+                    align-items: center;
                     margin-top: 40px;
                     margin-right: 1px;
-                    width: 360px;
                     padding: 10px 20px;
                     color: #ffffff;
                     border: 1px solid black;
                     background-color: #002312;
                     border-radius: 5px;
                     cursor: pointer;   
+                    font-size: 16px;
+                    height: 45px;
                 }
                 .contact-footer {
                     display: flex;
@@ -290,7 +303,6 @@ export default function Contact({ imgSrc }: { imgSrc: string }) {
                     color: #111111;
                     margin-top: auto;
                     margin-bottom: 11px;
-                    {/* margin-top: 76px; */}
                 }
                 .tel-section {
                     display: flex;
