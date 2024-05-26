@@ -44,14 +44,13 @@ export default function ReviewTextArea() {
     }
 
     // 레시피에 대한 댓글 정보를 받음
-    const requestRecipeOpinion = useCallback(async (email: string, RCP_SEQ: string) => {
+    const requestRecipeOpinion = useCallback(async (RCP_SEQ: string) => {
         try {
             const data = {
-                email: email,
                 RCP_SEQ: RCP_SEQ,
             }
 
-            if (!data.email || !data.RCP_SEQ) {
+            if (!data.RCP_SEQ) {
                 return;
             }
 
@@ -75,9 +74,13 @@ export default function ReviewTextArea() {
         }
     }, [user, recipe]);
 
+    const [sendLoading, setSendLoading] = useState(false);
+
     // 레시피에 대한 댓글 및 평점을 업데이트
     const sendNewRecipeOpinion = async () => {
         try {
+
+            setSendLoading(true);
             NProgress.start();
 
             const data = {
@@ -97,9 +100,10 @@ export default function ReviewTextArea() {
                 },
             });
             // 댓글을 받아옴
-            await requestRecipeOpinion(user.email, recipe.RCP_SEQ);
+            await requestRecipeOpinion(recipe.RCP_SEQ);
 
             NProgress.done();
+            setSendLoading(false);
 
             setFormData({
                 ...formData,
@@ -120,14 +124,8 @@ export default function ReviewTextArea() {
                 submitted: true,
             });
 
-            // 별점을 매기지 않았을 경우
-            if (formData.isRatingEmpty === true) {
-                return;
-            }
             // 모든 항목이 공란이 아닐 때에만 요청 전송
-            if (formData.comment !== '' && formData.isRatingEmpty === false) {
-                sendNewRecipeOpinion();
-            }
+            sendNewRecipeOpinion();
         }
         // 댓글을 입력하지 않았을 경우
         else {
@@ -136,9 +134,7 @@ export default function ReviewTextArea() {
     }
 
     useEffect(() => {
-        if (user && user.email) {
-            requestRecipeOpinion(user.email, recipe.RCP_SEQ);
-        }
+        requestRecipeOpinion(recipe.RCP_SEQ);
     }, [user, recipe, requestRecipeOpinion]);
 
     return (
@@ -213,10 +209,11 @@ export default function ReviewTextArea() {
                             null
                     }
                     <button
-                        className={`${formData.comment === '' ?
+                        className={`${formData.comment === '' || sendLoading ?
                             'button-disable' :
                             'button-activation cursor-pointer'}`}
-                        onClick={formSubmit}>
+                        onClick={formSubmit}
+                        disabled={formData.comment === '' || sendLoading}>
                         작성하기
                     </button>
                 </form>

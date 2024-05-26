@@ -22,8 +22,7 @@ export default function PiModal({ isModalOpen, setIsModalOpen, category }: modal
                     height: category === '문의' ? 690 : 605,
                     transform: 'translate(-50%, -50%)',
                 }
-            }}
-        >
+            }}>
             <div className="modal-container">
                 <div className="pi-header">
                     <div className="pi-rule">개인정보 처리방침</div>

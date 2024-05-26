@@ -1,17 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { doc, getDoc, updateDoc, arrayUnion, Timestamp } from 'firebase/firestore';
 
-interface timeStamp {
-    seconds: number;
-    nanoseconds: number;
-}
-
-type Opinions = {
+export type Opinions = {
     RCP_SEQ: string,
     email: string,
     name: string,
     comment: string,
     rating: number,
-    dateTime: timeStamp,
+    dateTime: Timestamp,
 }
 
 type SortRule = '등록순' | '최신순';
