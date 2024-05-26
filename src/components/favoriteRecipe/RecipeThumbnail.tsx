@@ -34,7 +34,7 @@ export default function RecipeThumbnail({ recipes, size }: { recipes: Menu[], si
                             <div
                                 key={index}
                                 className="thumbnail-image"
-                                style={{ backgroundImage: `url(${recipe.ATT_FILE_NO_MAIN})` }}
+                                style={{ backgroundImage: `url(${recipe.ATT_FILE_NO_MK || recipe.ATT_FILE_NO_MAIN})` }}
                             />
                         )
                     ))

@@ -1,26 +1,35 @@
 import Image from "next/image"
 import { useDispatch } from "react-redux";
 import { setRecipeAddModal, setRecipeMoveModal } from "@/redux/features/favoriteRecipeSlice";
+import EmptyMenu from "../placeholder/EmptyMenu";
 
 type ParamsType = {
-    imgString: string,
+    ATT_FILE_NO_MK: string,
+    ATT_FILE_NO_MAIN: string,
     folderName: string,
 }
 
-export default function AddCompletePopUp({ imgString, folderName }: ParamsType) {
+export default function AddCompletePopUp({ ATT_FILE_NO_MK, ATT_FILE_NO_MAIN, folderName }: ParamsType) {
     const dispatch = useDispatch();
 
     return (
         <>
             <div className="add-complete-container fade-in">
-                <Image
-                    style={{ borderRadius: '3px' }}
-                    width={42}
-                    height={42}
-                    src={imgString}
-                    alt=""
-                    fetchPriority="high"
-                />
+                {
+                    ATT_FILE_NO_MK || ATT_FILE_NO_MAIN ?
+                        <Image
+                            style={{ borderRadius: '3px' }}
+                            width={42}
+                            height={42}
+                            src={ATT_FILE_NO_MK || ATT_FILE_NO_MAIN}
+                            alt=""
+                            fetchPriority="high"
+                        /> :
+                        <EmptyMenu
+                            width="42px"
+                            height="42px"
+                        />
+                }
                 <div className="add-complete-section">
                     <div className="title">
                         <span>{folderName}</span>에 레시피가 저장되었습니다.

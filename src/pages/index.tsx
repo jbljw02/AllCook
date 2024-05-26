@@ -27,8 +27,6 @@ export default function Home({ imgSrc }: { imgSrc: string }) {
     return (
         <>
             <Seo title="홈" />
-            {/* 홈 화면의 전체 영역을 차지하는 컨테이너  */}
-            {/* 헤더부터 이미지 배너까지의 영역을 차지하는 컨테이너 */}
             {/* 배너 문구와 검색창을 차지하는 컨테이너 */}
             <div className="banner-container">
                 <div className="welcome-section">

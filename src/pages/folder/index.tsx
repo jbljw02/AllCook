@@ -1,8 +1,6 @@
 import Seo from "@/components/Seo";
 import FolderList from "@/components/favoriteRecipe/FolderList";
-import { FavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";
 import { RootState } from "@/redux/store";
-import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFavoriteRecipe } from "@/redux/features/favoriteRecipeSlice";

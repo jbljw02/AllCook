@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { setRecipeAddModal } from "@/redux/features/favoriteRecipeSlice";
 import { useRouter } from "next/router";
-import SkeletonImg from "../skeleton/recipeDetail/SkeletonImg";
+import EmptyMenu from "../placeholder/EmptyMenu";
 
 export default function RecipeImg() {
     const dispatch = useDispatch();
@@ -35,9 +35,9 @@ export default function RecipeImg() {
                     </div>
                 </div>
                 {
-                    recipe.ATT_FILE_NO_MK ?
+                    recipe.ATT_FILE_NO_MK || recipe.ATT_FILE_NO_MAIN ?
                         <Image
-                            src={recipe.ATT_FILE_NO_MK}
+                            src={recipe.ATT_FILE_NO_MK || recipe.ATT_FILE_NO_MAIN}
                             style={{
                                 borderRadius: 5,
                             }}
@@ -46,7 +46,10 @@ export default function RecipeImg() {
                             alt={''}
                             fetchPriority="high"
                         /> :
-                        <SkeletonImg />
+                        <EmptyMenu
+                            width="320px"
+                            height="320px"
+                        />
                 }
             </div>
             <style jsx>{`
