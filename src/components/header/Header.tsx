@@ -101,7 +101,7 @@ export default function Header({ position, backgroundColor, color, borderColor, 
                         <span
                             className='contact'
                             onClick={() => {
-                                router.push('/contact');
+                                // router.push('/contact');
                                 dispatch(setSearchInput(''));
                             }}>
                             Contact
