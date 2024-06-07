@@ -150,14 +150,24 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
         // 이름을 입력하고 엔터키를 누른 경우, 폴더가 추가됨
         if (e.key === 'Enter') {
             if (newFolderName.trim() !== '') {
-                // ex)현재 배열에 요소가 2개 있다면 다음 id는 3, 0개 있다면 다음 id는 1
-                const nextFolderId = favoriteRecipe.length > 0 ? favoriteRecipe[favoriteRecipe.length - 1].folderId + 1 : 1;
-                // DB에 새로운 폴더를 추가
-                await sendNewFolder(user.email, nextFolderId, newFolderName, []);
+                try {
+                    setIsLoading(true);
 
-                dispatch(addFavoriteRecipeFolder({ folderName: newFolderName, recipes: [] }));
-                setNewFolderName('');
-                setIsAddFolder(false);
+                    // ex)현재 배열에 요소가 2개 있다면 다음 id는 3, 0개 있다면 다음 id는 1
+                    const nextFolderId = favoriteRecipe.length > 0 ? favoriteRecipe[favoriteRecipe.length - 1].folderId + 1 : 1;
+                    // DB에 새로운 폴더를 추가
+                    await sendNewFolder(user.email, nextFolderId, newFolderName, []);
+                    // 폴더를 추가했으니 관심 레시피 정보를 새로 받음
+                    const favRecipeFromStore = await requestFavRecipes(user);
+                    dispatch(setFavoriteRecipe(favRecipeFromStore));
+
+                    setNewFolderName('');
+                    setIsAddFolder(false);
+
+                    setIsLoading(false);
+                } catch (error) {
+                    throw error;
+                }
             }
         }
         // ESC 키를 누를 경우, 폴더 추가 작업이 취소
@@ -409,26 +419,6 @@ export default function AddFolderModal({ isModalOpen, setIsModalOpen, isMoving }
                     position: relative;
                     top: 1px;
                 }
-                {/* .pop-up-footer {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    position: fixed;
-                    bottom: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 80px;
-                    border-top: 1px solid rgb(232, 232, 232);
-                }
-                .close-btn {
-                    width: 300px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border-radius: 5px;
-                    margin-right: 0px;
-                    padding: 12px 0px;
-                } */}
             `}</style>
         </>
     )
