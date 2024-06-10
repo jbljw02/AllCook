@@ -62,7 +62,7 @@ export default function RecipeTable() {
     const [isImgLoaded, setIsImgLoaded] = useState(new Array(displayedMenu.length).fill(true));
     // 이미지가 완전히 로딩되지 않았는지
     const [isLoading, setIsLoading] = useState(new Array(displayedMenu.length).fill(true));
-    
+
     // 이미지 업로드에 성공했을 때
     const handleImgLoad = (globalIndex: number) => {
         setIsImgLoaded((prev) => {
@@ -138,10 +138,10 @@ export default function RecipeTable() {
                                                         return (
                                                             <React.Fragment key={localIndex}>
                                                                 <td>
-                                                                    <div>
-                                                                        <div
-                                                                            onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)}
-                                                                            className="td-content">
+                                                                    <div
+                                                                        className="cursor-pointer"
+                                                                        onClick={() => menuClick(item.RCP_NM, item.RCP_SEQ)}>
+                                                                        <div className="td-content">
                                                                             {
                                                                                 // 이미지를 불러올 수 있을 때만 로드
                                                                                 isImgLoaded[globalIndex] ?
