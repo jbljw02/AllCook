@@ -10,11 +10,13 @@ export default function HashTags() {
     const allMenu = useSelector((state: RootState) => state.allMenu);
 
     const [recomHashTags, setRecomHashTags] = useState<string[]>(); // 사용자에게 추천할 해시태그
+    const [selectedHashTag, setSelectedHashTag] = useState<string>();
 
     // 해시태그를 클릭하면 일치하는 요소들을 반환
     const searchByHashTag = (hashTag: string) => {
         let filteredMenu = allMenu.filter(item => item.HASH_TAG === hashTag);
         dispatch(setDisplayedMenu(filteredMenu));
+        setSelectedHashTag(hashTag);
     }
 
     // allMenu가 업데이트 될 때, 해시태그를 업데이트함
@@ -31,14 +33,16 @@ export default function HashTags() {
     return (
         <>
             <div className="hash-tag-div">
-
                 {
                     recomHashTags && recomHashTags.map((item, index) => {
+                        const isSelected = item === selectedHashTag;
+                        const tagClass = isSelected ? 'hash-tag selected' : 'hash-tag';
+
                         return (
                             <span
                                 key={index}
                                 onClick={() => searchByHashTag(item)}
-                                className="no-drag">
+                                className={`no-drag ${tagClass}`}>
                                 {item}
                             </span>
                         )
@@ -53,7 +57,7 @@ export default function HashTags() {
                     margin-top: 23px;
                     width: auto;
                 }
-                .hash-tag-div span {
+                .hash-tag {
                     font-size: 13px;
                     margin-right: 10px;
                     padding: 5px 8px;
@@ -64,10 +68,13 @@ export default function HashTags() {
                     cursor: pointer;
                     transition: border-color 0.2s ease;
                 }
-                .hash-tag-div span:hover {
+                .hash-tag:hover {
                     border-color: #323232;
                 }
-                .hash-tag-div span:last-child {
+                .hash-tag.selected {
+                    border-color: #323232;
+                }
+                .hash-tag:last-child {
                     margin-right: 0px;
                 }
             `}</style>
