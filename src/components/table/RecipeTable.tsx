@@ -8,6 +8,8 @@ import SkeletonTable from "../skeleton/SkeletonTable";
 import { setCurrentPage } from "@/redux/features/recipePageSlice";
 import React from "react";
 import PreparingMenu from "../placeholder/PreparingMenu";
+import PrevPage from "../recipeDetail/pagination/PrevPage";
+import NextPage from "../recipeDetail/pagination/NextPage";
 
 export default function RecipeTable() {
     const dispatch = useDispatch();
@@ -189,16 +191,14 @@ export default function RecipeTable() {
                 {
                     // 현재 페이지가 첫 페이지라면, 이전 페이지로 이동할 수 없음을 알림
                     currentPage !== 1 ?
-                        <span
-                            onClick={() => movePage('down')}>
-                            <svg className="movePage-svg left" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke={currentPage === 1 ? '#E8EBEE' : 'currentColor'} strokeLinecap="round" strokeWidth="1.4" d="m6 12 4-4-4-4"></path>
-                            </svg>
-                        </span> :
-                        <span
-                            id="no-movePage-span">
-                            <svg className="no-movePage-svg left" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke={currentPage === 1 ? '#E8EBEE' : 'currentColor'} strokeLinecap="round" strokeWidth="1.4" d="m6 12 4-4-4-4"></path>
-                            </svg>
-                        </span>
+                        <PrevPage
+                            currentPage={currentPage}
+                            onClick={movePage}
+                        />
+                        :
+                        <PrevPage
+                            currentPage={currentPage}
+                        />
                 }
                 {
                     /* Array는 배열을 생성하여 내부를 undefined로 채움
@@ -212,13 +212,14 @@ export default function RecipeTable() {
                                 pageNumber === currentPage ?
                                     <span
                                         key={pageNumber}
+                                        className="no-drag"
                                         onClick={() => dispatch(setCurrentPage((pageNumber)))}
                                         style={{ backgroundColor: '#002312', color: '#ffffff' }}>
                                         {pageNumber}
                                     </span> :
                                     <span
                                         key={pageNumber}
-                                        className="pagination-hover"
+                                        className="pagination-hover no-drag"
                                         onClick={() => dispatch(setCurrentPage((pageNumber)))}>
                                         {pageNumber}
                                     </span>
@@ -228,33 +229,15 @@ export default function RecipeTable() {
                 {
                     // 현재 페이지가 마지막 페이지라면, 이후 페이지로 이동할 수 없음을 알림
                     currentPage !== totalPagecount ?
-                        <span
-                            onClick={() => movePage('up')}
-                            className="movePage-span">
-                            <svg className="movePage-svg right"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 16 16">
-                                <path
-                                    stroke={currentPage === Math.ceil(displayedMenu.length / tdPerPage) ? '#E8EBEE' : 'currentColor'}
-                                    strokeLinecap="round"
-                                    strokeWidth="1.4" d="m6 12 4-4-4-4">
-                                </path>
-                            </svg>
-                        </span> :
-                        <span
-                            id="no-movePage-span">
-                            <svg
-                                className="no-movePage-svg right"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 16 16">
-                                <path
-                                    stroke={currentPage === Math.ceil(displayedMenu.length / tdPerPage) ? '#E8EBEE' : 'currentColor'}
-                                    strokeLinecap="round"
-                                    strokeWidth="1.4"
-                                    d="m6 12 4-4-4-4">
-                                </path>
-                            </svg>
-                        </span>
+                        <NextPage
+                            currentPage={currentPage}
+                            tdPerPage={tdPerPage}
+                            onClick={movePage}
+                        /> :
+                        <NextPage
+                            currentPage={currentPage}
+                            tdPerPage={tdPerPage}
+                        />
                 }
             </div>
             <style jsx>{`
@@ -293,32 +276,6 @@ export default function RecipeTable() {
                 .pagination-section span:last-child {
                     margin-top: 0px;
                     margin-right: 0px;
-                }
-                #no-movePage-span {
-                    cursor: auto;
-                }
-                .movePage-svg {
-                    padding: 5px 5px 5px 5px;
-                    border: 1px solid #ebeef0;
-                    border-radius: 50%;
-                    position: relative;
-                    top: 4.5px;
-                    width: 17px;
-                    transition: background-color 0.2s ease;
-                }
-                .movePage-svg:hover {
-                    background-color: #E8EBEE;
-                }
-                .no-movePage-svg {
-                    padding: 5px 5px 5px 5px;
-                    border: 1px solid #ebeef0;
-                    border-radius: 50%;
-                    position: relative;
-                    top: 4.5px;
-                    width: 17px;
-                }
-                .left {
-                    transform: rotate(180deg);
                 }
             `}</style>
         </>

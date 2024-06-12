@@ -26,6 +26,7 @@ import '../styles/scrollStyle.css'
 import '../styles/header.css'
 import '../styles/svgStyle.css'
 import '../styles/modal.css'
+import '../styles/movePage.css'
 
 const noto = Noto_Sans_KR({
     subsets: ['latin'],
