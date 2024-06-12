@@ -1,4 +1,4 @@
-import { setDisplayedMenu } from "@/redux/features/menuSlice";
+import { Menu, setDisplayedMenu } from "@/redux/features/menuSlice";
 import { RootState } from "@/redux/store";
 import shuffleArray from "@/utils/shuffleArray";
 import { useEffect, useState } from "react";
@@ -8,9 +8,10 @@ export default function HashTags() {
     const dispatch = useDispatch();
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
+    const displayedMenu = useSelector((state: RootState) => state.displayedMenu);
 
     const [recomHashTags, setRecomHashTags] = useState<string[]>(); // 사용자에게 추천할 해시태그
-    const [selectedHashTag, setSelectedHashTag] = useState<string>();
+    const [selectedHashTag, setSelectedHashTag] = useState<string | null>(null);
 
     // 해시태그를 클릭하면 일치하는 요소들을 반환
     const searchByHashTag = (hashTag: string) => {
@@ -18,6 +19,17 @@ export default function HashTags() {
         dispatch(setDisplayedMenu(filteredMenu));
         setSelectedHashTag(hashTag);
     }
+
+    // displayedMenu가 변경될 때 selectedHashTag 검증
+    useEffect(() => {
+        if (selectedHashTag) {
+            // displayedMenu의 모든 해시태그가 선택된 해시태그와 일치하지 않는다면 null처리
+            const isTagPresent = displayedMenu.every(item => item.HASH_TAG === selectedHashTag);
+            if (!isTagPresent) {
+                setSelectedHashTag(null);
+            }
+        }
+    }, [displayedMenu, selectedHashTag]);
 
     // allMenu가 업데이트 될 때, 해시태그를 업데이트함
     useEffect(() => {
