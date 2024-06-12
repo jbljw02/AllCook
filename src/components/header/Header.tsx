@@ -14,6 +14,7 @@ import Image from 'next/image';
 import UserDropdown from './UserDropdown';
 import { setSearchInput } from '@/redux/features/searchInputSlice';
 import { setCurrentPage } from '@/redux/features/recipePageSlice';
+import Info from './Info';
 
 type Position = 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky';
 

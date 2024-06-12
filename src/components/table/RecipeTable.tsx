@@ -278,7 +278,7 @@ export default function RecipeTable() {
                             totalPageCount={totalPageCount}
                         />
                 }
-            </div >
+            </div>
             <style jsx>{`
                 .menu-section {
                     display: flex;
