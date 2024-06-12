@@ -11,8 +11,8 @@
 }
 
 .movePage-svg {
-    padding: 5px 5px 5px 5px;
     border: 1px solid #ebeef0;
+    padding: 5px;
     border-radius: 50%;
     position: relative;
     top: 4.5px;
@@ -25,7 +25,7 @@
 }
 
 .no-movePage-svg {
-    padding: 5px 5px 5px 5px;
+    padding: 5px;
     border: 1px solid #ebeef0;
     border-radius: 50%;
     position: relative;
@@ -35,4 +35,17 @@
 
 .left {
     transform: rotate(180deg);
+}
+
+.double-arrow {
+    padding-left: 3px;
+    padding-right: 7px;
+}
+
+.double-arrow.left {
+    left: 6px;
+}
+
+.double-arrow.right {
+    right: 6px;
 }

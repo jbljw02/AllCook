@@ -15,7 +15,9 @@ export default function NextPage({ currentPage, tdPerPage, onClick }: Params) {
             className="page-move-btn"
             onClick={() => { onClick && onClick('up') }}>
             <svg
-                className={`${onClick ? 'movePage-svg right' : 'no-movePage-svg right cursor-auto'}`}
+                className={`${onClick ?
+                    'movePage-svg' :
+                    'no-movePage-svg cursor-auto'}`}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none" viewBox="0 0 16 16">
                 <path
