@@ -41,6 +41,10 @@ body {
   cursor: pointer;
 }
 
+.cursor-auto {
+  cursor: auto;
+}
+
 .rotate-clockwise {
   transform: rotate(-90deg);
 }

@@ -8,6 +8,10 @@ import SkeletonTable from "../skeleton/SkeletonTable";
 import { setCurrentPage } from "@/redux/features/recipePageSlice";
 import React from "react";
 import PreparingMenu from "../placeholder/PreparingMenu";
+import PrevPage from "../recipeDetail/pagination/PrevPage";
+import NextPage from "../recipeDetail/pagination/NextPage";
+import DoubleArrow from "../recipeDetail/pagination/PrevPageDouble";
+import NextPageDouble from "../recipeDetail/pagination/NextPageDouble";
 
 export default function RecipeTable() {
     const dispatch = useDispatch();
@@ -20,12 +24,12 @@ export default function RecipeTable() {
     const tdPerPage = 24; // 한 페이지에 출력할 td의 개수
     const [currentBlock, setCurrentBlock] = useState(1); // 현재 페이지 블록의 번호
     const pagesPerBlock = 10; // 한 블록에 출력할 페이지 번호의 개수
-    const totalPagecount = Math.ceil(displayedMenu.length / tdPerPage); // 전체 페이지의 수의 올림값
+    const totalPageCount = Math.ceil(displayedMenu.length / tdPerPage); // 전체 페이지의 수의 올림값
     const startPage = (currentBlock - 1) * pagesPerBlock + 1; // 페이지의 시작 인덱스
     // 마지막 페이지는 10, 20, 30.. 등등이 마지막 페이지 번호가 아닐 수 있음
     // 그렇기 때문에 전체 페이지의 개수와 현재 블록의 마지막 인덱스중 더 작은 값을 endPage로 설정
     // ex) 23이 마지막 페이지 번호라고 한다면, 30과 23중엔 23이 작은 값이므로 23 할당
-    const endPage = Math.min(currentBlock * pagesPerBlock, totalPagecount);
+    const endPage = Math.min(currentBlock * pagesPerBlock, totalPageCount);
 
     // 현재 페이지 번호가 변경될 때마다 블록번호를 업데이트
     // currentPage가 1~10일 때, currentBlock은 1, 11~20일 때 2...
@@ -90,11 +94,26 @@ export default function RecipeTable() {
 
     // 버튼을 통해 페이지를 이동
     const movePage = (param: string) => {
-        if (param === 'up' && currentPage < totalPagecount) {
+        if (param === 'up' && currentPage < totalPageCount) {
             dispatch(setCurrentPage(currentPage + 1))
         }
         if (param === 'down' && currentPage > 1) {
             dispatch(setCurrentPage(currentPage - 1))
+        }
+    }
+
+    // 페이지 인덱스를 +10/-10
+    const movePageDouble = (param: string) => {
+        if (param === 'up' && currentPage + 10 <= totalPageCount) {
+            dispatch(setCurrentPage(currentPage + 10));
+        } else if (param === 'up' && currentPage + 10 > totalPageCount) {
+            dispatch(setCurrentPage(totalPageCount));
+        }
+
+        if (param === 'down' && currentPage - 10 >= 1) {
+            dispatch(setCurrentPage(currentPage - 10));
+        } else if (param === 'down' && currentPage - 10 < 1) {
+            dispatch(setCurrentPage(1));
         }
     }
 
@@ -189,16 +208,24 @@ export default function RecipeTable() {
                 {
                     // 현재 페이지가 첫 페이지라면, 이전 페이지로 이동할 수 없음을 알림
                     currentPage !== 1 ?
-                        <span
-                            onClick={() => movePage('down')}>
-                            <svg className="movePage-svg left" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke={currentPage === 1 ? '#E8EBEE' : 'currentColor'} strokeLinecap="round" strokeWidth="1.4" d="m6 12 4-4-4-4"></path>
-                            </svg>
-                        </span> :
-                        <span
-                            id="no-movePage-span">
-                            <svg className="no-movePage-svg left" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke={currentPage === 1 ? '#E8EBEE' : 'currentColor'} strokeLinecap="round" strokeWidth="1.4" d="m6 12 4-4-4-4"></path>
-                            </svg>
-                        </span>
+                        <DoubleArrow
+                            currentPage={currentPage}
+                            onClick={movePageDouble}
+                        /> :
+                        <DoubleArrow
+                            currentPage={currentPage}
+                        />
+                }
+                {
+                    currentPage !== 1 ?
+                        <PrevPage
+                            currentPage={currentPage}
+                            onClick={movePage}
+                        />
+                        :
+                        <PrevPage
+                            currentPage={currentPage}
+                        />
                 }
                 {
                     /* Array는 배열을 생성하여 내부를 undefined로 채움
@@ -212,13 +239,14 @@ export default function RecipeTable() {
                                 pageNumber === currentPage ?
                                     <span
                                         key={pageNumber}
+                                        className="no-drag"
                                         onClick={() => dispatch(setCurrentPage((pageNumber)))}
                                         style={{ backgroundColor: '#002312', color: '#ffffff' }}>
                                         {pageNumber}
                                     </span> :
                                     <span
                                         key={pageNumber}
-                                        className="pagination-hover"
+                                        className="pagination-hover no-drag"
                                         onClick={() => dispatch(setCurrentPage((pageNumber)))}>
                                         {pageNumber}
                                     </span>
@@ -227,36 +255,30 @@ export default function RecipeTable() {
                 }
                 {
                     // 현재 페이지가 마지막 페이지라면, 이후 페이지로 이동할 수 없음을 알림
-                    currentPage !== totalPagecount ?
-                        <span
-                            onClick={() => movePage('up')}
-                            className="movePage-span">
-                            <svg className="movePage-svg right"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 16 16">
-                                <path
-                                    stroke={currentPage === Math.ceil(displayedMenu.length / tdPerPage) ? '#E8EBEE' : 'currentColor'}
-                                    strokeLinecap="round"
-                                    strokeWidth="1.4" d="m6 12 4-4-4-4">
-                                </path>
-                            </svg>
-                        </span> :
-                        <span
-                            id="no-movePage-span">
-                            <svg
-                                className="no-movePage-svg right"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 16 16">
-                                <path
-                                    stroke={currentPage === Math.ceil(displayedMenu.length / tdPerPage) ? '#E8EBEE' : 'currentColor'}
-                                    strokeLinecap="round"
-                                    strokeWidth="1.4"
-                                    d="m6 12 4-4-4-4">
-                                </path>
-                            </svg>
-                        </span>
+                    currentPage !== totalPageCount ?
+                        <NextPage
+                            currentPage={currentPage}
+                            tdPerPage={tdPerPage}
+                            onClick={movePage}
+                        /> :
+                        <NextPage
+                            currentPage={currentPage}
+                            tdPerPage={tdPerPage}
+                        />
                 }
-            </div>
+                {
+                    currentPage !== totalPageCount ?
+                        <NextPageDouble
+                            currentPage={currentPage}
+                            totalPageCount={totalPageCount}
+                            onClick={movePageDouble}
+                        /> :
+                        <NextPageDouble
+                            currentPage={currentPage}
+                            totalPageCount={totalPageCount}
+                        />
+                }
+            </div >
             <style jsx>{`
                 .menu-section {
                     display: flex;
@@ -293,32 +315,6 @@ export default function RecipeTable() {
                 .pagination-section span:last-child {
                     margin-top: 0px;
                     margin-right: 0px;
-                }
-                #no-movePage-span {
-                    cursor: auto;
-                }
-                .movePage-svg {
-                    padding: 5px 5px 5px 5px;
-                    border: 1px solid #ebeef0;
-                    border-radius: 50%;
-                    position: relative;
-                    top: 4.5px;
-                    width: 17px;
-                    transition: background-color 0.2s ease;
-                }
-                .movePage-svg:hover {
-                    background-color: #E8EBEE;
-                }
-                .no-movePage-svg {
-                    padding: 5px 5px 5px 5px;
-                    border: 1px solid #ebeef0;
-                    border-radius: 50%;
-                    position: relative;
-                    top: 4.5px;
-                    width: 17px;
-                }
-                .left {
-                    transform: rotate(180deg);
                 }
             `}</style>
         </>
