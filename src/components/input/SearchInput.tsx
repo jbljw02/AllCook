@@ -121,9 +121,9 @@ export default function SearchInput({ inputBackgroundColor }: { inputBackgroundC
                     color: #ffffff;
                 }
                 .delete-svg {
-                    width: 20px;
-                    height: 20px;
-                    margin-right: 5px;
+                    width: 21px;
+                    height: 21px;
+                    margin-right: 7px;
                     visibility: hidden;
                 }
                 .delete-svg.visible {
