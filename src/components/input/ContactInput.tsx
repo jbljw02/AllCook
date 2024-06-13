@@ -33,9 +33,24 @@ export default function ContactInput({ form, name, height, placeholder, msgWheth
             </div>
             <style jsx>{`
                 .input-div {
+                    display: flex;
+                    border: none;
+                    margin-top: 6px;
+                    margin-right: 25px;
                     background-color: transparent;
                     border-bottom: 1px solid #787878;
                     margin-right: 0px;
+                }
+                .search-input {
+                    outline: none;
+                    width: 220px;
+                    height: 30px;
+                    font-size: 14px;
+                    padding-left: 12px;
+                    padding-top: 3px;
+                    padding-bottom: 3px;
+                    border-radius: 10px;
+                    border: none;
                 }
                 .input-div-background {
                     border-radius: 5px;

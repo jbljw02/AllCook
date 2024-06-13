@@ -12,6 +12,7 @@ import { parseCookies } from "nookies";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import NProgress from "nprogress";
+import NameUpdatePopUp from "@/components/popUp/NameUpdatePopUp";
 
 export type UserForm = {
     name: string,
@@ -32,6 +33,8 @@ export default function UserDetail() {
         stroke: '#dadada',
         borderColor: '',
     })
+
+    const [isShowPopUp, setIsShowPopUp] = useState(false);
 
     const formChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -74,7 +77,8 @@ export default function UserDetail() {
                     });
 
                     NProgress.done();
-                    window.location.reload();
+                    setIsShowPopUp(true);
+                    // window.location.reload();
                 }
             }
         } catch (error) {
@@ -106,6 +110,12 @@ export default function UserDetail() {
     return (
         <>
             <Seo title="회원 정보" />
+            {
+                isShowPopUp &&
+                <NameUpdatePopUp
+                    onClose={() => setIsShowPopUp(false)}
+                />
+            }
             <div className="user-detail-section">
                 <svg width="90" data-bbox="0 0 22 22" data-type="shape" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
                     <path fill='#111111'

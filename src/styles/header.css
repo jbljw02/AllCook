@@ -15,33 +15,6 @@
     cursor: pointer;
 }
 
-.input-div {
-    display: flex;
-    border: none;
-    margin-top: 6px;
-    margin-right: 25px;
-}
-
-.search-input {
-    outline: none;
-    width: 220px;
-    height: 30px;
-    font-size: 14px;
-    padding-left: 12px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    border-radius: 10px;
-    border: none;
-}
-
-.search-svg {
-    position: absolute;
-    margin-top: 7px;
-    margin-left: 203px;
-    color: #111111;
-    cursor: pointer;
-}
-
 .user-container {
     display: flex;
     flex-direction: row;

@@ -10,10 +10,22 @@ export const searchInputSlice = createSlice({
     }
 })
 
+export const isVisibleSlice = createSlice({
+    name: 'isVisible',
+    initialState: false,
+    reducers: {
+        setIsVisible: (state, action) => {
+            return action.payload;
+        }
+    }
+})
+
 export const { setSearchInput } = searchInputSlice.actions;
+export const { setIsVisible } = isVisibleSlice.actions;
 
 const reducers = {
     searchInput: searchInputSlice.reducer,
+    isVisible: isVisibleSlice.reducer,
 }
 
 export default reducers;

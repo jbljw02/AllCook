@@ -15,9 +15,15 @@ export default function HashTags() {
 
     // 해시태그를 클릭하면 일치하는 요소들을 반환
     const searchByHashTag = (hashTag: string) => {
-        let filteredMenu = allMenu.filter(item => item.HASH_TAG === hashTag);
-        dispatch(setDisplayedMenu(filteredMenu));
-        setSelectedHashTag(hashTag);
+        if(selectedHashTag === hashTag) {
+            dispatch(setDisplayedMenu(allMenu));
+            setSelectedHashTag(null);
+        }
+        else {
+            let filteredMenu = allMenu.filter(item => item.HASH_TAG === hashTag);
+            dispatch(setDisplayedMenu(filteredMenu));
+            setSelectedHashTag(hashTag);
+        }
     }
 
     // displayedMenu가 변경될 때 selectedHashTag 검증

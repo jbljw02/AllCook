@@ -45,6 +45,7 @@ export type RootState = {
     servings: number,
     nutritionVisible: boolean,
     searchInput: string,
+    isVisible: boolean,
 }
 
 // 각각의 기능을 가진 리듀서들을 병합
@@ -76,6 +77,7 @@ const combinedReducer = combineReducers({
     servings: RecipeReducers.servings,
     nutritionVisible: RecipeReducers.nutritionVisible,
     searchInput: SearchInputReducers.searchInput,
+    isVisible: SearchInputReducers.isVisible,
 });
 
 // 전체 리듀서를 관리
