@@ -6,23 +6,17 @@ import { setDisplayedMenu } from '@/redux/features/menuSlice';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import titleLogoSmall from '../../../public/svgs/title-logo-small.svg';
-import searchSvg from '../../../public/svgs/search.svg'
 import userDark from '../../../public/svgs/user-dark.svg';
 import UserDropdown from './UserDropdown';
 import { setSearchInput } from '@/redux/features/searchInputSlice';
 import { setCurrentPage } from '@/redux/features/recipePageSlice';
+import SearchInput from '../input/SearchInput';
 
 export default function Header({ className }: { className: string }) {
     const dispatch = useDispatch();
     const router = useRouter();
 
     const allMenu = useSelector((state: RootState) => state.allMenu);
-
-    const searchInput = useSelector((state: RootState) => state.searchInput);
-
-    const changeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(setSearchInput(event.target.value));
-    }
 
     const [isUpdated, setIsUpdated] = useState<boolean>(false);
 
@@ -31,31 +25,6 @@ export default function Header({ className }: { className: string }) {
             router.push('/recipe').then(() => setIsUpdated(false));
         }
     }, [isUpdated, router]);
-
-    const searchRecipe = async (event: React.KeyboardEvent<HTMLInputElement> | string) => {
-        if (typeof event !== 'string' && event.key === 'Enter') {
-            if (searchInput !== '') {
-                const newDisplayedMenu = searchByMenuIngredient(searchInput, allMenu);
-                dispatch(setDisplayedMenu(newDisplayedMenu));
-                setIsUpdated(true);
-            }
-            else {
-                dispatch(setDisplayedMenu(allMenu));
-                setIsUpdated(true);
-            }
-        }
-        else if (typeof event === 'string') {
-            if (searchInput !== '') {
-                const newDisplayedMenu = searchByMenuIngredient(event, allMenu);
-                dispatch(setDisplayedMenu(newDisplayedMenu));
-                setIsUpdated(true);
-            }
-            else {
-                dispatch(setDisplayedMenu(allMenu));
-                setIsUpdated(true);
-            }
-        }
-    };
 
     const recipeClick = () => {
         dispatch(setDisplayedMenu(allMenu));
@@ -107,22 +76,7 @@ export default function Header({ className }: { className: string }) {
                 </div>
                 {/* 검색창 및 로그인 네비게이션 바 */}
                 <div className='right-nav'>
-                    <div className='input-div'>
-                        {/* onKeyDown = 키가 눌렸을 때 발생 */}
-                        <input
-                            onKeyDown={searchRecipe}
-                            value={searchInput}
-                            onChange={changeInput}
-                            className='search-input'
-                            placeholder='메뉴, 재료로 검색' />
-                        <Image
-                            onClick={() => searchRecipe(searchInput)}
-                            className='search-svg'
-                            src={searchSvg}
-                            alt=''
-                            fetchPriority="auto"
-                        />
-                    </div>
+                    <SearchInput inputBackgroundColor={'#f2f2f2'}  />
                     <div
                         className='user-container no-drag'
                         onClick={() => setUserDetail(!userDetail)}>
