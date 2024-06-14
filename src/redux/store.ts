@@ -6,7 +6,7 @@ import SortReducers from './features/sortSlice';
 import RecipeReducers from './features/recipeSlice';
 import UserReducers, { User } from './features/userSlice';
 import FavoriteRecipeReducers, { FavoriteRecipe, AddedRecipeInfo } from './features/favoriteRecipeSlice';
-import RecipeOpinionReducers from './features/recipeOpinionSlice';
+import RecipeOpinionReducers, { recipeOpinionSlice } from './features/recipeOpinionSlice';
 import { RecipeOpinion } from "./features/recipeOpinionSlice";
 import RecipePageSlice from './features/recipePageSlice';
 import scrollReducers from './features/scrollSlice';
@@ -46,6 +46,7 @@ export type RootState = {
     nutritionVisible: boolean,
     searchInput: string,
     isVisible: boolean,
+    isEditing: boolean,
 }
 
 // 각각의 기능을 가진 리듀서들을 병합
@@ -78,6 +79,7 @@ const combinedReducer = combineReducers({
     nutritionVisible: RecipeReducers.nutritionVisible,
     searchInput: SearchInputReducers.searchInput,
     isVisible: SearchInputReducers.isVisible,
+    isEditing: RecipeOpinionReducers.isEditing,
 });
 
 // 전체 리듀서를 관리
@@ -87,8 +89,8 @@ const masterReducer = (state: any, action: {
     // 액션의 타입이 HYDRATE일 경우, 즉 서버 사이드 렌더링이 발생할 때
     if (action.type === HYDRATE) {
         const nextState = {
-            ...state,  // 현재 클라이언트의 상태를 그대로 가져옴
-            // ...action.payload,  // 모든 state를 SSR에서 가져와서 클라이언트에 병합(SSR에서 설정해주지 않은 값은 초기값으로 세팅됨)
+            ...state, // 현재 클라이언트의 상태를 그대로 가져옴
+            // ...action.payload, // 모든 state를 SSR에서 가져와서 클라이언트에 병합(SSR에서 설정해주지 않은 값은 초기값으로 세팅됨)
             // 각 메뉴를 SSR에서 가져와서 클라이언트에 병합
             recipe: action.payload.recipe,
         };

@@ -1,13 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { doc, getDoc, updateDoc, arrayUnion, Timestamp } from 'firebase/firestore';
+import { Timestamp } from 'firebase/firestore';
 
 export type Opinions = {
+    id: string,
     RCP_SEQ: string,
     email: string,
     name: string,
     comment: string,
     rating: number,
     dateTime: Timestamp,
+    isEdited: boolean,
 }
 
 type SortRule = '등록순' | '최신순';
@@ -42,10 +44,22 @@ export const recipeOpinionSlice = createSlice({
     }
 })
 
+export const isEditingSlice = createSlice({
+    name: 'isEditing',
+    initialState: false,
+    reducers: {
+        setIsEditing: (state, action) => {
+            return action.payload;
+        }
+    }
+})
+
 export const { setRecipeOpinion, sortRecipeOpinionAsc, sortRecipeOpinionDesc } = recipeOpinionSlice.actions;
+export const { setIsEditing } = isEditingSlice.actions;
 
 const reducers = {
     recipeOpinion: recipeOpinionSlice.reducer,
+    isEditing: isEditingSlice.reducer,
 }
 
 export default reducers;

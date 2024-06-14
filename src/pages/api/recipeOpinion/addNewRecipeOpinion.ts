@@ -2,6 +2,7 @@ import { firestore } from "@/firebase/firebasedb";
 import { Opinions } from "@/redux/features/recipeOpinionSlice";
 import { Timestamp, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next/types";
+import { v4 as uuidv4 } from 'uuid'; 
 
 // 댓글 및 별점을 레시피에 추가
 const addNewRecipeOpinion = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -14,12 +15,14 @@ const addNewRecipeOpinion = async (req: NextApiRequest, res: NextApiResponse) =>
         if (recipeDocSnap.exists()) {
             const opinionsFromStore: Opinions[] = recipeDocSnap.data().opinions || [];
             const opinion = {
+                id: uuidv4(),
                 email,
                 name,
                 comment,
                 rating,
                 RCP_SEQ,
                 dateTime: Timestamp.fromDate(new Date(dateTime)),
+                isEdited: false,
             }
 
             // dateTime에서 밀리초 단위를 제거

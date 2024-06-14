@@ -29,6 +29,10 @@ body {
   flex-grow: 1;
 }
 
+button {
+  border: none;
+}
+
 .no-drag {
   user-select: none;
 }
