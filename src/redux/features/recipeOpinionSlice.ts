@@ -40,6 +40,23 @@ export const recipeOpinionSlice = createSlice({
         sortRecipeOpinionDesc: (state) => {
             state.sortRule = '최신순';
             state.opinions.sort((a, b) => (b.dateTime.seconds - a.dateTime.seconds) || (b.dateTime.nanoseconds - a.dateTime.nanoseconds));
+        },
+        addOpinion: (state, action) => {
+            const newOpinion = action.payload;
+            state.opinions.push(newOpinion);
+        },
+        deleteOpinion: (state, action) => {
+            const id = action.payload;
+            state.opinions = state.opinions.filter(opinion => opinion.id !== id);
+        },
+        editOpinion: (state, action) => {
+            const { id, comment, rating } = action.payload;
+            const opinion = state.opinions.find(opinion => opinion.id === id);
+            if (opinion) {
+                opinion.comment = comment;
+                opinion.rating = rating;
+                opinion.isEdited = true;
+            }
         }
     }
 })
@@ -54,7 +71,7 @@ export const isEditingSlice = createSlice({
     }
 })
 
-export const { setRecipeOpinion, sortRecipeOpinionAsc, sortRecipeOpinionDesc } = recipeOpinionSlice.actions;
+export const { setRecipeOpinion, sortRecipeOpinionAsc, sortRecipeOpinionDesc, addOpinion, deleteOpinion, editOpinion } = recipeOpinionSlice.actions;
 export const { setIsEditing } = isEditingSlice.actions;
 
 const reducers = {

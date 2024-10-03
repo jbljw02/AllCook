@@ -3,12 +3,12 @@ import { RootState } from "../../redux/store";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Seo from "../../components/Seo";
-import SortList from "../../components/recipe/SortList";
+import SortList from "../../../recipe/SortList";
 import filterSvg from '../../../public/svgs/filter.svg';
 import RecipeTable from "@/components/table/RecipeTable";
-import FilterDetail from "@/components/recipe/filterDetail/FilterDetail";
-import HashTags from "@/components/recipe/HashTags";
-import NoneMenu from "@/components/recipe/NoneMenu";
+import FilterDetail from "../../../recipe/filterDetail/FilterDetail";
+import HashTags from "../../../recipe/HashTags";
+import NoneMenu from "../../../recipe/NoneMenu";
 
 export default function Recipe() {
     const allMenu = useSelector((state: RootState) => state.allMenu);

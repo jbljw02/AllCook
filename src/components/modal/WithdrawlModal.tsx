@@ -46,6 +46,7 @@ export default function WithdrawlModal({ isModalOpen, withdrawlOk, setIsModalOpe
                     name: '',
                     email: '',
                 }));
+                
                 NProgress.done();
 
                 router.push('/');

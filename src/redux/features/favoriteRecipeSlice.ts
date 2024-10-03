@@ -33,6 +33,7 @@ const isCheckedRecipeInit: string[] = [];
 
 const isCheckedFolderInit: number[] = [];
 
+
 export const favoriteRecipeSlice = createSlice({
     name: 'favoriteRecipe',
     initialState: folderInitialState,
@@ -51,8 +52,9 @@ export const favoriteRecipeSlice = createSlice({
             state.push(newReipe);
         },
         // 폴더 삭제
-        removeFavoriteRecipeFolder: (state, action) => {
-            return state.filter(item => item.folderId !== action.payload);
+        removeFolder: (state, action) => {
+            const folderIds = action.payload;
+            return state.filter(folder => !folderIds.includes(folder.folderId));
         },
         // 레시피를 폴더 내에 추가
         addRecipeToFolder: (state, action) => {
@@ -65,10 +67,11 @@ export const favoriteRecipeSlice = createSlice({
         },
         // 폴더에서 레시피 삭제
         removeRecipeFromFolder: (state, action) => {
-            const { forderId, recipeNum } = action.payload;
-            const folder = state.find(folder => folder.folderId === forderId);
+            const { folderId, recipeNums } = action.payload;
+            const folder = state.find(folder => folder.folderId === folderId);
             if (folder) {
-                folder.recipes = folder.recipes.filter(recipe => recipe.RCP_SEQ !== recipeNum);
+                folder.recipes = folder.recipes.filter(recipe =>
+                    !recipeNums.includes(recipe.RCP_SEQ));
             }
         }
     }
@@ -186,7 +189,7 @@ export const isCheckedFolderSlice = createSlice({
     }
 })
 
-export const { setFavoriteRecipe, addFavoriteRecipeFolder, removeFavoriteRecipeFolder, addRecipeToFolder, removeRecipeFromFolder } = favoriteRecipeSlice.actions;
+export const { setFavoriteRecipe, addFavoriteRecipeFolder, removeFolder, addRecipeToFolder, removeRecipeFromFolder } = favoriteRecipeSlice.actions;
 export const { setAddedRecipeInfo } = addedRecipeInfoSlice.actions;
 export const { setRecipeMoveModal } = recipeMoveModalSlice.actions;
 export const { setRecipeAddModal } = recipeAddModalSlice.actions;

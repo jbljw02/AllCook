@@ -81,13 +81,6 @@ export default function FolderDetail() {
                             setNewFolderName(resFolderName.data.newFolderName);
                         }
 
-                        // 폴더명이 변경됐으므로 배열 전체 업데이트
-                        const resFavRecipe = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
-                            email: user.email,
-                        });
-                        const favRecipeFromStore: FavoriteRecipe[] = resFavRecipe.data.favoriteRecipe;
-                        dispatch(setFavoriteRecipe(favRecipeFromStore));
-
                         NProgress.done();
 
                         // 모든 작업이 완료된 후 작업 마침
