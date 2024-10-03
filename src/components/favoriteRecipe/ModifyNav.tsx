@@ -1,4 +1,4 @@
-import { FavoriteRecipe, resetIsCheckedFolder, resetIsCheckedRecipe, setFavoriteRecipe, setIsCheckedFolder, setIsCheckedRecipe, setIsFavFolderDelete, setIsFavRecipeDelete, setSelectedFolder } from "@/redux/features/favoriteRecipeSlice";
+import { FavoriteRecipe, removeFolder, removeRecipeFromFolder, resetIsCheckedFolder, resetIsCheckedRecipe, setFavoriteRecipe, setIsCheckedFolder, setIsCheckedRecipe, setIsFavFolderDelete, setIsFavRecipeDelete, setSelectedFolder } from "@/redux/features/favoriteRecipeSlice";
 import { RootState } from "@/redux/store";
 import folderDeleteRequest from "@/utils/fetch/folderDeleteRequest";
 import recipeDeleteRequest from "@/utils/fetch/recipeDeleteRequest";
@@ -63,13 +63,10 @@ export default function ModifyNav({ category }: { category: string }) {
         if (category === 'recipe') {
             try {
                 NProgress.start();
-
                 // 레시피 삭제 요청 전송
                 await recipeDeleteRequest(user.email, selectedFolder.folderId, isCheckedRecipe);
+                dispatch(removeRecipeFromFolder({ folderId: selectedFolder.folderId, recipeNums: isCheckedRecipe }));
 
-                // 레시피가 삭제됐으므로 배열 전체 업데이트
-                const favRecipeFromStore = await requestFavRecipes(user);
-                dispatch(setFavoriteRecipe(favRecipeFromStore));
                 cancelDelete();
 
                 NProgress.done();
@@ -86,14 +83,8 @@ export default function ModifyNav({ category }: { category: string }) {
 
                 // 폴더 삭제 요청 전송
                 await folderDeleteRequest(user.email, isCheckedFolder);
+                dispatch(removeFolder(isCheckedFolder));
 
-                // 폴더가 삭제됐으므로 배열 전체 업데이트
-                const resFavRecipe = await axios.post('/api/userFavorite/recipe/reciveFavRecipes', {
-                    email: user.email,
-                });
-                const favRecipeFromStore: FavoriteRecipe[] = resFavRecipe.data.favoriteRecipe;
-
-                dispatch(setFavoriteRecipe(favRecipeFromStore));
                 cancelDelete();
 
                 NProgress.done();

@@ -1,4 +1,4 @@
-import { setRecipeOpinion, sortRecipeOpinionAsc, sortRecipeOpinionDesc } from "@/redux/features/recipeOpinionSlice";
+import { addOpinion, setRecipeOpinion, sortRecipeOpinionAsc, sortRecipeOpinionDesc } from "@/redux/features/recipeOpinionSlice";
 import { RootState } from "@/redux/store";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -8,6 +8,7 @@ import NProgress from "nprogress";
 import UserProfile from "./child/UserProfile";
 import TextArea from "./child/TextArea";
 import Stars from "./child/Stars";
+import { Timestamp } from "firebase/firestore";
 
 export default function ReviewTextArea() {
     const dispatch = useDispatch();
@@ -78,6 +79,7 @@ export default function ReviewTextArea() {
     const sendNewRecipeOpinion = async () => {
         try {
             setSendLoading(true);
+
             NProgress.start();
 
             const data = {
@@ -97,8 +99,12 @@ export default function ReviewTextArea() {
                     "Accept": "application/json"
                 },
             });
-            // 댓글을 받아옴
-            await requestRecipeOpinion(recipe.RCP_SEQ);
+
+            // 출력은 타임스탬프 형식으로 해야하므로 변경
+            dispatch(addOpinion({
+                ...data,
+                dateTime: Timestamp.fromDate(new Date(data.dateTime)), // `Timestamp`로 변환
+            }));
 
             setSendLoading(false);
             setFormData((prevData) => ({

@@ -1,4 +1,4 @@
-import { setRecipeOpinion, sortRecipeOpinionAsc, sortRecipeOpinionDesc } from "@/redux/features/recipeOpinionSlice";
+import { deleteOpinion, editOpinion, setRecipeOpinion, sortRecipeOpinionAsc, sortRecipeOpinionDesc } from "@/redux/features/recipeOpinionSlice";
 import { RootState } from "@/redux/store";
 import axios from "axios";
 import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
@@ -35,36 +35,6 @@ export default function ReviewComments() {
         }
     }, [recipeOpinion, dispatch]);
 
-    const requestRecipeOpinion = useCallback(async (RCP_SEQ: string) => {
-        try {
-            const data = {
-                RCP_SEQ: RCP_SEQ,
-            }
-
-            if (!data.RCP_SEQ) {
-                return;
-            }
-
-            const response = await axios.post('/api/recipeOpinion/reciveRecipeOpinion', data, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-            });
-
-            // 레시피에 댓글이 없을 때
-            if ((response.data.opinions).length === 0) {
-                dispatch(setRecipeOpinion([]));
-            }
-            // 레시피에 댓글이 있을 때
-            else {
-                dispatch(setRecipeOpinion(response.data.opinions));
-            }
-        } catch (error) {
-            throw error;
-        }
-    }, [user, recipe]);
-
     // 댓글 삭제 요청
     const recipeDeleteRequest = async (id: string) => {
         try {
@@ -83,8 +53,8 @@ export default function ReviewComments() {
                     "Accept": "application/json"
                 },
             });
-            // 댓글을 받아옴
-            await requestRecipeOpinion(recipe.RCP_SEQ);
+
+            dispatch(deleteOpinion(id));
         } catch (error) {
             throw error;
         } finally {
@@ -147,8 +117,7 @@ export default function ReviewComments() {
                     "Accept": "application/json"
                 },
             });
-            // 댓글을 받아옴    
-            await requestRecipeOpinion(recipe.RCP_SEQ);
+            dispatch(editOpinion({ id: id, comment: data.comment, rating: data.rating }))
 
             editingOff(id); // 수정 작업을 마침
         } catch (error) {
