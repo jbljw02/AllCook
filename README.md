@@ -1,7 +1,8 @@
 # 레시피 제공 서비스 'All Cook'
-> All Cook은 사용자 경험을 최우선으로 고려하여 개발된 레시피 제공 서비스입니다. <br>
-> 기존의 노후화되고 올드한 레시피 서비스의 단점을 개선하고, 현대적인 UI와 향상된 사용자 경험을 통해 사용자가 보다 쉽게 요리를 즐길 수 있는 환경을 제공합니다.  <br>
-- 배포 URL: https://allcook.site/
+> All Cook은 노후화된 기존 레시피 서비스들의 한계를 개선하기 위해 개발된 레시피 제공 서비스입니다. <br>
+> 기존 레시피 서비스들은 오래된 인터페이스와 미흡한 유지보수로 인해 사용자들에게 불편한 경험을 제공해왔습니다. <br>
+> 이에 All Cook은 현대적인 UI와 직관적인 사용자 경험을 통해 누구나 즐겁고 쉽게 요리할 수 있는 환경을 제공합니다. <br>
+- 배포 URL: https://allcook.site
   
 <br>
 
@@ -17,18 +18,19 @@
 
 |Environment|Frontend|Backend|Database|Deployment|API|
 |:---:|:---:|:---:|:---:|:---:|:---:|
-|![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)|![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white) ![Redux](https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white)|![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)|![Firebase](https://img.shields.io/badge/firebase-a08021?style=for-the-badge&logo=firebase&logoColor=ffcd34)|![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)|<img width="376" alt="식약처" src="https://github.com/jbljw02/AllCook/assets/125800649/3a915f03-0511-42fa-a413-046d0de8da8a">|
+|![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)|![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white) ![Redux](https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white)|![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)|![Firebase](https://img.shields.io/badge/firebase-a08021?style=for-the-badge&logo=firebase&logoColor=ffcd34)|![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)|<img width="350" alt="식약처" src="https://github.com/jbljw02/AllCook/assets/125800649/3a915f03-0511-42fa-a413-046d0de8da8a">|
 
 <br>
 
 ## 2. 프로젝트 구조도
+![구조도](https://github.com/user-attachments/assets/7063922b-7d90-4d77-9407-7e6ae067f607)
 
-### 1) 레시피 정보 받아오기
-![002](https://github.com/jbljw02/AllCook/assets/125800649/541d101c-82a9-4c16-b707-283b88f42f07)
+## 3. 프로젝트 흐름도
 
-<br>
+### 1) 레시피 데이터 저장 및 조회
+![흐름도](https://github.com/user-attachments/assets/95d24544-5d9a-405b-a85b-f4cabd94b939)
 
-## 3. 화면 구성 및 주요 기능
+## 4. 화면 구성 및 주요 기능
 
 ### 1) 회원가입
 - 유효성 검사(이메일과 비밀번호의 형식)를 통과해야 회원가입이 가능합니다. <br>
